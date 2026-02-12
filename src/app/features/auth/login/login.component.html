@@ -1,17 +1,16 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-  <mat-card class="w-full max-w-md p-8 shadow-lg">
-    <mat-card-header class="flex justify-center mb-6">
-      <mat-card-title class="text-2xl font-bold text-gray-800">Connexion</mat-card-title>
+<div class="min-h-screen flex items-center justify-center bg-white">
+  <mat-card class="w-full max-w-sm shadow-md rounded-lg border border-gray-200">
+    <mat-card-header class="flex flex-col items-center py-6">
+      <mat-icon class="text-4xl text-gray-500 mb-2">person</mat-icon>
+      <mat-card-title class="text-xl font-semibold text-gray-700">Connexion</mat-card-title>
     </mat-card-header>
-
+    <mat-divider></mat-divider>
     <mat-card-content>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
-
-        <!-- Email -->
-        <mat-form-field appearance="outline" class="w-full">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 mt-6">
+        <mat-form-field appearance="fill" class="w-full">
           <mat-label>Email</mat-label>
-          <input matInput formControlName="email" type="email" placeholder="votre@email.com" />
-          <mat-icon matPrefix class="mr-2">email</mat-icon>
+          <input matInput formControlName="email" type="email" placeholder="Email" class="bg-transparent" />
+          <mat-icon matPrefix>email</mat-icon>
           @if (email?.hasError('required') && email?.touched) {
             <mat-error>L'email est requis</mat-error>
           }
@@ -19,16 +18,11 @@
             <mat-error>Format d'email invalide</mat-error>
           }
         </mat-form-field>
-
-        <!-- Password -->
-        <mat-form-field appearance="outline" class="w-full">
+        <mat-form-field appearance="fill" class="w-full">
           <mat-label>Mot de passe</mat-label>
-          <input matInput formControlName="password"
-                 [type]="hidePassword ? 'password' : 'text'"
-                 placeholder="••••••" />
-          <mat-icon matPrefix class="mr-2">lock</mat-icon>
-          <button mat-icon-button matSuffix type="button"
-                  (click)="hidePassword = !hidePassword">
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Mot de passe" class="bg-transparent" />
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
             <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
           @if (password?.hasError('required') && password?.touched) {
@@ -38,19 +32,14 @@
             <mat-error>Minimum 6 caractères</mat-error>
           }
         </mat-form-field>
-
-        <!-- Submit -->
-        <button mat-raised-button color="primary" type="submit"
-                class="w-full py-2 text-lg"
-                [disabled]="isLoading">
+        <button mat-raised-button color="primary" type="submit" class="w-full h-12 text-base font-medium tracking-wide" [disabled]="isLoading">
           @if (isLoading) {
-            <mat-spinner diameter="24" class="inline-block mr-2"></mat-spinner>
+            <mat-progress-spinner diameter="24" mode="indeterminate" class="inline-block align-middle mr-2"></mat-progress-spinner>
             Connexion...
           } @else {
             Se connecter
           }
         </button>
-
       </form>
     </mat-card-content>
   </mat-card>

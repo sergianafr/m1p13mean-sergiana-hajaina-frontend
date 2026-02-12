@@ -1,8 +1,8 @@
-<mat-toolbar color="primary" class="flex justify-between">
-  <span class="text-lg font-semibold">Mon Application</span>
-  <div class="flex items-center gap-4">
+<mat-toolbar color="primary" class="flex justify-between shadow-sm">
+  <span class="text-xl font-semibold tracking-wide">Mon Application</span>
+  <div class="flex items-center gap-3">
     @if (user) {
-      <span class="text-sm">{{ user.email }} ({{ user.role }})</span>
+      <span class="text-sm text-gray-100">{{ user.email }} <span class="mx-1">|</span> <span class="font-medium">{{ user.role }}</span></span>
     }
     <button mat-icon-button (click)="logout()" matTooltip="Se déconnecter">
       <mat-icon>logout</mat-icon>
@@ -10,14 +10,18 @@
   </div>
 </mat-toolbar>
 
-<div class="p-8">
-  <div class="max-w-4xl mx-auto">
-    <h1 class="text-3xl font-bold text-gray-800 mb-4">
-      Bienvenue{{ user?.name ? ', ' + user?.name : '' }} !
-    </h1>
-    <p class="text-gray-600 text-lg">
-      Vous êtes connecté en tant que
-      <span class="font-semibold text-blue-600">{{ user?.role }}</span>.
-    </p>
-  </div>
+<div class="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] bg-gray-50">
+  <mat-card class="w-full max-w-lg mt-12 p-8 rounded-lg shadow-md border border-gray-200 bg-white">
+    <mat-card-header class="flex flex-col items-center mb-6">
+      <mat-icon class="text-5xl text-blue-400 mb-2">home</mat-icon>
+      <mat-card-title class="text-2xl font-bold text-gray-700">Bienvenue{{ user?.name ? ', ' + user?.name : '' }} !</mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content class="mt-6">
+      <p class="text-gray-600 text-lg text-center">
+        Vous êtes connecté en tant que
+        <span class="font-semibold text-blue-600">{{ user?.role }}</span>.
+      </p>
+    </mat-card-content>
+  </mat-card>
 </div>
