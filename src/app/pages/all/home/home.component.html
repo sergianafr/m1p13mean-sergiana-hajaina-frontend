@@ -1,1 +1,23 @@
-<p>home works!</p>
+<mat-toolbar color="primary" class="flex justify-between">
+  <span class="text-lg font-semibold">Mon Application</span>
+  <div class="flex items-center gap-4">
+    @if (user) {
+      <span class="text-sm">{{ user.email }} ({{ user.role }})</span>
+    }
+    <button mat-icon-button (click)="logout()" matTooltip="Se déconnecter">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
+
+<div class="p-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-4">
+      Bienvenue{{ user?.name ? ', ' + user?.name : '' }} !
+    </h1>
+    <p class="text-gray-600 text-lg">
+      Vous êtes connecté en tant que
+      <span class="font-semibold text-blue-600">{{ user?.role }}</span>.
+    </p>
+  </div>
+</div>
