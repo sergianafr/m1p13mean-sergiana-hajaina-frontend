@@ -1,1 +1,16 @@
-<p>sidebar works!</p>
+<mat-nav-list>
+	@for (item of navItems; track item.link) {
+		<a
+			mat-list-item
+			[routerLink]="item.link"
+			routerLinkActive
+			#rla="routerLinkActive"
+			[activated]="rla.isActive"
+			[attr.aria-current]="rla.isActive ? 'page' : null"
+			(click)="navigate.emit()"
+		>
+			<mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+			<span matListItemTitle>{{ item.label }}</span>
+		</a>
+	}
+</mat-nav-list>

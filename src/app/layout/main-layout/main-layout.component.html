@@ -1,1 +1,24 @@
-<p>main-layout works!</p>
+<mat-sidenav-container class="h-screen">
+	<mat-sidenav
+		class="w-72"
+		[mode]="sidenavMode()"
+		[opened]="sidenavOpened()"
+		(backdropClick)="closeIfHandset()"
+		role="navigation"
+		aria-label="Primary navigation"
+	>
+		<app-sidebar (navigate)="closeIfHandset()" />
+	</mat-sidenav>
+
+	<mat-sidenav-content class="h-full">
+		<div class="min-h-screen flex flex-col">
+			<app-header (toggleSidenav)="toggleSidenav()" />
+
+			<main class="flex-1 p-4">
+				<router-outlet />
+			</main>
+
+			<app-footer />
+		</div>
+	</mat-sidenav-content>
+</mat-sidenav-container>
