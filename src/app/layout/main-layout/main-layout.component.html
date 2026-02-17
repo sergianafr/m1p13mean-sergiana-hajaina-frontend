@@ -1,6 +1,6 @@
 <mat-sidenav-container class="h-screen">
 	<mat-sidenav
-		class="w-72"
+		class="w-64 border-r border-gray-200"
 		[mode]="sidenavMode()"
 		[opened]="sidenavOpened()"
 		(backdropClick)="closeIfHandset()"
@@ -10,11 +10,11 @@
 		<app-sidebar (navigate)="closeIfHandset()" />
 	</mat-sidenav>
 
-	<mat-sidenav-content class="h-full">
+	<mat-sidenav-content class="h-full bg-gray-50">
 		<div class="min-h-screen flex flex-col">
 			<app-header (toggleSidenav)="toggleSidenav()" />
 
-			<main class="flex-1 p-4">
+			<main class="flex-1 px-6 py-8 max-w-7xl w-full mx-auto">
 				<router-outlet />
 			</main>
 
