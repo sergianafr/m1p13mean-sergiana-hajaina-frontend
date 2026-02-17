@@ -6,14 +6,28 @@ export const routes: Routes = [
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () =>
-      import('./features/auth/login/login.component').then(m => m.LoginComponent)
+      import('./layout/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/auth/login/login.component').then(m => m.LoginComponent)
+      }
+    ]
   },
   {
-    path: 'home',
-    canActivate: [authGuard],
+    path: '',
     loadComponent: () =>
-      import('./pages/all/home/home.component').then(m => m.HomeComponent)
+      import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: 'home',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./pages/all/home/home.component').then(m => m.HomeComponent)
+      },
+      { path: '', redirectTo: 'home', pathMatch: 'full' }
+    ]
   },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }
 ];

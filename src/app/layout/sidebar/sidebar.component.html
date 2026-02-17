@@ -1,0 +1,25 @@
+<div class="h-full flex flex-col bg-white w-60">
+	<div class="p-6 border-b border-gray-200">
+		<h2 class="text-lg font-bold text-gray-900">MEAN</h2>
+	</div>
+
+	<mat-nav-list class="flex-1 pt-4">
+		@for (item of navItems; track item.link) {
+			<a
+				mat-list-item
+				[routerLink]="item.link"
+				routerLinkActive
+				#rla="routerLinkActive"
+				[activated]="rla.isActive"
+				[attr.aria-current]="rla.isActive ? 'page' : null"
+				class="mx-2 mb-1 rounded-lg"
+				[class.bg-blue-50]="rla.isActive"
+				[class.text-blue-700]="rla.isActive"
+				(click)="navigate.emit()"
+			>
+				<mat-icon matListItemIcon [class.text-blue-700]="rla.isActive">{{ item.icon }}</mat-icon>
+				<span matListItemTitle class="font-medium">{{ item.label }}</span>
+			</a>
+		}
+	</mat-nav-list>
+</div>
