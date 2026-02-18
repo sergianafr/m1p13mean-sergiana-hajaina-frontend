@@ -10,6 +10,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 const MaterialComponents = [
@@ -23,7 +28,12 @@ const MaterialComponents = [
   MatToolbarModule,
   MatMenuModule,
   MatDividerModule,
-  MatChipsModule
+  MatChipsModule,
+  MatSelectModule,
+  MatCheckboxModule,
+  MatRadioModule,
+  MatDatepickerModule,
+  MatNativeDateModule
 ];
 
 @NgModule({
