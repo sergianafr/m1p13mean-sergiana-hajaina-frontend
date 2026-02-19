@@ -4,21 +4,16 @@
       <div class="form-field" [class]="field.class ?? ''">
         @switch (field.type) {
           @case ('text') {
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field  appearance="outline">
               <mat-label>{{ field.label }}</mat-label>
-              <input
+              <input 
                 matInput
-                type="text"
                 [formControlName]="field.key"
-                [placeholder]="field.placeholder ?? ''"
-              />
-              @if (field.hint) {
-                <mat-hint>{{ field.hint }}</mat-hint>
-              }
+                [placeholder]="field.placeholder ?? ''">
+            </mat-form-field>
               @if (hasError(field.key)) {
                 <mat-error>{{ getErrorMessage(field) }}</mat-error>
               }
-            </mat-form-field>
           }
 
           @case ('email') {
