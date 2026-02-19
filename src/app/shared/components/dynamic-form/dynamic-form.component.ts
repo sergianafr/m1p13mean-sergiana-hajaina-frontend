@@ -35,7 +35,7 @@ import {
 } from '../../models/form-field.model';
 
 @Component({
-  selector: 'app-dynamic-form',
+  selector: 'dynamic-form',
   standalone: true,
   templateUrl: './dynamic-form.component.html',
   styleUrl: './dynamic-form.component.scss',
@@ -69,7 +69,7 @@ export class DynamicFormComponent implements OnInit {
 
   // Internal state
   protected readonly form = signal<FormGroup | null>(null);
-  protected readonly isFormValid = computed(() => this.form()?.valid ?? false);
+  protected readonly isFormValid = signal<boolean>(false);
 
   protected readonly mode = computed<FormMode>(
     () => this.config().mode ?? 'create'
@@ -113,7 +113,16 @@ export class DynamicFormComponent implements OnInit {
       ];
     }
 
-    this.form.set(this.fb.group(group));
+    const formGroup = this.fb.group(group);
+    
+    // Subscribe to form status changes to update validation signal
+    formGroup.statusChanges.subscribe(() => {
+      this.isFormValid.set(formGroup.valid);
+    });
+    
+    // Set initial validity
+    this.isFormValid.set(formGroup.valid);
+    this.form.set(formGroup);
   }
 
   private getValidators(field: FormFieldConfig): ValidatorFn[] {
@@ -215,6 +224,11 @@ export class DynamicFormComponent implements OnInit {
     if (errors['pattern']) return 'Format invalide';
 
     return 'Erreur de validation';
+  }
+
+  protected hasError(fieldKey: string): boolean {
+    const control = this.form()?.get(fieldKey);
+    return !!(control?.invalid && control?.touched);
   }
 
   protected onSubmit(): void {
