@@ -26,8 +26,15 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/all/home/home.component').then(m => m.HomeComponent)
       },
+      {
+        path: 'type-produit',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/type-produit/type-produit.component').then(m => m.TypeProduitForm)
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },
   { path: '**', redirectTo: 'login' }
 ];
+ 
