@@ -52,11 +52,10 @@ export class TypeProduitListComponent implements OnInit {
         width: '30%'
       }
     ],
-    actions: [],
     clickable: true,
     rowRoute: '/type-produits',
     idField: '_id',
-    showActions: true,
+    showActions: false,
     emptyMessage: 'Aucun type de produit trouvé',
     loading: false,
     pageable: true,
