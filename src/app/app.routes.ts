@@ -27,10 +27,27 @@ export const routes: Routes = [
           import('./pages/all/home/home.component').then(m => m.HomeComponent)
       },
       {
-        path: 'type-produit',
+        path: 'type-produits',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/type-produit/type-produit-list.component').then(m => m.TypeProduitListComponent)
+      },
+      {
+        path: 'type-produits/nouveau',
         canActivate: [authGuard],
         loadComponent: () =>
           import('./features/type-produit/type-produit.component').then(m => m.TypeProduitForm)
+      },
+      {
+        path: 'type-produits/:id',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/type-produit/type-produit.component').then(m => m.TypeProduitForm)
+      },
+      {
+        path: 'type-produit',
+        redirectTo: 'type-produits',
+        pathMatch: 'full'
       },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
