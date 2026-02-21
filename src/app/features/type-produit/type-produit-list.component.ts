@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DynamicTableComponent } from '../../shared/components';
+import { DynamicTableComponent, ListHeaderComponent } from '../../shared/components';
 import { DynamicTableConfig } from '../../shared/models';
 import { TypeProduitService, TypeProduit } from './type-produit.service';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
@@ -12,22 +10,16 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   standalone: true,
   imports: [
     DynamicTableComponent,
-    MatButtonModule,
-    MatIconModule,
+    ListHeaderComponent,
     MatSnackBarModule
   ],
   template: `
     <div class="container mx-auto p-6">
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold">Types de Produits</h1>
-        <button 
-          mat-raised-button 
-          color="primary"
-          (click)="createNew()">
-          <mat-icon>add</mat-icon>
-          Nouveau Type
-        </button>
-      </div>
+      <list-header
+        title="Types de Produits"
+        actionLabel="Nouveau Type"
+        (action)="createNew()">
+      </list-header>
 
       <dynamic-table
         [config]="tableConfig()"
@@ -60,20 +52,7 @@ export class TypeProduitListComponent implements OnInit {
         width: '30%'
       }
     ],
-    actions: [
-      {
-        label: 'Modifier',
-        icon: 'edit',
-        color: 'primary',
-        handler: (row: any) => this.edit(row)
-      },
-      {
-        label: 'Supprimer',
-        icon: 'delete',
-        color: 'warn',
-        handler: (row: any) => this.delete(row)
-      }
-    ],
+    actions: [],
     clickable: true,
     rowRoute: '/type-produits',
     idField: '_id',

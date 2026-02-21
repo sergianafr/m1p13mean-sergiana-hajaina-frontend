@@ -33,7 +33,7 @@ export const routes: Routes = [
           import('./features/type-produit/type-produit-list.component').then(m => m.TypeProduitListComponent)
       },
       {
-        path: 'type-produits/nouveau',
+        path: 'type-produits/create',
         canActivate: [authGuard],
         loadComponent: () =>
           import('./features/type-produit/type-produit.component').then(m => m.TypeProduitForm)

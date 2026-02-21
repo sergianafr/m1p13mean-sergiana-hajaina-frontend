@@ -1,16 +1,8 @@
 <div class="flex flex-col min-h-[calc(100vh-200px)]">
-  <div class="mb-4">
-    <button 
-      mat-button
-      (click)="onGoBack()">
-      <mat-icon>arrow_back</mat-icon>
-      Retour à la liste
-    </button>
-  </div>
-
   <app-title 
-    [textHead]="isEditMode() ? 'Modification' : 'Création'"
+    [textHead]= "'Type Produit'"
     [formTitle]="isEditMode() ? 'Modifier le type de produit' : 'Nouveau type de produit'"
+    (redirect)="onGoBack()"
   >
   </app-title>
   
