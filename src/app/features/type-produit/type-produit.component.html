@@ -1,7 +1,7 @@
 <div class="flex flex-col min-h-[calc(100vh-200px)]">
   <app-title 
-    textHead="Type produit"
-    formTitle="Nouveau type produit"
+    [textHead]= "'Type Produit'"
+    [formTitle]="isEditMode() ? 'Modifier le type de produit' : 'Nouveau type de produit'"
     (redirect)="onGoBack()"
   >
   </app-title>
@@ -9,7 +9,7 @@
   <mat-card class="w-full rounded-lg shadow-md border border-gray-200 bg-white">
     <mat-card-content>
       <dynamic-form
-        [config]="formConfig"
+        [config]="formConfig()"
         [initialData]="userData()"
         [loading]="isLoading()"
         (formSubmit)="onSubmit($event)"
