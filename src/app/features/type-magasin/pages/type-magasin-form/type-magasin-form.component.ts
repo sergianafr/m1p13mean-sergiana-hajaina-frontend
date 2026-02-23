@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DynamicFormComponent, DynamicFormConfig, TitleComponent } from '../../shared';
+import { DynamicFormComponent, DynamicFormConfig, TitleComponent } from '../../../../shared';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
-import { TypeProduitService } from './type-produit.service';
+import { TypeMagasinService } from '../../type-magasin.service';
 
 @Component({
-  selector: 'type-produit-form',
+  selector: 'app-type-magasin-form',
   standalone: true,
-  templateUrl: './type-produit.component.html',
-  styleUrl: './type-produit.component.scss',
+  templateUrl: './type-magasin-form.component.html',
+  styleUrl: './type-magasin-form.component.scss',
   imports: [
     DynamicFormComponent,
     TitleComponent,
@@ -24,15 +24,15 @@ import { TypeProduitService } from './type-produit.service';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TypeProduitForm implements OnInit {
-  private readonly typeProduitService = inject(TypeProduitService);
+export class TypeMagasinFormComponent implements OnInit {
+  private readonly typeMagasinService = inject(TypeMagasinService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
   
   protected readonly isLoading = signal(false);
   protected readonly isEditMode = signal(false);
-  protected readonly typeProduitId = signal<string | null>(null);
+  protected readonly typeMagasinId = signal<string | null>(null);
   protected readonly userData = signal<Record<string, unknown> | undefined>(undefined);
 
   protected readonly formConfig = signal<DynamicFormConfig>({
@@ -40,7 +40,7 @@ export class TypeProduitForm implements OnInit {
     submitLabel: 'Enregistrer',
     cancelLabel: 'Annuler',
     fields: [
-      { key: 'nomTypeProduit', label: 'Type de produit', type: 'text', required: true }
+      { key: 'nomTypeMagasin', label: 'Nom du Type de Magasin', type: 'text', required: true }
     ]
   });
 
@@ -49,8 +49,8 @@ export class TypeProduitForm implements OnInit {
       const id = params['id'];
       if (id && id !== 'nouveau') {
         this.isEditMode.set(true);
-        this.typeProduitId.set(id);
-        this.loadTypeProduit(id);
+        this.typeMagasinId.set(id);
+        this.loadTypeMagasin(id);
         this.formConfig.update(config => ({
           ...config,
           mode: 'edit'
@@ -59,9 +59,9 @@ export class TypeProduitForm implements OnInit {
     });
   }
 
-  private loadTypeProduit(id: string): void {
+  private loadTypeMagasin(id: string): void {
     this.isLoading.set(true);
-    this.typeProduitService.getById(id).subscribe({
+    this.typeMagasinService.getById(id).subscribe({
       next: (data) => {
         this.userData.set({ ...data });
         this.isLoading.set(false);
@@ -82,15 +82,15 @@ export class TypeProduitForm implements OnInit {
     this.isLoading.set(true);
 
     const operation = this.isEditMode()
-      ? this.typeProduitService.update(this.typeProduitId()!, data)
-      : this.typeProduitService.create(data);
+      ? this.typeMagasinService.update(this.typeMagasinId()!, data)
+      : this.typeMagasinService.create(data);
 
     operation.subscribe({
       next: () => {
         this.isLoading.set(false);
         const message = this.isEditMode() 
-          ? 'Type de produit modifié avec succès' 
-          : 'Type de produit créé avec succès';
+          ? 'Type de magasin modifié avec succès' 
+          : 'Type de magasin créé avec succès';
         
         this.snackBar.open(message, 'Fermer', {
           duration: 3000,
@@ -123,15 +123,15 @@ export class TypeProduitForm implements OnInit {
   }
 
   onDelete(): void {
-    const typeProduit = this.userData();
-    const nom = typeProduit?.['nomTypeProduit'] || 'cet élément';
+    const typeMagasin = this.userData();
+    const nom = typeMagasin?.['nomTypeMagasin'] || 'cet élément';
     
     if (confirm(`Voulez-vous vraiment supprimer "${nom}" ?`)) {
       this.isLoading.set(true);
-      this.typeProduitService.delete(this.typeProduitId()!).subscribe({
+      this.typeMagasinService.delete(this.typeMagasinId()!).subscribe({
         next: () => {
           this.isLoading.set(false);
-          this.snackBar.open('Type de produit supprimé avec succès', 'Fermer', {
+          this.snackBar.open('Type de magasin supprimé avec succès', 'Fermer', {
             duration: 3000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
@@ -152,6 +152,6 @@ export class TypeProduitForm implements OnInit {
   }
 
   private goBack(): void {
-    this.router.navigate(['/type-produits']);
+    this.router.navigate(['/type-magasins']);
   }
 }

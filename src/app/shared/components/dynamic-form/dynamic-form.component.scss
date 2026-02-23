@@ -51,10 +51,15 @@
   .form-actions {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     gap: 12px;
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid rgba(0, 0, 0, 0.12);
+
+    .delete-button {
+      min-width: 120px;
+    }
 
     button {
       min-width: 100px;
@@ -71,6 +76,7 @@
   .dynamic-form {
     .form-actions {
       flex-direction: column-reverse;
+      align-items: stretch;
 
       button {
         width: 100%;

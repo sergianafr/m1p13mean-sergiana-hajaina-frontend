@@ -162,6 +162,19 @@
     }
 
     <div class="form-actions">
+      @if (showDelete()) {
+        <button
+          mat-stroked-button
+          color="warn"
+          type="button"
+          (click)="onDelete()"
+          [disabled]="loading()"
+          class="delete-button"
+        >
+          <mat-icon>delete</mat-icon>
+          Supprimer
+        </button>
+      }
       <button
         mat-stroked-button
         type="button"
