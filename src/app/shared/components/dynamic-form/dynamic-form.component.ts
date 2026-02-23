@@ -62,10 +62,12 @@ export class DynamicFormComponent implements OnInit {
   readonly config = input.required<DynamicFormConfig>();
   readonly initialData = input<Record<string, unknown>>();
   readonly loading = input<boolean>(false);
+  readonly showDelete = input<boolean>(false);
 
   // Outputs
   readonly formSubmit = output<Record<string, unknown>>();
   readonly formCancel = output<void>();
+  readonly formDelete = output<void>();
 
   // Internal state
   protected readonly form = signal<FormGroup | null>(null);
@@ -242,6 +244,10 @@ export class DynamicFormComponent implements OnInit {
 
   protected onCancel(): void {
     this.formCancel.emit();
+  }
+
+  protected onDelete(): void {
+    this.formDelete.emit();
   }
 
   private markAllAsTouched(): void {

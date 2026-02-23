@@ -11,8 +11,10 @@
         [config]="formConfig()"
         [initialData]="userData()"
         [loading]="isLoading()"
+        [showDelete]="isEditMode()"
         (formSubmit)="onSubmit($event)"
-        (formCancel)="onCancel()" />
+        (formCancel)="onCancel()"
+        (formDelete)="onDelete()" />
     </mat-card-content>
   </mat-card>
 </div>

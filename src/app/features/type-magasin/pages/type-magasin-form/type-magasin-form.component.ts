@@ -122,6 +122,35 @@ export class TypeMagasinFormComponent implements OnInit {
     this.goBack();
   }
 
+  onDelete(): void {
+    const typeMagasin = this.userData();
+    const nom = typeMagasin?.['nomTypeMagasin'] || 'cet élément';
+    
+    if (confirm(`Voulez-vous vraiment supprimer "${nom}" ?`)) {
+      this.isLoading.set(true);
+      this.typeMagasinService.delete(this.typeMagasinId()!).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.snackBar.open('Type de magasin supprimé avec succès', 'Fermer', {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar']
+          });
+          this.goBack();
+        },
+        error: (error) => {
+          this.isLoading.set(false);
+          this.snackBar.open('Erreur lors de la suppression', 'Fermer', {
+            duration: 3000,
+            panelClass: ['error-snackbar']
+          });
+          console.error('Erreur:', error);
+        }
+      });
+    }
+  }
+
   private goBack(): void {
     this.router.navigate(['/type-magasins']);
   }
