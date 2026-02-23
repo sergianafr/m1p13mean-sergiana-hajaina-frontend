@@ -22,8 +22,11 @@ export class SidebarComponent {
   protected readonly navItems: NavItem[] = [
     { label: 'Home', icon: 'home', link: '/home' },
     { label: 'Type produit', icon: 'bookmark_border', link: '/type-produit' },
+    { label: 'Type magasin', icon: 'bookmark_border', link: '/type-magasins' },
+
 
 
   ];
 
 }
+

@@ -49,7 +49,31 @@ export const routes: Routes = [
         redirectTo: 'type-produits',
         pathMatch: 'full'
       },
-      { path: '', redirectTo: 'home', pathMatch: 'full' }
+      {
+        path: 'type-magasins',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/type-magasin/pages/type-magasin-list/type-magasin-list.component').then(m => m.TypeMagasinListComponent)
+      },
+      {
+        path: 'type-magasins/create',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/type-magasin/pages/type-magasin-form/type-magasin-form.component').then(m => m.TypeMagasinFormComponent)
+      },
+      {
+        path: 'type-magasins/:id',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/type-magasin/pages/type-magasin-form/type-magasin-form.component').then(m => m.TypeMagasinFormComponent)
+      },
+      {
+        path: 'type-magasin',
+        redirectTo: 'type-magasins',
+        pathMatch: 'full'
+      },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      
     ]
   },
   { path: '**', redirectTo: 'login' }
