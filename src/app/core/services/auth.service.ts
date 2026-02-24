@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse, User } from '../models/user';
+import { LoginRequest, LoginResponse, RegisterRequest, User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +26,12 @@ export class AuthService {
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.API_URL}/login`, credentials).pipe(
+      tap(response => this.handleAuthSuccess(response))
+    );
+  }
+
+  register(data: RegisterRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.API_URL}/register`, data).pipe(
       tap(response => this.handleAuthSuccess(response))
     );
   }
