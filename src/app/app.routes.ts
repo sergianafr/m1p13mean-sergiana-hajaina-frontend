@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard, guestGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -27,20 +28,26 @@ export const routes: Routes = [
           import('./pages/all/home/home.component').then(m => m.HomeComponent)
       },
       {
-        path: 'type-produits',
+        path: 'access-denied',
         canActivate: [authGuard],
+        loadComponent: () =>
+          import('./pages/all/access-denied/access-denied.component').then(m => m.AccessDeniedComponent)
+      },
+      {
+        path: 'type-produits',
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
           import('./features/type-produit/type-produit-list.component').then(m => m.TypeProduitListComponent)
       },
       {
         path: 'type-produits/create',
-        canActivate: [authGuard],
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
           import('./features/type-produit/type-produit.component').then(m => m.TypeProduitForm)
       },
       {
         path: 'type-produits/:id',
-        canActivate: [authGuard],
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
           import('./features/type-produit/type-produit.component').then(m => m.TypeProduitForm)
       },
@@ -51,19 +58,19 @@ export const routes: Routes = [
       },
       {
         path: 'type-magasins',
-        canActivate: [authGuard],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/type-magasin/pages/type-magasin-list/type-magasin-list.component').then(m => m.TypeMagasinListComponent)
       },
       {
         path: 'type-magasins/create',
-        canActivate: [authGuard],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/type-magasin/pages/type-magasin-form/type-magasin-form.component').then(m => m.TypeMagasinFormComponent)
       },
       {
         path: 'type-magasins/:id',
-        canActivate: [authGuard],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/type-magasin/pages/type-magasin-form/type-magasin-form.component').then(m => m.TypeMagasinFormComponent)
       },
@@ -74,19 +81,19 @@ export const routes: Routes = [
       },
       {
         path: 'unites',
-        canActivate: [authGuard],
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
           import('./features/unite/pages/unite-list/unite-list.component').then(m => m.UniteListComponent)
       },
       {
         path: 'unites/create',
-        canActivate: [authGuard],
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
           import('./features/unite/pages/unite-form/unite-form.component').then(m => m.UniteFormComponent)
       },
       {
         path: 'unites/:id',
-        canActivate: [authGuard],
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
           import('./features/unite/pages/unite-form/unite-form.component').then(m => m.UniteFormComponent)
       },
