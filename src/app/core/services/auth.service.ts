@@ -58,6 +58,16 @@ export class AuthService {
     return user?.role === role;
   }
 
+  hasAnyRole(roles: string[]): boolean {
+    const user = this.getCurrentUser();
+    return user ? roles.includes(user.role) : false;
+  }
+
+  hasAllRoles(roles: string[]): boolean {
+    const user = this.getCurrentUser();
+    return user ? roles.every(role => user.role === role) : false;
+  }
+
   private handleAuthSuccess(response: LoginResponse): void {
     if (this.isBrowser) {
       localStorage.setItem(this.TOKEN_KEY, response.token);
