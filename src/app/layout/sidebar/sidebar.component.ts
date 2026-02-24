@@ -27,6 +27,7 @@ export class SidebarComponent {
     { label: 'Type produit', icon: 'bookmark_border', link: '/type-produits', roles: ['ADMIN', 'BOUTIQUE'] },
     { label: 'Type magasin', icon: 'bookmark_border', link: '/type-magasins', roles: ['ADMIN'] },
     { label: 'Unite', icon: 'bookmark_border', link: '/unites', roles: ['ADMIN', 'BOUTIQUE'] },
+    { label: 'Box', icon: 'bookmark_border', link: '/boxs', roles: ['ADMIN'] },
   ];
 
 }

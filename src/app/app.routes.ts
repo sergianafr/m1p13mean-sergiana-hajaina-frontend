@@ -115,6 +115,29 @@ export const routes: Routes = [
         redirectTo: 'unites',
         pathMatch: 'full'
       },
+      {
+        path: 'boxs',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box/pages/box-list/box-list.component').then(m => m.BoxListComponent)
+      },
+      {
+        path: 'boxs/create',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box/pages/box-form/box-form.component').then(m => m.BoxFormComponent)
+      },
+      {
+        path: 'boxs/:id',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box/pages/box-form/box-form.component').then(m => m.BoxFormComponent)
+      },
+      {
+        path: 'box',
+        redirectTo: 'boxs',
+        pathMatch: 'full'
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       
     ]
