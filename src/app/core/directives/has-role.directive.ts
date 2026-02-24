@@ -1,4 +1,4 @@
-import { Directive, inject, input, TemplateRef, ViewContainerRef, effect } from '@angular/core';
+import { Directive, inject, input, TemplateRef, ViewContainerRef, effect, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { Role } from '../models/user';
 
@@ -6,7 +6,7 @@ import { Role } from '../models/user';
   selector: '[appHasRole]',
   standalone: true
 })
-export class HasRoleDirective {
+export class HasRoleDirective implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly templateRef = inject(TemplateRef<any>);
   private readonly viewContainer = inject(ViewContainerRef);
@@ -16,7 +16,11 @@ export class HasRoleDirective {
   constructor() {
     effect(() => {
       this.updateView();
-    });
+    }, { allowSignalWrites: true });
+  }
+
+  ngOnInit(): void {
+    this.updateView();
   }
 
   private updateView(): void {
