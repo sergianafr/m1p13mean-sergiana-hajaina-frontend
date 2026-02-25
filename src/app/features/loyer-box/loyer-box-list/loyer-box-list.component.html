@@ -1,0 +1,69 @@
+<div class="flex flex-col min-h-[calc(100vh-200px)]">
+  <app-title 
+    [textHead]="'Loyers'"
+    [formTitle]="'Historique des loyers - ' + (box()?.nomBox || '')"
+    (redirect)="goBack()">
+  </app-title>
+
+  <div class="flex justify-end mb-4">
+    <button mat-raised-button color="primary" (click)="createLoyer()">
+      <mat-icon>add</mat-icon>
+      Nouveau loyer
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex justify-center items-center py-16">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+  } @else if (loyers().length === 0) {
+    <div class="flex flex-col items-center justify-center py-16 text-gray-500">
+      <mat-icon class="text-6xl mb-4">money_off</mat-icon>
+      <p class="text-lg">Aucun loyer enregistré pour ce box</p>
+      <button mat-raised-button color="primary" class="mt-4" (click)="createLoyer()">
+        <mat-icon>add</mat-icon>
+        Créer le premier loyer
+      </button>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-3">
+      @for (loyer of loyers(); track loyer._id; let i = $index) {
+        <mat-card class="rounded-lg shadow-sm border" 
+                  [class.border-green-300]="isCurrentLoyer(i)" 
+                  [class.bg-green-50]="isCurrentLoyer(i)"
+                  [class.border-gray-200]="!isCurrentLoyer(i)">
+          <mat-card-content class="flex items-center justify-between p-4">
+            <div class="flex items-center gap-4">
+              <div class="flex items-center justify-center w-10 h-10 rounded-full"
+                   [class.bg-green-100]="isCurrentLoyer(i)"
+                   [class.bg-gray-100]="!isCurrentLoyer(i)">
+                <mat-icon [class.text-green-600]="isCurrentLoyer(i)" [class.text-gray-500]="!isCurrentLoyer(i)">
+                  payments
+                </mat-icon>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-lg font-semibold" [class.text-green-700]="isCurrentLoyer(i)">
+                    {{ formatCurrency(loyer.montantLoyer) }}
+                  </span>
+                  @if (isCurrentLoyer(i)) {
+                    <span class="text-xs bg-green-600 text-white px-2 py-0.5 rounded-full">Actuel</span>
+                  }
+                </div>
+                <p class="text-sm text-gray-500 mt-1 mb-0">
+                  Du {{ formatDate(loyer.dateDebut) }}
+                  @if (loyer.dateFin) {
+                    au {{ formatDate(loyer.dateFin) }}
+                  }
+                </p>
+              </div>
+            </div>
+            <button mat-icon-button color="warn" (click)="deleteLoyer(loyer)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

@@ -17,6 +17,19 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'register',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./layout/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/auth/register/register.component').then(m => m.RegisterComponent)
+      }
+    ]
+  },
+  {
     path: '',
     loadComponent: () =>
       import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
@@ -100,6 +113,64 @@ export const routes: Routes = [
       {
         path: 'unite',
         redirectTo: 'unites',
+        pathMatch: 'full'
+      },
+      {
+        path: 'boxs',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box/pages/box-list/box-list.component').then(m => m.BoxListComponent)
+      },
+      {
+        path: 'boxs/create',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box/pages/box-form/box-form.component').then(m => m.BoxFormComponent)
+      },
+      {
+        path: 'boxs/:id',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box/pages/box-form/box-form.component').then(m => m.BoxFormComponent)
+      },
+      {
+        path: 'boxs/:boxId/loyers',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/loyer-box/loyer-box-list/loyer-box-list.component').then(m => m.LoyerBoxListComponent)
+      },
+      {
+        path: 'boxs/:boxId/loyers/nouveau',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/loyer-box/loyer-box-form/loyer-box-form.component').then(m => m.LoyerBoxFormComponent)
+      },
+      {
+        path: 'box',
+        redirectTo: 'boxs',
+        pathMatch: 'full'
+      },
+      {
+        path: 'magasins',
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/pages/magasin-list/magasin-list.component').then(m => m.MagasinListComponent)
+      },
+      {
+        path: 'magasins/nouveau',
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/pages/magasin-form/magasin-form.component').then(m => m.MagasinFormComponent)
+      },
+      {
+        path: 'magasins/:id',
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/pages/magasin-form/magasin-form.component').then(m => m.MagasinFormComponent)
+      },
+      {
+        path: 'magasin',
+        redirectTo: 'magasins',
         pathMatch: 'full'
       },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
