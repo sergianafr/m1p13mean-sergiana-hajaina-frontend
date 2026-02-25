@@ -134,6 +134,18 @@ export const routes: Routes = [
           import('./features/box/pages/box-form/box-form.component').then(m => m.BoxFormComponent)
       },
       {
+        path: 'boxs/:boxId/loyers',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/loyer-box/loyer-box-list/loyer-box-list.component').then(m => m.LoyerBoxListComponent)
+      },
+      {
+        path: 'boxs/:boxId/loyers/nouveau',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/loyer-box/loyer-box-form/loyer-box-form.component').then(m => m.LoyerBoxFormComponent)
+      },
+      {
         path: 'box',
         redirectTo: 'boxs',
         pathMatch: 'full'
