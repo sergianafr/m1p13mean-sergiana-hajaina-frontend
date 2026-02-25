@@ -1,1 +1,12 @@
-<p>magasin-list works!</p>
+<div class="container mx-auto p-6">
+  <list-header
+    title="Magasins"
+    actionLabel="Nouveau Magasin"
+    (action)="createNew()">
+  </list-header>
+
+  <dynamic-table
+    [config]="tableConfig()"
+    [data]="magasins()">
+  </dynamic-table>
+</div>
