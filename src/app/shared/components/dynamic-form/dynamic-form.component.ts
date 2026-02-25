@@ -15,7 +15,9 @@ import {
   FormGroup,
   ReactiveFormsModule,
   Validators,
-  ValidatorFn
+  ValidatorFn,
+  AbstractControl,
+  ValidationErrors
 } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -108,7 +110,7 @@ export class DynamicFormComponent implements OnInit {
 
     for (const field of this.config().fields) {
       const validators = this.getValidators(field);
-      const initialValue = this.initialData()?.[field.key] ?? '';
+      const initialValue = this.initialData()?.[field.key] ?? (field.type === 'file' ? [] : '');
       group[field.key] = [
         { value: initialValue, disabled: field.disabled ?? false },
         validators
@@ -131,7 +133,11 @@ export class DynamicFormComponent implements OnInit {
     const validators: ValidatorFn[] = [];
 
     if (field.required) {
-      validators.push(Validators.required);
+      if (field.type === 'file') {
+        validators.push(this.fileRequiredValidator());
+      } else {
+        validators.push(Validators.required);
+      }
     }
 
     if (field.type === 'email') {
@@ -188,6 +194,44 @@ export class DynamicFormComponent implements OnInit {
     }
 
     return validators;
+  }
+
+  private fileRequiredValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (Array.isArray(value)) {
+        return value.length > 0 ? null : { required: true };
+      }
+
+      if (value instanceof FileList) {
+        return value.length > 0 ? null : { required: true };
+      }
+
+      return value ? null : { required: true };
+    };
+  }
+
+  protected onFileChange(event: Event, field: FormFieldConfig): void {
+    const target = event.target as HTMLInputElement;
+    const files = target.files ? Array.from(target.files) : [];
+    const control = this.form()?.get(field.key);
+
+    if (!control) {
+      return;
+    }
+
+    control.setValue(files);
+    control.markAsTouched();
+    control.updateValueAndValidity();
+  }
+
+  protected getSelectedFilesLabel(fieldKey: string): string {
+    const value = this.form()?.get(fieldKey)?.value;
+    if (!value || !Array.isArray(value) || value.length === 0) {
+      return 'Aucun fichier sélectionné';
+    }
+
+    return value.map((file: File) => file.name).join(', ');
   }
 
   protected getErrorMessage(field: FormFieldConfig): string {

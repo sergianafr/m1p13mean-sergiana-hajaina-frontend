@@ -157,6 +157,27 @@
               }
             </mat-form-field>
           }
+
+          @case ('file') {
+            <div class="file-field full-width">
+              <label class="file-label" [for]="field.key">{{ field.label }}</label>
+              <input
+                class="file-input"
+                type="file"
+                [id]="field.key"
+                [attr.multiple]="field.multiple === false ? null : ''"
+                [attr.accept]="field.accept ?? null"
+                (change)="onFileChange($event, field)"
+              />
+              <span class="file-names">{{ getSelectedFilesLabel(field.key) }}</span>
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+              @if (hasError(field.key)) {
+                <mat-error>{{ getErrorMessage(field) }}</mat-error>
+              }
+            </div>
+          }
         }
       </div>
     }

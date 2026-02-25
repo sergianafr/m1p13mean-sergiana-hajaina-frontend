@@ -7,7 +7,8 @@ export type FieldType =
   | 'select' 
   | 'checkbox' 
   | 'date' 
-  | 'radio';
+  | 'radio'
+  | 'file';
 
 export interface SelectOption {
   value: string | number;
@@ -32,6 +33,8 @@ export interface FormFieldConfig {
   errorMessages?: Record<string, string>;
   hint?: string;
   class?: string; 
+  multiple?: boolean;
+  accept?: string;
 }
 
 export interface FieldValidator {
