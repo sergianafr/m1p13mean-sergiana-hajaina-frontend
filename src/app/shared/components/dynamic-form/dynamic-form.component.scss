@@ -51,6 +51,32 @@
   .user-search-field {
     width: 100%;
 
+    .create-user-section {
+      padding: 16px;
+      border: 1px dashed rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    ::ng-deep .mat-button-toggle-group {
+      width: 100%;
+      border-radius: 8px;
+
+      .mat-button-toggle {
+        flex: 1;
+
+        .mat-button-toggle-label-content {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          font-size: 13px;
+          line-height: 36px;
+        }
+      }
+    }
+
     .search-results {
       margin-top: 8px;
       max-height: 300px;

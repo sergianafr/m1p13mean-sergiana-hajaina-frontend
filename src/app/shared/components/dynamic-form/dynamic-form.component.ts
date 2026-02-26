@@ -28,6 +28,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import {
   DynamicFormConfig,
@@ -54,7 +55,8 @@ import {
     MatNativeDateModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatButtonToggleModule
   ]
 })
 export class DynamicFormComponent implements OnInit {
@@ -70,12 +72,14 @@ export class DynamicFormComponent implements OnInit {
   readonly formSubmit = output<Record<string, unknown>>();
   readonly formCancel = output<void>();
   readonly formDelete = output<void>();
+  readonly createEntity = output<string>();
 
   // Internal state
   protected readonly form = signal<FormGroup | null>(null);
   protected readonly isFormValid = signal<boolean>(false);
   protected readonly searchQuery = signal<Record<string, string>>({});
   protected readonly searchResults = signal<Record<string, any[]>>({});
+  protected readonly userSearchMode = signal<Record<string, 'select' | 'create'>>({});
 
   protected readonly mode = computed<FormMode>(
     () => this.config().mode ?? 'create'
@@ -311,5 +315,18 @@ export class DynamicFormComponent implements OnInit {
     const userId = user._id || user.id;
     this.form()?.get(fieldKey)?.setValue(userId);
     this.form()?.get(fieldKey)?.markAsTouched();
+  }
+
+  // Toggle between select and create mode for user-search
+  protected onUserModeChange(fieldKey: string, mode: 'select' | 'create'): void {
+    this.userSearchMode.update(modes => ({
+      ...modes,
+      [fieldKey]: mode
+    }));
+  }
+
+  // Emit create entity event
+  protected onCreateEntity(fieldKey: string): void {
+    this.createEntity.emit(fieldKey);
   }
 }

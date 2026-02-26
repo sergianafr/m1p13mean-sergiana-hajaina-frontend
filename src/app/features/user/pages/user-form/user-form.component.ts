@@ -57,7 +57,14 @@ export class UserFormComponent implements OnInit {
     ]
   });
 
+  private returnTo: string | null = null;
+
   ngOnInit(): void {
+    // Check for returnTo query param
+    this.route.queryParams.subscribe(params => {
+      this.returnTo = params['returnTo'] || null;
+    });
+
     this.route.params.subscribe(params => {
       const id = params['id'];
       if (id && id !== 'nouveau') {
@@ -179,6 +186,10 @@ export class UserFormComponent implements OnInit {
   }
 
   private goBack(): void {
-    this.router.navigate(['/users']);
+    if (this.returnTo === 'magasin') {
+      this.router.navigate(['/magasins/nouveau']);
+    } else {
+      this.router.navigate(['/users']);
+    }
   }
 }

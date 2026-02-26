@@ -209,6 +209,12 @@ export class MagasinFormComponent implements OnInit {
     }
   }
 
+  onCreateUser(): void {
+    this.router.navigate(['/users/nouveau'], {
+      queryParams: { returnTo: 'magasin' }
+    });
+  }
+
   private goBack(): void {
     this.router.navigate(['/magasins']);
   }
