@@ -1,14 +1,18 @@
-import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProduitService, Produit } from '../../produit.service';
+import { DynamicTableComponent, ListHeaderComponent } from '../../../../shared';
+import { DynamicTableConfig } from '../../../../shared/models/table-config.model';
 
 @Component({
   selector: 'app-produit-list',
@@ -16,12 +20,9 @@ import { ProduitService, Produit } from '../../produit.service';
   imports: [
     CommonModule,
     MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTableModule,
-    MatProgressSpinnerModule,
     MatSnackBarModule,
-    MatTooltipModule
+    DynamicTableComponent,
+    ListHeaderComponent
   ],
   templateUrl: './produit-list.component.html',
   styleUrl: './produit-list.component.scss',
@@ -34,7 +35,58 @@ export class ProduitListComponent implements OnInit {
 
   protected readonly produits = signal<Produit[]>([]);
   protected readonly isLoading = signal(false);
-  protected readonly displayedColumns = ['nomProduit', 'descriptionProduit', 'seuilNotification', 'photos', 'actions'];
+  protected readonly tableConfig = computed<DynamicTableConfig>(() => ({
+    columns: [
+      { key: 'nomProduit', label: 'Nom du produit', sortable: true },
+      {
+        key: 'descriptionProduit',
+        label: 'Description',
+        format: (value) => value?.toString() || '-'
+      },
+      {
+        key: 'magasin',
+        label: 'Magasin',
+        format: (value) => this.getRelationName(value, 'nomMagasin')
+      },
+      {
+        key: 'seuilNotification',
+        label: 'Seuil de notification',
+        type: 'number',
+        align: 'center',
+        format: (value) => (value === undefined || value === null ? '-' : value.toString())
+      },
+      {
+        key: 'unite',
+        label: 'Unité',
+        format: (value) => this.getRelationName(value, 'nomUnite')
+      },
+      {
+        key: 'photos',
+        label: 'Photos',
+        type: 'number',
+        align: 'center',
+        format: (value) => Array.isArray(value) ? value.length.toString() : '0'
+      }
+    ],
+    actions: [
+      {
+        label: 'Modifier',
+        icon: 'edit',
+        color: 'primary',
+        handler: (row) => this.onEdit(row as Produit)
+      },
+      {
+        label: 'Supprimer',
+        icon: 'delete',
+        color: 'warn',
+        handler: (row) => this.onDelete(row as Produit)
+      }
+    ],
+    showActions: true,
+    clickable: false,
+    loading: this.isLoading(),
+    emptyMessage: 'Aucun produit trouvé'
+  }));
 
   ngOnInit(): void {
     this.loadProduits();
@@ -89,7 +141,24 @@ export class ProduitListComponent implements OnInit {
     }
   }
 
-  protected getPhotoCount(produit: Produit): number {
-    return produit.photos?.length || 0;
+  private getRelationName(value: unknown, property: 'nomMagasin' | 'nomUnite'): string {
+    if (!value) {
+      return '-';
+    }
+
+    if (typeof value === 'string') {
+      return value;
+    }
+
+    if (typeof value === 'object' && value !== null) {
+      const relation = value as Record<string, unknown>;
+      const relationName = relation[property];
+
+      if (typeof relationName === 'string' && relationName.trim().length > 0) {
+        return relationName;
+      }
+    }
+
+    return '-';
   }
 }

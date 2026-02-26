@@ -92,7 +92,7 @@ export class ProduitFormComponent implements OnInit {
         type: 'file', 
         multiple: true,
         accept: 'image/*',
-        hint: 'Vous pouvez sélectionner plusieurs images'
+        hint: 'Vous pouvez sélectionner jusqu\'a 5 images'
       }
     ]
   });
