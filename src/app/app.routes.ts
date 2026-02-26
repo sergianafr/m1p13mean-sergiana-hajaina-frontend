@@ -192,6 +192,24 @@ export const routes: Routes = [
           import('./features/user/pages/user-form/user-form.component').then(m => m.UserFormComponent)
       },
       {
+        path: 'box-magasins',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box-magasin/pages/box-magasin-list/box-magasin-list.component').then(m => m.BoxMagasinListComponent)
+      },
+      {
+        path: 'box-magasins/nouveau',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box-magasin/pages/box-magasin-form/box-magasin-form.component').then(m => m.BoxMagasinFormComponent)
+      },
+      {
+        path: 'box-magasins/:id',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box-magasin/pages/box-magasin-form/box-magasin-form.component').then(m => m.BoxMagasinFormComponent)
+      },
+      {
         path: 'user',
         redirectTo: 'users',
         pathMatch: 'full'
