@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DynamicTableComponent, ListHeaderComponent } from '../../../shared/components';
-import { DynamicTableConfig } from '../../../shared/models';
-import { MagasinService, Magasin } from '../../magasin.service';
+import { DynamicTableComponent, ListHeaderComponent } from '../../../../shared/components';
+import { DynamicTableConfig } from '../../../../shared/models';
+import { MagasinService, Magasin } from '../../../magasin.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({

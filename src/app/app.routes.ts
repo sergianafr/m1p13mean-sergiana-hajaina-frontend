@@ -154,19 +154,19 @@ export const routes: Routes = [
         path: 'magasins',
         canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
-          import('./features/pages/magasin-list/magasin-list.component').then(m => m.MagasinListComponent)
+          import('./features/magasin/pages/magasin-list/magasin-list.component').then(m => m.MagasinListComponent)
       },
       {
         path: 'magasins/nouveau',
         canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
-          import('./features/pages/magasin-form/magasin-form.component').then(m => m.MagasinFormComponent)
+          import('./features/magasin/pages/magasin-form/magasin-form.component').then(m => m.MagasinFormComponent)
       },
       {
         path: 'magasins/:id',
         canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
-          import('./features/pages/magasin-form/magasin-form.component').then(m => m.MagasinFormComponent)
+          import('./features/magasin/pages/magasin-form/magasin-form.component').then(m => m.MagasinFormComponent)
       },
       {
         path: 'magasin',
