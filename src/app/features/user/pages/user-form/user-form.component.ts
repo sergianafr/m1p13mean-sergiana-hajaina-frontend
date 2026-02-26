@@ -63,6 +63,20 @@ export class UserFormComponent implements OnInit {
     // Check for returnTo query param
     this.route.queryParams.subscribe(params => {
       this.returnTo = params['returnTo'] || null;
+
+      // If we are creating a "propriétaire" for a magasin,
+      // default the role to BOUTIQUE and lock it.
+      if (this.returnTo === 'magasin' && !this.isEditMode()) {
+        this.userData.set({ role: 'BOUTIQUE' });
+        this.formConfig.update(config => ({
+          ...config,
+          fields: config.fields.map(field =>
+            field.key === 'role'
+              ? { ...field, disabled: true }
+              : field
+          )
+        }));
+      }
     });
 
     this.route.params.subscribe(params => {
@@ -120,7 +134,7 @@ export class UserFormComponent implements OnInit {
       : this.userService.create(submitData);
 
     operation.subscribe({
-      next: () => {
+      next: (response: any) => {
         this.isLoading.set(false);
         const message = this.isEditMode() 
           ? 'Utilisateur modifié avec succès' 
@@ -133,6 +147,23 @@ export class UserFormComponent implements OnInit {
           panelClass: ['success-snackbar']
         });
         
+        // If we created a new owner from the magasin flow,
+        // redirect back to magasin form and preselect the created user.
+        if (!this.isEditMode() && this.returnTo === 'magasin') {
+          const createdId =
+            response?._id ??
+            response?.id ??
+            response?.user?._id ??
+            response?.user?.id;
+
+          if (createdId) {
+            this.router.navigate(['/magasins/nouveau'], {
+              queryParams: { ownerId: createdId }
+            });
+            return;
+          }
+        }
+
         this.goBack();
       },
       error: (error) => {

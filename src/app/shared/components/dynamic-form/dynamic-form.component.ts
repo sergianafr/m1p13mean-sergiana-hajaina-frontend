@@ -105,6 +105,44 @@ export class DynamicFormComponent implements OnInit {
         currentForm.patchValue(data);
       }
     });
+
+    // If a user-search field already has a selected value, show it directly
+    // as a default "search result" (so the user doesn't need to search again).
+    effect(
+      () => {
+        const currentForm = this.form();
+        const config = this.config();
+        if (!currentForm) return;
+
+        for (const field of config.fields) {
+          if (field.type !== 'user-search') continue;
+
+          const control = currentForm.get(field.key);
+          const selectedValue = control?.value ?? this.initialData()?.[field.key];
+          if (!selectedValue) continue;
+
+          const selectedId = String(selectedValue);
+          const existing = this.searchResults()[field.key] ?? [];
+          if (existing.some((u: any) => String(u?._id ?? u?.id) === selectedId)) {
+            continue;
+          }
+
+          const data = field.searchData ?? [];
+          const found = data.find((u: any) => String(u?._id ?? u?.id) === selectedId);
+          if (!found) continue;
+
+          this.searchQuery.update((q) => ({
+            ...q,
+            [field.key]: found?.name ? String(found.name) : ''
+          }));
+          this.searchResults.update((r) => ({
+            ...r,
+            [field.key]: [found]
+          }));
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   ngOnInit(): void {

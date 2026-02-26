@@ -36,6 +36,8 @@ export class MagasinFormComponent implements OnInit {
   protected readonly magasinId = signal<string | null>(null);
   protected readonly userData = signal<Record<string, unknown> | undefined>(undefined);
 
+  private ownerId: string | null = null;
+
   protected readonly formConfig = signal<DynamicFormConfig>({
     mode: 'create', 
     submitLabel: 'Enregistrer',
@@ -59,6 +61,16 @@ export class MagasinFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.ownerId = params['ownerId'] || null;
+      if (this.ownerId && !this.isEditMode()) {
+        this.userData.set({
+          ...(this.userData() ?? {}),
+          appUser: this.ownerId
+        });
+      }
+    });
+
     this.loadFormData();
     this.route.params.subscribe(params => {
       const id = params['id'];
