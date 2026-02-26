@@ -30,25 +30,37 @@ export class MagasinListComponent implements OnInit {
         key: 'nomMagasin',
         label: 'Nom du Magasin',
         sortable: true,
-        width: '30%'
+        width: '25%'
       },
       {
         key: 'nif',
         label: 'NIF',
         sortable: true,
-        width: '15%'
+        width: '12%'
       },
       {
         key: 'stat',
         label: 'STAT',
         sortable: true,
-        width: '15%'
+        width: '12%'
+      },
+      {
+        key: 'appUser',
+        label: 'Propriétaire',
+        sortable: true,
+        width: '18%',
+        format: (value: any) => {
+          if (value && typeof value === 'object' && value.name && value.email) {
+            return `${value.name} (${value.email})`;
+          }
+          return '-';
+        }
       },
       {
         key: 'typeMagasin',
         label: 'Type de Magasin',
         sortable: true,
-        width: '20%',
+        width: '18%',
         format: (value: any) => value?.nomTypeMagasin || '-'
       },
       {
@@ -56,7 +68,7 @@ export class MagasinListComponent implements OnInit {
         label: 'Date d\'ajout',
         type: 'date',
         sortable: true,
-        width: '20%'
+        width: '15%'
       }
     ],
     clickable: true,
