@@ -173,6 +173,29 @@ export const routes: Routes = [
         redirectTo: 'magasins',
         pathMatch: 'full'
       },
+      {
+        path: 'users',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/user/pages/user-list/user-list.component').then(m => m.UserListComponent)
+      },
+      {
+        path: 'users/nouveau',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/user/pages/user-form/user-form.component').then(m => m.UserFormComponent)
+      },
+      {
+        path: 'users/:id',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/user/pages/user-form/user-form.component').then(m => m.UserFormComponent)
+      },
+      {
+        path: 'user',
+        redirectTo: 'users',
+        pathMatch: 'full'
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       
     ]
