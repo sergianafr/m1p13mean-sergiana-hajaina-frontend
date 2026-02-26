@@ -157,6 +157,61 @@
               }
             </mat-form-field>
           }
+
+          @case ('user-search') {
+            <div class="user-search-field">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <input
+                  matInput
+                  [placeholder]="field.placeholder ?? 'Rechercher par nom ou email'"
+                  [(ngModel)]="searchQuery()[field.key]"
+                  [ngModelOptions]="{standalone: true}"
+                  autocomplete="off"
+                />
+                <button 
+                  mat-icon-button 
+                  matSuffix 
+                  type="button"
+                  (click)="onSearchUser(field)"
+                  [disabled]="loading()">
+                  <mat-icon>search</mat-icon>
+                </button>
+                @if (field.hint) {
+                  <mat-hint>{{ field.hint }}</mat-hint>
+                }
+              </mat-form-field>
+              
+              @if (searchResults()[field.key] && searchResults()[field.key].length > 0) {
+                <div class="search-results">
+                  @for (user of searchResults()[field.key]; track user._id || user.id) {
+                    <div 
+                      class="search-result-item" 
+                      [class.selected]="form()?.get(field.key)?.value === (user._id || user.id)"
+                      (click)="selectUser(field.key, user)">
+                      <div class="user-info">
+                        <span class="user-name">{{ user.name }}</span>
+                        <span class="user-email">{{ user.email }}</span>
+                      </div>
+                      @if (form()?.get(field.key)?.value === (user._id || user.id)) {
+                        <mat-icon class="check-icon">check_circle</mat-icon>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+              
+              @if (searchResults()[field.key] && searchResults()[field.key].length === 0 && searchQuery()[field.key]) {
+                <div class="no-results">
+                  Aucun utilisateur trouvé
+                </div>
+              }
+              
+              @if (hasError(field.key)) {
+                <mat-error>{{ getErrorMessage(field) }}</mat-error>
+              }
+            </div>
+          }
         }
       </div>
     }

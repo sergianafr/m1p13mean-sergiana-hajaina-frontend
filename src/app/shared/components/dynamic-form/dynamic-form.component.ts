@@ -14,6 +14,7 @@ import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
+  FormsModule,
   Validators,
   ValidatorFn
 } from '@angular/forms';
@@ -43,6 +44,7 @@ import {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -72,6 +74,8 @@ export class DynamicFormComponent implements OnInit {
   // Internal state
   protected readonly form = signal<FormGroup | null>(null);
   protected readonly isFormValid = signal<boolean>(false);
+  protected readonly searchQuery = signal<Record<string, string>>({});
+  protected readonly searchResults = signal<Record<string, any[]>>({});
 
   protected readonly mode = computed<FormMode>(
     () => this.config().mode ?? 'create'
@@ -272,5 +276,40 @@ export class DynamicFormComponent implements OnInit {
   // Public method to set form values
   setValue(data: Record<string, unknown>): void {
     this.form()?.patchValue(data);
+  }
+
+  // Search user by name or email
+  protected onSearchUser(field: FormFieldConfig): void {
+    const query = this.searchQuery()[field.key]?.toLowerCase().trim();
+    
+    if (!query) {
+      this.searchResults.update(results => ({
+        ...results,
+        [field.key]: []
+      }));
+      return;
+    }
+
+    const searchData = field.searchData || [];
+    const searchFields = field.searchFields || ['name', 'email'];
+    
+    const filtered = searchData.filter((item: any) => {
+      return searchFields.some(fieldName => {
+        const value = item[fieldName];
+        return value && value.toString().toLowerCase().includes(query);
+      });
+    });
+
+    this.searchResults.update(results => ({
+      ...results,
+      [field.key]: filtered
+    }));
+  }
+
+  // Select a user from search results
+  protected selectUser(fieldKey: string, user: any): void {
+    const userId = user._id || user.id;
+    this.form()?.get(fieldKey)?.setValue(userId);
+    this.form()?.get(fieldKey)?.markAsTouched();
   }
 }

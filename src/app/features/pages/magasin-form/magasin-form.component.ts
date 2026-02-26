@@ -46,7 +46,15 @@ export class MagasinFormComponent implements OnInit {
       { key: 'stat', label: 'STAT', type: 'text', required: false },
       { key: 'dateAjout', label: 'Date d\'ajout', type: 'date', required: false },
       { key: 'typeMagasin', label: 'Type de Magasin', type: 'select', required: true, options: [] },
-      { key: 'appUser', label: 'Utilisateur', type: 'select', required: true, options: [] }
+      { 
+        key: 'appUser', 
+        label: 'Utilisateur', 
+        type: 'user-search', 
+        required: true, 
+        searchData: [],
+        searchFields: ['name', 'email'],
+        placeholder: 'Rechercher par nom ou email'
+      }
     ]
   });
 
@@ -79,8 +87,7 @@ export class MagasinFormComponent implements OnInit {
             if (field.key === 'appUser') {
               return {
                 ...field,
-                options: users.map(u => ({ value: u._id, label: u.name }))
-                // options: users.map(u => ({ value: u._id, label: `${u.name} (${u.email})` }))
+                searchData: users
               };
             }
             if (field.key === 'typeMagasin') {
