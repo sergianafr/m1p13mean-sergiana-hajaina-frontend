@@ -7,7 +7,8 @@ export type FieldType =
   | 'select' 
   | 'checkbox' 
   | 'date' 
-  | 'radio';
+  | 'radio'
+  | 'user-search';
 
 export interface SelectOption {
   value: string | number;
@@ -31,7 +32,10 @@ export interface FormFieldConfig {
   pattern?: string;
   errorMessages?: Record<string, string>;
   hint?: string;
-  class?: string; 
+  class?: string;
+  searchData?: any[]; // For user-search type
+  searchFields?: string[]; // Fields to search in (e.g., ['name', 'email'])
+  displayField?: string; // Field to display in results
 }
 
 export interface FieldValidator {
