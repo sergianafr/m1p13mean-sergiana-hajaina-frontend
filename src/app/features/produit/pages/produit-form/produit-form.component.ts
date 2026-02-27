@@ -92,6 +92,8 @@ export class ProduitFormComponent implements OnInit {
         type: 'file', 
         multiple: true,
         accept: 'image/*',
+        existingImageField: 'photos',
+        imageDeleteQueryParam: 'imageUrl',
         hint: 'Vous pouvez sélectionner jusqu\'a 5 images'
       }
     ]
@@ -108,7 +110,15 @@ export class ProduitFormComponent implements OnInit {
         this.loadProduit(id);
         this.formConfig.update(config => ({
           ...config,
-          mode: 'edit'
+          mode: 'edit',
+          fields: config.fields.map((field) =>
+            field.key === 'photos'
+              ? {
+                  ...field,
+                  imageDeleteEndpoint: `/produits/${id}/photos`
+                }
+              : field
+          )
         }));
       }
     });
@@ -133,6 +143,7 @@ export class ProduitFormComponent implements OnInit {
               };
             }
             if (field.key === 'typeProduit') {
+              
               return {
                 ...field,
                 options: data.typeProduits.map(tp => ({ value: tp._id!, label: tp.nomTypeProduit }))
@@ -173,7 +184,8 @@ export class ProduitFormComponent implements OnInit {
           seuilNotification: data.seuilNotification,
           unite: typeof data.unite === 'string' ? data.unite : data.unite,
           typeProduit: typeof data.typeProduit === 'string' ? data.typeProduit : data.typeProduit,
-          magasin: typeof data.magasin === 'string' ? data.magasin : data.magasin
+          magasin: typeof data.magasin === 'string' ? data.magasin : data.magasin,
+          photos: data.photos ?? []
         };
         this.userData.set(formData);
         this.isLoading.set(false);

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CrudService } from '../../core/services/crud.service';
 import { environment } from '../../../environments/environment';
@@ -62,5 +62,12 @@ export class ProduitService extends CrudService<Produit> {
     });
 
     return this.httpClient.post<Produit>(`${this.apiUrl}/produits`, formData);
+  }
+
+  deletePhotoByUrl(produitId: string, imageUrl: string): Observable<Produit> {
+    const params = new HttpParams().set('imageUrl', imageUrl);
+    return this.httpClient.delete<Produit>(`${this.apiUrl}/produits/${produitId}/photos`, {
+      params
+    });
   }
 }

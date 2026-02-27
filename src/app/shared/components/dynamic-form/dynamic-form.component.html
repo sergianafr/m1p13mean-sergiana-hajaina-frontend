@@ -161,6 +161,34 @@
           @case ('file') {
             <div class="file-field full-width">
               <label class="file-label" [for]="field.key">{{ field.label }}</label>
+
+              @if (mode() === 'edit' && getExistingImages(field).length > 0) {
+                <div class="existing-images">
+                  @for (imageUrl of getExistingImages(field); track imageUrl) {
+                    <div class="existing-image-item">
+                      <img class="existing-image-preview" [src]="imageUrl" [alt]="field.label" />
+                      @if (canDeleteImage(field)) {
+                        <button
+                          mat-icon-button
+                          type="button"
+                          color="warn"
+                          class="existing-image-delete"
+                          [disabled]="loading() || isDeletingImage(imageUrl)"
+                          [attr.aria-label]="'Supprimer image'"
+                          (click)="deleteExistingImage(field, imageUrl)"
+                        >
+                          @if (isDeletingImage(imageUrl)) {
+                            <mat-spinner diameter="18"></mat-spinner>
+                          } @else {
+                            <mat-icon>delete</mat-icon>
+                          }
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+
               <input
                 class="file-input"
                 type="file"

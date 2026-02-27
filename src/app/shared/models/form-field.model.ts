@@ -35,6 +35,9 @@ export interface FormFieldConfig {
   class?: string; 
   multiple?: boolean;
   accept?: string;
+  existingImageField?: string;
+  imageDeleteEndpoint?: string;
+  imageDeleteQueryParam?: string;
 }
 
 export interface FieldValidator {
