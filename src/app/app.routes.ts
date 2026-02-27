@@ -151,6 +151,29 @@ export const routes: Routes = [
         pathMatch: 'full'
       },
       {
+        path: 'produits',
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/produit/pages/produit-list/produit-list.component').then(m => m.ProduitListComponent)
+      },
+      {
+        path: 'produits/create',
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/produit/pages/produit-form/produit-form.component').then(m => m.ProduitFormComponent)
+      },
+      {
+        path: 'produits/:id',
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/produit/pages/produit-form/produit-form.component').then(m => m.ProduitFormComponent)
+      },
+      {
+        path: 'produit',
+        redirectTo: 'produits',
+        pathMatch: 'full'
+      },
+      {
         path: 'magasins',
         canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>

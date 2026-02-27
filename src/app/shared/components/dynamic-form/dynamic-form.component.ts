@@ -10,14 +10,18 @@ import {
   inject
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   FormsModule,
   Validators,
-  ValidatorFn
+  ValidatorFn,
+  AbstractControl,
+  ValidationErrors
 } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -35,6 +39,7 @@ import {
   FormFieldConfig,
   FormMode
 } from '../../models/form-field.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'dynamic-form',
@@ -61,6 +66,8 @@ import {
 })
 export class DynamicFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl;
 
   // Inputs
   readonly config = input.required<DynamicFormConfig>();
@@ -77,6 +84,31 @@ export class DynamicFormComponent implements OnInit {
   // Internal state
   protected readonly form = signal<FormGroup | null>(null);
   protected readonly isFormValid = signal<boolean>(false);
+  protected readonly deletingImageUrls = signal<Record<string, boolean>>({});
+  protected readonly deletedImageUrls = signal<string[]>([]);
+
+  protected readonly existingImageUrls = computed<Record<string, string[]>>(() => {
+    const data = this.initialData();
+    const fields = this.config().fields;
+    const deleted = this.deletedImageUrls();
+    
+    if (!data) {
+      return {};
+    }
+
+    const result: Record<string, string[]> = {};
+    for (const field of fields) {
+      if (field.type !== 'file') {
+        continue;
+      }
+
+      const fieldKey = field.existingImageField ?? field.key;
+      const allUrls = this.extractImageUrls(data[fieldKey]);
+      result[fieldKey] = allUrls.filter((url) => !deleted.includes(url));
+    }
+
+    return result;
+  });
   protected readonly searchQuery = signal<Record<string, string>>({});
   protected readonly searchResults = signal<Record<string, any[]>>({});
   protected readonly userSearchMode = signal<Record<string, 'select' | 'create'>>({});
@@ -154,7 +186,7 @@ export class DynamicFormComponent implements OnInit {
 
     for (const field of this.config().fields) {
       const validators = this.getValidators(field);
-      const initialValue = this.initialData()?.[field.key] ?? '';
+      const initialValue = this.initialData()?.[field.key] ?? (field.type === 'file' ? [] : '');
       group[field.key] = [
         { value: initialValue, disabled: field.disabled ?? false },
         validators
@@ -177,7 +209,11 @@ export class DynamicFormComponent implements OnInit {
     const validators: ValidatorFn[] = [];
 
     if (field.required) {
-      validators.push(Validators.required);
+      if (field.type === 'file') {
+        validators.push(this.fileRequiredValidator(field));
+      } else {
+        validators.push(Validators.required);
+      }
     }
 
     if (field.type === 'email') {
@@ -234,6 +270,127 @@ export class DynamicFormComponent implements OnInit {
     }
 
     return validators;
+  }
+
+  private fileRequiredValidator(field: FormFieldConfig): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const existing = this.getExistingImages(field);
+      if (existing.length > 0) {
+        return null;
+      }
+
+      const value = control.value;
+      if (Array.isArray(value)) {
+        return value.length > 0 ? null : { required: true };
+      }
+
+      if (value instanceof FileList) {
+        return value.length > 0 ? null : { required: true };
+      }
+
+      return value ? null : { required: true };
+    };
+  }
+
+  protected onFileChange(event: Event, field: FormFieldConfig): void {
+    const target = event.target as HTMLInputElement;
+    const files = target.files ? Array.from(target.files) : [];
+    const control = this.form()?.get(field.key);
+
+    if (!control) {
+      return;
+    }
+
+    control.setValue(files);
+    control.markAsTouched();
+    control.updateValueAndValidity();
+  }
+
+  protected getSelectedFilesLabel(fieldKey: string): string {
+    const value = this.form()?.get(fieldKey)?.value;
+    if (!value || !Array.isArray(value) || value.length === 0) {
+      return 'Aucun fichier sélectionné';
+    }
+
+    return value.map((file: File) => file.name).join(', ');
+  }
+
+  protected getExistingImages(field: FormFieldConfig): string[] {
+    const key = field.existingImageField ?? field.key;
+    return this.existingImageUrls()[key] ?? [];
+  }
+
+  protected canDeleteImage(field: FormFieldConfig): boolean {
+    return this.mode() === 'edit' && !!field.imageDeleteEndpoint;
+  }
+
+  protected isDeletingImage(imageUrl: string): boolean {
+    return !!this.deletingImageUrls()[imageUrl];
+  }
+
+  protected deleteExistingImage(field: FormFieldConfig, imageUrl: string): void {
+    if (!field.imageDeleteEndpoint || this.isDeletingImage(imageUrl)) {
+      return;
+    }
+
+    const endpoint = this.resolveEndpoint(field.imageDeleteEndpoint);
+    const queryParam = field.imageDeleteQueryParam ?? 'imageUrl';
+    const params = new HttpParams().set(queryParam, imageUrl);
+
+    this.deletingImageUrls.update((state) => ({
+      ...state,
+      [imageUrl]: true
+    }));
+
+    this.http
+      .delete(endpoint, { params })
+      .pipe(
+        finalize(() => {
+          this.deletingImageUrls.update((state) => ({
+            ...state,
+            [imageUrl]: false
+          }));
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.deletedImageUrls.update((deleted) => [...deleted, imageUrl]);
+          this.form()?.get(field.key)?.updateValueAndValidity();
+        },
+        error: (error: unknown) => {
+          console.error('Erreur suppression image:', error);
+        }
+      });
+  }
+
+  private resolveEndpoint(endpoint: string): string {
+    if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+      return endpoint;
+    }
+
+    const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    return `${this.apiUrl}${normalizedEndpoint}`;
+  }
+
+  private extractImageUrls(value: unknown): string[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return value
+      .map((item) => {
+        if (typeof item === 'string') {
+          return item;
+        }
+
+        if (item && typeof item === 'object' && 'url' in item) {
+          const url = (item as { url?: unknown }).url;
+          return typeof url === 'string' ? url : null;
+        }
+
+        return null;
+      })
+      .filter((url): url is string => !!url);
   }
 
   protected getErrorMessage(field: FormFieldConfig): string {

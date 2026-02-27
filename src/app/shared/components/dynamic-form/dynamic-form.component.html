@@ -158,6 +158,49 @@
             </mat-form-field>
           }
 
+          @case ('file') {
+            <div class="file-field full-width">
+              <label class="file-label" [for]="field.key">{{ field.label }}</label>
+
+              @if (mode() === 'edit' && getExistingImages(field).length > 0) {
+                <div class="existing-images">
+                  @for (imageUrl of getExistingImages(field); track imageUrl) {
+                    <div class="existing-image-item">
+                      <img class="existing-image-preview" [src]="imageUrl" [alt]="field.label" />
+                      @if (canDeleteImage(field)) {
+                        <button
+                          mat-icon-button
+                          type="button"
+                          color="warn"
+                          class="existing-image-delete"
+                          [disabled]="loading() || isDeletingImage(imageUrl)"
+                          [attr.aria-label]="'Supprimer image'"
+                          (click)="deleteExistingImage(field, imageUrl)"
+                        >
+                          @if (isDeletingImage(imageUrl)) {
+                            <mat-spinner diameter="18"></mat-spinner>
+                          } @else {
+                            <mat-icon>delete</mat-icon>
+                          }
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+
+              <input
+                class="file-input"
+                type="file"
+                [id]="field.key"
+                [attr.multiple]="field.multiple === false ? null : ''"
+                [attr.accept]="field.accept ?? null"
+                (change)="onFileChange($event, field)"
+              />
+              <span class="file-names">{{ getSelectedFilesLabel(field.key) }}</span>
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
           @case ('user-search') {
             <div class="user-search-field">
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ field.label }}</label>
