@@ -143,7 +143,7 @@ export class ProduitFormComponent implements OnInit {
               };
             }
             if (field.key === 'typeProduit') {
-              
+
               return {
                 ...field,
                 options: data.typeProduits.map(tp => ({ value: tp._id!, label: tp.nomTypeProduit }))
@@ -182,9 +182,9 @@ export class ProduitFormComponent implements OnInit {
           nomProduit: data.nomProduit,
           descriptionProduit: data.descriptionProduit,
           seuilNotification: data.seuilNotification,
-          unite: typeof data.unite === 'string' ? data.unite : data.unite,
-          typeProduit: typeof data.typeProduit === 'string' ? data.typeProduit : data.typeProduit,
-          magasin: typeof data.magasin === 'string' ? data.magasin : data.magasin,
+          unite: typeof data.unite === 'string' ? data.unite : (data.unite as any)?._id,
+          typeProduit: typeof data.typeProduit === 'string' ? data.typeProduit : (data.typeProduit as any)?._id,
+          magasin: typeof data.magasin === 'string' ? data.magasin : (data.magasin as any)?._id,
           photos: data.photos ?? []
         };
         this.userData.set(formData);
@@ -215,8 +215,9 @@ export class ProduitFormComponent implements OnInit {
       magasin: data['magasin'] as string
     };
 
+    console.log(data);
     if (this.isEditMode()) {
-      this.produitService.update(this.produitId()!, dto).subscribe({
+      this.produitService.updateWithPhotos(this.produitId()!, dto, photos || []).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.snackBar.open('Produit modifié avec succès', 'Fermer', {

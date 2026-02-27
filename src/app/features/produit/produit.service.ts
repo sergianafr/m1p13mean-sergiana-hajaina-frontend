@@ -64,6 +64,27 @@ export class ProduitService extends CrudService<Produit> {
     return this.httpClient.post<Produit>(`${this.apiUrl}/produits`, formData);
   }
 
+  updateWithPhotos(id: string, dto: ProduitDTO, photos: File[]): Observable<Produit> {
+    const formData = new FormData();
+
+    formData.append('nomProduit', dto.nomProduit);
+    if (dto.descriptionProduit) {
+      formData.append('descriptionProduit', dto.descriptionProduit);
+    }
+    if (dto.seuilNotification !== undefined) {
+      formData.append('seuilNotification', dto.seuilNotification.toString());
+    }
+    formData.append('unite', dto.unite);
+    formData.append('typeProduit', dto.typeProduit);
+    formData.append('magasin', dto.magasin);
+
+    photos.forEach((photo) => {
+      formData.append('photos', photo, photo.name);
+    });
+
+    return this.httpClient.put<Produit>(`${this.apiUrl}/produits/${id}`, formData);
+  }
+
   deletePhotoByUrl(produitId: string, imageUrl: string): Observable<Produit> {
     const params = new HttpParams().set('imageUrl', imageUrl);
     return this.httpClient.delete<Produit>(`${this.apiUrl}/produits/${produitId}/photos`, {
