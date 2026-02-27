@@ -15,6 +15,7 @@ import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
+  FormsModule,
   Validators,
   ValidatorFn,
   AbstractControl,
@@ -31,6 +32,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import {
   DynamicFormConfig,
@@ -48,6 +50,7 @@ import { environment } from '../../../../environments/environment';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -57,7 +60,8 @@ import { environment } from '../../../../environments/environment';
     MatNativeDateModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatButtonToggleModule
   ]
 })
 export class DynamicFormComponent implements OnInit {
@@ -75,6 +79,7 @@ export class DynamicFormComponent implements OnInit {
   readonly formSubmit = output<Record<string, unknown>>();
   readonly formCancel = output<void>();
   readonly formDelete = output<void>();
+  readonly createEntity = output<string>();
 
   // Internal state
   protected readonly form = signal<FormGroup | null>(null);
@@ -104,6 +109,9 @@ export class DynamicFormComponent implements OnInit {
 
     return result;
   });
+  protected readonly searchQuery = signal<Record<string, string>>({});
+  protected readonly searchResults = signal<Record<string, any[]>>({});
+  protected readonly userSearchMode = signal<Record<string, 'select' | 'create'>>({});
 
   protected readonly mode = computed<FormMode>(
     () => this.config().mode ?? 'create'
@@ -129,6 +137,44 @@ export class DynamicFormComponent implements OnInit {
         currentForm.patchValue(data);
       }
     });
+
+    // If a user-search field already has a selected value, show it directly
+    // as a default "search result" (so the user doesn't need to search again).
+    effect(
+      () => {
+        const currentForm = this.form();
+        const config = this.config();
+        if (!currentForm) return;
+
+        for (const field of config.fields) {
+          if (field.type !== 'user-search') continue;
+
+          const control = currentForm.get(field.key);
+          const selectedValue = control?.value ?? this.initialData()?.[field.key];
+          if (!selectedValue) continue;
+
+          const selectedId = String(selectedValue);
+          const existing = this.searchResults()[field.key] ?? [];
+          if (existing.some((u: any) => String(u?._id ?? u?.id) === selectedId)) {
+            continue;
+          }
+
+          const data = field.searchData ?? [];
+          const found = data.find((u: any) => String(u?._id ?? u?.id) === selectedId);
+          if (!found) continue;
+
+          this.searchQuery.update((q) => ({
+            ...q,
+            [field.key]: found?.name ? String(found.name) : ''
+          }));
+          this.searchResults.update((r) => ({
+            ...r,
+            [field.key]: [found]
+          }));
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   ngOnInit(): void {
@@ -429,5 +475,53 @@ export class DynamicFormComponent implements OnInit {
   // Public method to set form values
   setValue(data: Record<string, unknown>): void {
     this.form()?.patchValue(data);
+  }
+
+  // Search user by name or email
+  protected onSearchUser(field: FormFieldConfig): void {
+    const query = this.searchQuery()[field.key]?.toLowerCase().trim();
+    
+    if (!query) {
+      this.searchResults.update(results => ({
+        ...results,
+        [field.key]: []
+      }));
+      return;
+    }
+
+    const searchData = field.searchData || [];
+    const searchFields = field.searchFields || ['name', 'email'];
+    
+    const filtered = searchData.filter((item: any) => {
+      return searchFields.some(fieldName => {
+        const value = item[fieldName];
+        return value && value.toString().toLowerCase().includes(query);
+      });
+    });
+
+    this.searchResults.update(results => ({
+      ...results,
+      [field.key]: filtered
+    }));
+  }
+
+  // Select a user from search results
+  protected selectUser(fieldKey: string, user: any): void {
+    const userId = user._id || user.id;
+    this.form()?.get(fieldKey)?.setValue(userId);
+    this.form()?.get(fieldKey)?.markAsTouched();
+  }
+
+  // Toggle between select and create mode for user-search
+  protected onUserModeChange(fieldKey: string, mode: 'select' | 'create'): void {
+    this.userSearchMode.update(modes => ({
+      ...modes,
+      [fieldKey]: mode
+    }));
+  }
+
+  // Emit create entity event
+  protected onCreateEntity(fieldKey: string): void {
+    this.createEntity.emit(fieldKey);
   }
 }

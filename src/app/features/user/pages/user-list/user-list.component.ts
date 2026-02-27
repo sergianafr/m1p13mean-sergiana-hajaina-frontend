@@ -1,69 +1,70 @@
 import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DynamicTableComponent, ListHeaderComponent } from '../../../shared/components';
-import { DynamicTableConfig } from '../../../shared/models';
-import { MagasinService, Magasin } from '../../magasin.service';
+import { DynamicTableComponent, ListHeaderComponent } from '../../../../shared/components';
+import { DynamicTableConfig } from '../../../../shared/models';
+import { UserService, User } from '../../user.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-magasin-list',
+  selector: 'app-user-list',
   standalone: true,
   imports: [
     DynamicTableComponent,
     ListHeaderComponent,
     MatSnackBarModule
   ],
-  templateUrl: './magasin-list.component.html',
-  styleUrl: './magasin-list.component.scss',
+  templateUrl: './user-list.component.html',
+  styleUrl: './user-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MagasinListComponent implements OnInit {
-  private readonly magasinService = inject(MagasinService);
+export class UserListComponent implements OnInit {
+  private readonly userService = inject(UserService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
 
-  protected readonly magasins = signal<Magasin[]>([]);
+  protected readonly users = signal<User[]>([]);
 
   protected readonly tableConfig = signal<DynamicTableConfig>({
     columns: [
       {
-        key: 'nomMagasin',
-        label: 'Nom du Magasin',
+        key: 'name',
+        label: 'Nom',
         sortable: true,
         width: '30%'
       },
       {
-        key: 'nif',
-        label: 'NIF',
+        key: 'email',
+        label: 'Email',
         sortable: true,
-        width: '15%'
+        width: '35%'
       },
       {
-        key: 'stat',
-        label: 'STAT',
-        sortable: true,
-        width: '15%'
-      },
-      {
-        key: 'typeMagasin',
-        label: 'Type de Magasin',
+        key: 'role',
+        label: 'Rôle',
         sortable: true,
         width: '20%',
-        format: (value: any) => value?.nomTypeMagasin || '-'
+        format: (value: unknown) => {
+          const roleLabels: Record<string, string> = {
+            'CLIENT': 'Client',
+            'BOUTIQUE': 'Boutique',
+            'ADMIN': 'Administrateur'
+          };
+          return roleLabels[value as string] || (value as string);
+        }
       },
       {
-        key: 'dateAjout',
-        label: 'Date d\'ajout',
+        key: 'createdAt',
+        label: 'Date de création',
         type: 'date',
         sortable: true,
-        width: '20%'
+        width: '15%'
       }
     ],
     clickable: true,
-    rowRoute: '/magasins',
+    rowRoute: '/users',
     idField: '_id',
     showActions: false,
-    emptyMessage: 'Aucun magasin trouvé',
+    emptyMessage: 'Aucun utilisateur trouvé',
     loading: false,
     pageable: true,
     pageSize: 10
@@ -76,9 +77,9 @@ export class MagasinListComponent implements OnInit {
   private loadData(): void {
     this.tableConfig.update(config => ({ ...config, loading: true }));
     
-    this.magasinService.getAll().subscribe({
+    this.userService.getAll().subscribe({
       next: (data) => {
-        this.magasins.set(data);
+        this.users.set(data);
         this.tableConfig.update(config => ({
           ...config,
           loading: false,
@@ -97,18 +98,18 @@ export class MagasinListComponent implements OnInit {
   }
 
   protected createNew(): void {
-    this.router.navigate(['/magasins/nouveau']);
+    this.router.navigate(['/users/nouveau']);
   }
 
-  protected edit(row: Magasin): void {
-    this.router.navigate(['/magasins', row._id]);
+  protected edit(row: User): void {
+    this.router.navigate(['/users', row._id]);
   }
 
-  protected delete(row: Magasin): void {
-    if (confirm(`Voulez-vous vraiment supprimer "${row.nomMagasin}" ?`)) {
-      this.magasinService.delete(row._id!).subscribe({
+  protected delete(row: User): void {
+    if (confirm(`Voulez-vous vraiment supprimer "${row.name}" ?`)) {
+      this.userService.delete(row._id!).subscribe({
         next: () => {
-          this.snackBar.open('Magasin supprimé avec succès', 'Fermer', {
+          this.snackBar.open('Utilisateur supprimé avec succès', 'Fermer', {
             duration: 3000,
             horizontalPosition: 'end',
             verticalPosition: 'top',

@@ -28,9 +28,11 @@ export class SidebarComponent {
     { label: 'Type magasin', icon: 'bookmark_border', link: '/type-magasins', roles: ['ADMIN'] },
     { label: 'Unite', icon: 'bookmark_border', link: '/unites', roles: ['ADMIN', 'BOUTIQUE'] },
     { label: 'Box', icon: 'bookmark_border', link: '/boxs', roles: ['ADMIN'] },
+    { label: 'Assignation Magasin-Box', icon: 'link', link: '/box-magasins', roles: ['ADMIN'] },
     { label: 'Magasin', icon: 'store', link: '/magasins', roles: ['ADMIN', 'BOUTIQUE'] },
     { label: 'Produit', icon: 'store', link: '/produits', roles: ['ADMIN', 'BOUTIQUE'] },
 
+    { label: 'Utilisateurs', icon: 'people', link: '/users', roles: ['ADMIN'] },
   ];
 
 }

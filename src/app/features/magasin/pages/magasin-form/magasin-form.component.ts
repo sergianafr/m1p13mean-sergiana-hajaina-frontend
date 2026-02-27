@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DynamicFormComponent, DynamicFormConfig, TitleComponent } from '../../../shared';
+import { DynamicFormComponent, DynamicFormConfig, TitleComponent } from '../../../../shared';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
-import { MagasinService, User, TypeMagasin } from '../../magasin.service';
+import { MagasinService, User, TypeMagasin } from '../../../magasin.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -36,6 +36,8 @@ export class MagasinFormComponent implements OnInit {
   protected readonly magasinId = signal<string | null>(null);
   protected readonly userData = signal<Record<string, unknown> | undefined>(undefined);
 
+  private ownerId: string | null = null;
+
   protected readonly formConfig = signal<DynamicFormConfig>({
     mode: 'create', 
     submitLabel: 'Enregistrer',
@@ -46,11 +48,29 @@ export class MagasinFormComponent implements OnInit {
       { key: 'stat', label: 'STAT', type: 'text', required: false },
       { key: 'dateAjout', label: 'Date d\'ajout', type: 'date', required: false },
       { key: 'typeMagasin', label: 'Type de Magasin', type: 'select', required: true, options: [] },
-      { key: 'appUser', label: 'Utilisateur', type: 'select', required: true, options: [] }
+      { 
+        key: 'appUser', 
+        label: 'Utilisateur', 
+        type: 'user-search', 
+        required: true, 
+        searchData: [],
+        searchFields: ['name', 'email'],
+        placeholder: 'Rechercher par nom ou email'
+      }
     ]
   });
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.ownerId = params['ownerId'] || null;
+      if (this.ownerId && !this.isEditMode()) {
+        this.userData.set({
+          ...(this.userData() ?? {}),
+          appUser: this.ownerId
+        });
+      }
+    });
+
     this.loadFormData();
     this.route.params.subscribe(params => {
       const id = params['id'];
@@ -79,8 +99,7 @@ export class MagasinFormComponent implements OnInit {
             if (field.key === 'appUser') {
               return {
                 ...field,
-                options: users.map(u => ({ value: u._id, label: u.name }))
-                // options: users.map(u => ({ value: u._id, label: `${u.name} (${u.email})` }))
+                searchData: users
               };
             }
             if (field.key === 'typeMagasin') {
@@ -200,6 +219,12 @@ export class MagasinFormComponent implements OnInit {
         }
       });
     }
+  }
+
+  onCreateUser(): void {
+    this.router.navigate(['/users/nouveau'], {
+      queryParams: { returnTo: 'magasin' }
+    });
   }
 
   private goBack(): void {

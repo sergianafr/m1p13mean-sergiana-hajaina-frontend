@@ -1,0 +1,12 @@
+<div class="container mx-auto p-6">
+  <list-header
+    title="Utilisateurs"
+    actionLabel="Nouvel Utilisateur"
+    (action)="createNew()">
+  </list-header>
+
+  <dynamic-table
+    [config]="tableConfig()"
+    [data]="users()">
+  </dynamic-table>
+</div>

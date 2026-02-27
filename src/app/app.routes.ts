@@ -177,23 +177,64 @@ export const routes: Routes = [
         path: 'magasins',
         canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
-          import('./features/pages/magasin-list/magasin-list.component').then(m => m.MagasinListComponent)
+          import('./features/magasin/pages/magasin-list/magasin-list.component').then(m => m.MagasinListComponent)
       },
       {
         path: 'magasins/nouveau',
         canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
-          import('./features/pages/magasin-form/magasin-form.component').then(m => m.MagasinFormComponent)
+          import('./features/magasin/pages/magasin-form/magasin-form.component').then(m => m.MagasinFormComponent)
       },
       {
         path: 'magasins/:id',
         canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
-          import('./features/pages/magasin-form/magasin-form.component').then(m => m.MagasinFormComponent)
+          import('./features/magasin/pages/magasin-form/magasin-form.component').then(m => m.MagasinFormComponent)
       },
       {
         path: 'magasin',
         redirectTo: 'magasins',
+        pathMatch: 'full'
+      },
+      {
+        path: 'users',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/user/pages/user-list/user-list.component').then(m => m.UserListComponent)
+      },
+      {
+        path: 'users/nouveau',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/user/pages/user-form/user-form.component').then(m => m.UserFormComponent)
+      },
+      {
+        path: 'users/:id',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/user/pages/user-form/user-form.component').then(m => m.UserFormComponent)
+      },
+      {
+        path: 'box-magasins',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box-magasin/pages/box-magasin-list/box-magasin-list.component').then(m => m.BoxMagasinListComponent)
+      },
+      {
+        path: 'box-magasins/nouveau',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box-magasin/pages/box-magasin-form/box-magasin-form.component').then(m => m.BoxMagasinFormComponent)
+      },
+      {
+        path: 'box-magasins/:id',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/box-magasin/pages/box-magasin-form/box-magasin-form.component').then(m => m.BoxMagasinFormComponent)
+      },
+      {
+        path: 'user',
+        redirectTo: 'users',
         pathMatch: 'full'
       },
       { path: '', redirectTo: 'home', pathMatch: 'full' },

@@ -41,8 +41,8 @@ export class MagasinService extends CrudService<Magasin> {
 
   // Récupérer tous les utilisateurs (pour le select)
   getAllUsers(): Observable<User[]> {
-    return this.httpClient.get<User[]>(`${this.apiUrl}/users`);
-    // return this.httpClient.get<User[]>(`${this.apiUrl}/users/role/BOUTIQUE`);
+    // return this.httpClient.get<User[]>(`${this.apiUrl}/users`);
+    return this.httpClient.get<User[]>(`${this.apiUrl}/users/role/BOUTIQUE`);
   }
 
   // Récupérer tous les types de magasin (pour le select)

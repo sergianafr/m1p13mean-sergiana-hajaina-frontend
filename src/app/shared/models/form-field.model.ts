@@ -9,6 +9,7 @@ export type FieldType =
   | 'date' 
   | 'radio'
   | 'file';
+  | 'user-search';
 
 export interface SelectOption {
   value: string | number;
@@ -38,6 +39,10 @@ export interface FormFieldConfig {
   existingImageField?: string;
   imageDeleteEndpoint?: string;
   imageDeleteQueryParam?: string;
+  class?: string;
+  searchData?: any[]; // For user-search type
+  searchFields?: string[]; // Fields to search in (e.g., ['name', 'email'])
+  displayField?: string; // Field to display in results
 }
 
 export interface FieldValidator {
