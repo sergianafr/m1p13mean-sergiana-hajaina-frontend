@@ -63,9 +63,16 @@ export class ProduitListComponent implements OnInit {
       {
         key: 'photos',
         label: 'Photos',
-        type: 'number',
+        type: 'image',
         align: 'center',
-        format: (value) => Array.isArray(value) ? value.length.toString() : '0'
+        format: (value) => {
+          if (!Array.isArray(value) || value.length === 0) {
+            return '';
+          }
+
+          const first = value[0] as { url?: unknown };
+          return typeof first?.url === 'string' ? first.url : '';
+        }
       }
     ],
     clickable: true,

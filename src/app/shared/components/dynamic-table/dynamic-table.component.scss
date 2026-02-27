@@ -63,6 +63,15 @@
       border-bottom: 1px solid #e0e0e0;
     }
 
+    .cell-image {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 4px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
     tr:hover {
       background-color: #f9f9f9;
     }

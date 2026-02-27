@@ -4,6 +4,7 @@ export type ColumnType =
   | 'date' 
   | 'boolean' 
   | 'currency'
+  | 'image'
   | 'custom';
 
 export interface ColumnConfig {

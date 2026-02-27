@@ -35,7 +35,15 @@
                 *matCellDef="let row" 
                 [class]="getCellClass(row, column)"
                 [style.text-align]="getAlignment(column)">
-                {{ getCellValue(row, column) }}
+                @if (column.type === 'image') {
+                  @if (getCellValue(row, column)) {
+                    <img class="cell-image" [src]="getCellValue(row, column)" alt="" />
+                  } @else {
+                    -
+                  }
+                } @else {
+                  {{ getCellValue(row, column) }}
+                }
               </td>
             </ng-container>
           }
