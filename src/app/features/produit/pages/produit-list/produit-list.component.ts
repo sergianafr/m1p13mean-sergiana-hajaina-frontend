@@ -68,24 +68,13 @@ export class ProduitListComponent implements OnInit {
         format: (value) => Array.isArray(value) ? value.length.toString() : '0'
       }
     ],
-    actions: [
-      {
-        label: 'Modifier',
-        icon: 'edit',
-        color: 'primary',
-        handler: (row) => this.onEdit(row as Produit)
-      },
-      {
-        label: 'Supprimer',
-        icon: 'delete',
-        color: 'warn',
-        handler: (row) => this.onDelete(row as Produit)
-      }
-    ],
-    showActions: true,
-    clickable: false,
+    clickable: true,
     loading: this.isLoading(),
-    emptyMessage: 'Aucun produit trouvé'
+    rowRoute: '/produits',
+    idField: '_id',
+    emptyMessage: 'Aucun produit trouvé',
+    pageable: true,
+    pageSize: 10
   }));
 
   ngOnInit(): void {
