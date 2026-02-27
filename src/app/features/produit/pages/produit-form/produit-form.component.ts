@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ProduitService, ProduitDTO } from '../../produit.service';
 import { TypeProduitService } from '../../../type-produit/type-produit.service';
 import { UniteService } from '../../../unite/unite.service';
-import { MagasinService } from '../../../magasin.service';
+import { MagasinService } from '../../../magasin/magasin.service';
 import { forkJoin } from 'rxjs';
 
 @Component({

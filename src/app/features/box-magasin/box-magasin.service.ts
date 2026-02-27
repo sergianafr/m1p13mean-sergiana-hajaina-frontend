@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CrudService } from '../../core/services/crud.service';
 import { Box } from '../box/box.service';
-import { Magasin } from '../magasin.service';
+import { Magasin } from '../magasin/magasin.service';
 
 export interface MagasinBox {
   _id?: string;

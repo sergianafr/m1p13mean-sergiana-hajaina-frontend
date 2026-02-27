@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
-import { MagasinService, User, TypeMagasin } from '../../../magasin.service';
+import { MagasinService, User, TypeMagasin } from '../../magasin.service';
 import { forkJoin } from 'rxjs';
 
 @Component({

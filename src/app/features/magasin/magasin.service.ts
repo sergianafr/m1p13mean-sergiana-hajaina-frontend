@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CrudService } from '../core/services/crud.service';
-import { environment } from '../../environments/environment';
+import { CrudService } from '../../core/services/crud.service';
+import { environment } from '../../../environments/environment';
 
 export interface User {
   _id: string;

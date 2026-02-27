@@ -19,7 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { TitleComponent } from '../../../../shared';
 import { BoxService, Box } from '../../../box/box.service';
-import { MagasinService, Magasin } from '../../../magasin.service';
+import { MagasinService, Magasin } from '../../../magasin/magasin.service';
 import { BoxMagasinService, MagasinBox } from '../../box-magasin.service';
 import { LoyerBoxService, LoyerBox } from '../../../loyer-box/loyer-box.service';
 
