@@ -1,1 +1,24 @@
-<p>shop-layout works!</p>
+<mat-toolbar class="shop-navbar" color="primary">
+	<a class="brand" routerLink="/shop/home" aria-label="Accueil">
+		<mat-icon aria-hidden="true">storefront</mat-icon>
+		<span>Front Office</span>
+	</a>
+
+	<span class="spacer"></span>
+
+	<button mat-icon-button type="button" aria-label="Favoris">
+		<mat-icon>favorite</mat-icon>
+	</button>
+
+	<button mat-icon-button type="button" aria-label="Panier">
+		<mat-icon>shopping_cart</mat-icon>
+	</button>
+
+	<button mat-icon-button type="button" aria-label="Compte">
+		<mat-icon>person</mat-icon>
+	</button>
+</mat-toolbar>
+
+<main class="shop-content">
+	<router-outlet></router-outlet>
+</main>

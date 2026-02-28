@@ -1,0 +1,24 @@
+.shop-navbar {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+}
+
+.brand {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	text-decoration: none;
+	color: inherit;
+	font-weight: 600;
+}
+
+.spacer {
+	flex: 1 1 auto;
+}
+
+.shop-content {
+	padding: 16px;
+	max-width: 1200px;
+	margin: 0 auto;
+}
