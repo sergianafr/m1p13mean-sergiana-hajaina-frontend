@@ -1,1 +1,84 @@
-<p>details-produit works!</p>
+<!-- Loading State -->
+<div class="detail-loading" *ngIf="isLoading()">
+  <mat-spinner diameter="48"></mat-spinner>
+  <p>Chargement du produit...</p>
+</div>
+
+<!-- Product Detail -->
+<div class="product-detail" *ngIf="!isLoading() && produit()">
+  <!-- Back Button -->
+  <button class="back-btn" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Retour</span>
+  </button>
+
+  <div class="detail-container">
+    <!-- Left: Images -->
+    <div class="detail-images">
+      <div class="main-image">
+        <img [src]="mainPhoto" [alt]="produit()!.nomProduit" />
+      </div>
+      <div class="thumbnail-row" *ngIf="produit()!.photos && produit()!.photos.length > 1">
+        @for (photo of produit()!.photos; track photo.url; let i = $index) {
+          <div
+            class="thumbnail"
+            [class.active]="selectedPhotoIndex() === i"
+            (click)="selectPhoto(i)"
+          >
+            <img [src]="photo.url" [alt]="'Photo ' + (i + 1)" />
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Right: Info -->
+    <div class="detail-info">
+      <span class="detail-category">
+        {{ produit()!.typeProduit?.nomTypeProduit || 'Produit' }}
+      </span>
+
+      <h1 class="detail-name">{{ produit()!.nomProduit }}</h1>
+
+      <div class="detail-shop">
+        <mat-icon>store</mat-icon>
+        <span>{{ produit()!.magasin?.nomMagasin || 'Boutique' }}</span>
+      </div>
+
+      <div class="detail-description" *ngIf="produit()!.descriptionProduit">
+        <h3>Description</h3>
+        <p>{{ produit()!.descriptionProduit }}</p>
+      </div>
+
+      <div class="detail-unit" *ngIf="produit()!.unite">
+        <span class="unit-label">Unité :</span>
+        <span class="unit-value">{{ produit()!.unite?.nomUnite }}</span>
+      </div>
+
+      <!-- Quantity Selector -->
+      <div class="quantity-selector">
+        <span class="qty-label">Quantité</span>
+        <div class="qty-controls">
+          <button class="qty-btn" (click)="decrementQty()" [disabled]="quantity() <= 1">
+            <mat-icon>remove</mat-icon>
+          </button>
+          <span class="qty-value">{{ quantity() }}</span>
+          <button class="qty-btn" (click)="incrementQty()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="detail-actions">
+        <button class="btn-add-cart" (click)="addToCart()" [disabled]="addingToCart()">
+          <mat-icon>shopping_cart</mat-icon>
+          <span>{{ addingToCart() ? 'Ajout en cours...' : 'Ajouter au panier' }}</span>
+        </button>
+
+        <button class="btn-favorite" [class.is-favorite]="isFavorite()" (click)="toggleFavorite()">
+          <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_border' }}</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

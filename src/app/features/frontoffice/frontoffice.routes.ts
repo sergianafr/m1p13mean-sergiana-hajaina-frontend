@@ -12,6 +12,11 @@ export const frontofficeRoutes: Routes = [
           import('./pages/home/home.component').then(m => m.ShopHomeComponent)
       },
       {
+        path: 'produit/:id',
+        loadComponent: () =>
+          import('./pages/details-produit/details-produit.component').then(m => m.DetailsProduitComponent)
+      },
+      {
         path: 'favoris',
         loadComponent: () =>
           import('./pages/favories/favories.component').then(m => m.FavoriesComponent)

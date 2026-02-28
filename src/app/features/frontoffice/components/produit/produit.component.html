@@ -1,11 +1,11 @@
-<div class="product-card">
+<div class="product-card" (click)="goToDetail()">
   <div class="product-image-wrapper">
     <img [src]="photo" [alt]="produit().nomProduit" class="product-image" />
     <div class="product-overlay">
-      <button class="overlay-btn" (click)="onAddToFavoris()" title="Ajouter aux favoris">
+      <button class="overlay-btn" (click)="onAddToFavoris(); $event.stopPropagation()" title="Ajouter aux favoris">
         <mat-icon>favorite_border</mat-icon>
       </button>
-      <button class="overlay-btn" (click)="onAddToCart()" title="Ajouter au panier">
+      <button class="overlay-btn" (click)="onAddToCart(); $event.stopPropagation()" title="Ajouter au panier">
         <mat-icon>add_shopping_cart</mat-icon>
       </button>
     </div>

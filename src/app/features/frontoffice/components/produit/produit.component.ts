@@ -1,8 +1,8 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ProduitFront } from '../../data-access/services/produit.service';
 
 @Component({
@@ -13,6 +13,7 @@ import { ProduitFront } from '../../data-access/services/produit.service';
   styleUrl: './produit.component.scss'
 })
 export class ProduitCardComponent {
+  private readonly router = inject(Router);
   readonly produit = input.required<ProduitFront>();
   readonly addToCart = output<ProduitFront>();
   readonly addToFavoris = output<ProduitFront>();
@@ -22,6 +23,10 @@ export class ProduitCardComponent {
     return p.photos && p.photos.length > 0
       ? p.photos[0].url
       : 'https://via.placeholder.com/300x200?text=Pas+de+photo';
+  }
+
+  goToDetail(): void {
+    this.router.navigate(['/shop/produit', this.produit()._id]);
   }
 
   onAddToCart(): void {

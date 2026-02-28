@@ -5,6 +5,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ProductService, ProduitFront } from '../../data-access/services/produit.service';
 import { ProduitCardComponent } from '../../components/produit/produit.component';
+import { PanierService } from '../../data-access/services/panier.service';
+import { FavoriesService } from '../../data-access/services/favories.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-shop-home',
@@ -21,6 +24,9 @@ import { ProduitCardComponent } from '../../components/produit/produit.component
 })
 export class ShopHomeComponent implements OnInit {
   private readonly productService = inject(ProductService);
+  private readonly panierService = inject(PanierService);
+  private readonly favoriesService = inject(FavoriesService);
+  private readonly authService = inject(AuthService);
   private readonly snackBar = inject(MatSnackBar);
 
   readonly produits = signal<ProduitFront[]>([]);
@@ -45,10 +51,20 @@ export class ShopHomeComponent implements OnInit {
   }
 
   onAddToCart(produit: ProduitFront): void {
-    this.snackBar.open(`${produit.nomProduit} ajout\u00e9 au panier`, 'OK', { duration: 2000 });
+    const user = this.authService.getCurrentUser();
+    if (!user) return;
+    this.panierService.addToCart(produit._id, user.id).subscribe({
+      next: () => this.snackBar.open(`${produit.nomProduit} ajouté au panier`, 'OK', { duration: 2000 }),
+      error: (err) => this.snackBar.open(err.error?.message || 'Erreur', 'Fermer', { duration: 3000 })
+    });
   }
 
   onAddToFavoris(produit: ProduitFront): void {
-    this.snackBar.open(`${produit.nomProduit} ajout\u00e9 aux favoris`, 'OK', { duration: 2000 });
+    const user = this.authService.getCurrentUser();
+    if (!user) return;
+    this.favoriesService.addToFavoris(produit._id, user.id).subscribe({
+      next: () => this.snackBar.open(`${produit.nomProduit} ajouté aux favoris`, 'OK', { duration: 2000 }),
+      error: (err) => this.snackBar.open(err.error?.message || 'Erreur', 'Fermer', { duration: 3000 })
+    });
   }
 }
