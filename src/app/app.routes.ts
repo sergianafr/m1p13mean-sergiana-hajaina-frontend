@@ -174,6 +174,30 @@ export const routes: Routes = [
         pathMatch: 'full'
       },
       {
+        path: 'stocks',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/stock/pages/stock-list/stock-list.component').then(m => m.StockListComponent)
+      },
+      {
+        path: 'stocks/entree',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/stock/pages/stock-form/stock-form.component').then(m => m.StockFormComponent)
+      },
+      {
+        path: 'stocks/entree/:produitId',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/stock/pages/stock-form/stock-form.component').then(m => m.StockFormComponent)
+      },
+      {
+        path: 'stocks/historique/:produitId',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/stock/pages/stock-form/stock-form.component').then(m => m.StockFormComponent)
+      },
+      {
         path: 'magasins',
         canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>

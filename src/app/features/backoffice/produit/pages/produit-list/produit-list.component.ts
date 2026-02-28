@@ -78,8 +78,18 @@ export class ProduitListComponent implements OnInit {
     clickable: true,
     loading: this.isLoading(),
     rowRoute: '/produits',
-    idField: '_id',
-    emptyMessage: 'Aucun produit trouvé',
+    idField: '_id',    showActions: true,
+    actions: [
+      {
+        label: 'Stock',
+        icon: 'inventory',
+        color: 'accent',
+        handler: (row: unknown) => {
+          const p = row as Produit;
+          this.router.navigate(['/stocks/historique', p._id]);
+        }
+      }
+    ],    emptyMessage: 'Aucun produit trouvé',
     pageable: true,
     pageSize: 10
   }));

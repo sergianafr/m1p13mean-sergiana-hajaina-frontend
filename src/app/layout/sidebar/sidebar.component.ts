@@ -31,6 +31,7 @@ export class SidebarComponent {
     { label: 'Assignation Magasin-Box', icon: 'link', link: '/box-magasins', roles: ['ADMIN'] },
     { label: 'Magasin', icon: 'store', link: '/magasins', roles: ['ADMIN', 'BOUTIQUE'] },
     { label: 'Produit', icon: 'store', link: '/produits', roles: ['BOUTIQUE'] },
+    { label: 'Stock', icon: 'inventory', link: '/stocks', roles: ['BOUTIQUE'] },
 
     { label: 'Utilisateurs', icon: 'people', link: '/users', roles: ['ADMIN'] },
   ];
