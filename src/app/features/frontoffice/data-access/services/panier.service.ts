@@ -34,9 +34,17 @@ export class PanierService {
     return this.http.post(this.apiUrl, { produit: produitId, appUser: userId, qte });
   }
 
+  updateCartQuantity(produitId: string, userId: string, qte: number): Observable<any> {
+    return this.http.put(this.apiUrl, { produit: produitId, appUser: userId, qte });
+  }
+
   removeFromCart(produitId: string, userId: string): Observable<any> {
     return this.http.delete(this.apiUrl, {
       body: { produit: produitId, appUser: userId }
     });
+  }
+
+  clearCart(userId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/user/${userId}`);
   }
 }

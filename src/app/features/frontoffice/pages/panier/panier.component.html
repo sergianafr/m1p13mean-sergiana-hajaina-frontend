@@ -45,12 +45,26 @@
               {{ item.produit.magasin?.nomMagasin || 'Boutique' }}
             </p>
           </div>
-          <div class="cart-qty">
-            <span class="qty-badge">x{{ item.qte }}</span>
+          <!-- AliExpress-style quantity control -->
+          <div class="cart-qty-control">
+            <button class="qty-btn" (click)="changeQte(item, -1)" [disabled]="item.qte <= 1">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <input
+              type="number"
+              class="qty-input"
+              [value]="item.qte"
+              min="1"
+              (change)="onQteInput(item, $event)"
+              (keyup.enter)="onQteInput(item, $event)"
+            />
+            <button class="qty-btn" (click)="changeQte(item, 1)">
+              <mat-icon>add</mat-icon>
+            </button>
           </div>
           <div class="cart-actions">
             <button class="btn-remove" (click)="removeItem(item)" title="Retirer du panier">
-              <mat-icon>close</mat-icon>
+              <mat-icon>delete_outline</mat-icon>
             </button>
           </div>
         </div>
@@ -59,18 +73,31 @@
 
     <!-- Summary Footer -->
     <div class="cart-summary">
-      <div class="summary-row">
-        <span class="summary-label">Total articles</span>
-        <span class="summary-value">{{ totalItems() }}</span>
+      <div class="summary-info">
+        <div class="summary-row">
+          <span class="summary-label">Total articles</span>
+          <span class="summary-value">{{ totalItems() }}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Produits différents</span>
+          <span class="summary-value">{{ items().length }}</span>
+        </div>
       </div>
-      <div class="summary-row">
-        <span class="summary-label">Produits différents</span>
-        <span class="summary-value">{{ items().length }}</span>
+      <div class="summary-actions">
+        <button class="btn-continue" routerLink="/shop">
+          <mat-icon>arrow_back</mat-icon>
+          Continuer mes achats
+        </button>
+        <button class="btn-checkout" (click)="checkout()" [disabled]="isCheckingOut()">
+          @if (isCheckingOut()) {
+            <mat-spinner diameter="20"></mat-spinner>
+            <span>Traitement...</span>
+          } @else {
+            <mat-icon>payment</mat-icon>
+            <span>Passer la commande</span>
+          }
+        </button>
       </div>
-      <button class="btn-continue" routerLink="/shop">
-        <mat-icon>arrow_back</mat-icon>
-        Continuer mes achats
-      </button>
     </div>
   </div>
 </section>

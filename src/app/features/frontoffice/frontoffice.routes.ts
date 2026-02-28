@@ -25,6 +25,11 @@ export const frontofficeRoutes: Routes = [
         path: 'panier',
         loadComponent: () =>
           import('./pages/panier/panier.component').then(m => m.PanierComponent)
+      },
+      {
+        path: 'traites',
+        loadComponent: () =>
+          import('./components/traites/traites.component').then(m => m.TraitesComponent)
       }
     ]
   }
