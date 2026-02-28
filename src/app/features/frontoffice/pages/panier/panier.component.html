@@ -1,1 +1,76 @@
-<p>panier works!</p>
+<section class="panier-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <mat-icon class="title-icon">shopping_cart</mat-icon>
+        Mon Panier
+      </h1>
+      <p class="page-subtitle" *ngIf="!isLoading()">{{ totalItems() }} article{{ totalItems() > 1 ? 's' : '' }}</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading()">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Chargement de votre panier...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading() && items().length === 0">
+    <div class="empty-icon-wrapper">
+      <mat-icon class="empty-icon">remove_shopping_cart</mat-icon>
+    </div>
+    <h3>Votre panier est vide</h3>
+    <p>D\u00e9couvrez nos produits et remplissez votre panier !</p>
+    <button class="btn-explore" routerLink="/shop">
+      <mat-icon>storefront</mat-icon>
+      <span>Continuer mes achats</span>
+    </button>
+  </div>
+
+  <!-- Cart Content -->
+  <div class="panier-content" *ngIf="!isLoading() && items().length > 0">
+    <!-- Cart Items -->
+    <div class="cart-items">
+      @for (item of items(); track item._id) {
+        <div class="cart-card">
+          <div class="cart-image" (click)="goToDetail(item.produit._id)">
+            <img [src]="getPhoto(item)" [alt]="item.produit.nomProduit" />
+          </div>
+          <div class="cart-info" (click)="goToDetail(item.produit._id)">
+            <span class="cart-category">{{ item.produit.typeProduit?.nomTypeProduit || 'Produit' }}</span>
+            <h3 class="cart-name">{{ item.produit.nomProduit }}</h3>
+            <p class="cart-shop">
+              <mat-icon>store</mat-icon>
+              {{ item.produit.magasin?.nomMagasin || 'Boutique' }}
+            </p>
+          </div>
+          <div class="cart-qty">
+            <span class="qty-badge">x{{ item.qte }}</span>
+          </div>
+          <div class="cart-actions">
+            <button class="btn-remove" (click)="removeItem(item)" title="Retirer du panier">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Summary Footer -->
+    <div class="cart-summary">
+      <div class="summary-row">
+        <span class="summary-label">Total articles</span>
+        <span class="summary-value">{{ totalItems() }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Produits différents</span>
+        <span class="summary-value">{{ items().length }}</span>
+      </div>
+      <button class="btn-continue" routerLink="/shop">
+        <mat-icon>arrow_back</mat-icon>
+        Continuer mes achats
+      </button>
+    </div>
+  </div>
+</section>

@@ -1,1 +1,57 @@
-<p>favories works!</p>
+<section class="favoris-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <mat-icon class="title-icon">favorite</mat-icon>
+        Mes Favoris
+      </h1>
+      <p class="page-subtitle" *ngIf="!isLoading()">{{ favoris().length }} produit{{ favoris().length > 1 ? 's' : '' }} sauvegardé{{ favoris().length > 1 ? 's' : '' }}</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading()">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Chargement de vos favoris...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading() && favoris().length === 0">
+    <div class="empty-icon-wrapper">
+      <mat-icon class="empty-icon">favorite_border</mat-icon>
+    </div>
+    <h3>Aucun favori pour le moment</h3>
+    <p>Parcourez notre catalogue et ajoutez des produits à vos favoris !</p>
+    <button class="btn-explore" routerLink="/shop">
+      <mat-icon>storefront</mat-icon>
+      <span>Explorer les produits</span>
+    </button>
+  </div>
+
+  <!-- Favoris List -->
+  <div class="favoris-list" *ngIf="!isLoading() && favoris().length > 0">
+    @for (item of favoris(); track item._id) {
+      <div class="favori-card">
+        <div class="favori-image" (click)="goToDetail(item.produit._id)">
+          <img [src]="getPhoto(item)" [alt]="item.produit.nomProduit" />
+        </div>
+        <div class="favori-info" (click)="goToDetail(item.produit._id)">
+          <span class="favori-category">{{ item.produit.typeProduit?.nomTypeProduit || 'Produit' }}</span>
+          <h3 class="favori-name">{{ item.produit.nomProduit }}</h3>
+          <p class="favori-shop">
+            <mat-icon>store</mat-icon>
+            {{ item.produit.magasin?.nomMagasin || 'Boutique' }}
+          </p>
+        </div>
+        <div class="favori-actions">
+          <button class="btn-action btn-cart" (click)="addToCart(item)" title="Ajouter au panier">
+            <mat-icon>add_shopping_cart</mat-icon>
+          </button>
+          <button class="btn-action btn-remove" (click)="removeFavori(item)" title="Retirer des favoris">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</section>
