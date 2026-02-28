@@ -11,6 +11,7 @@ import { TypeProduitService } from '../../../type-produit/type-produit.service';
 import { UniteService } from '../../../unite/unite.service';
 import { MagasinService } from '../../../magasin/magasin.service';
 import { forkJoin } from 'rxjs';
+import { AuthService } from '../../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-produit-form',
@@ -33,6 +34,7 @@ export class ProduitFormComponent implements OnInit {
   private readonly typeProduitService = inject(TypeProduitService);
   private readonly uniteService = inject(UniteService);
   private readonly magasinService = inject(MagasinService);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
@@ -126,13 +128,28 @@ export class ProduitFormComponent implements OnInit {
 
   private loadSelectOptions(): void {
     this.isLoading.set(true);
+
+    const currentUser = this.authService.getCurrentUser();
+    const magasins$ = currentUser?.role === 'BOUTIQUE'
+      ? this.magasinService.getMine()
+      : this.magasinService.getAll();
     
     forkJoin({
       unites: this.uniteService.getAll(),
       typeProduits: this.typeProduitService.getAll(),
-      magasins: this.magasinService.getAll()
+      magasins: magasins$
     }).subscribe({
       next: (data) => {
+        if (!this.isEditMode() && data.magasins.length === 1) {
+          const onlyMagasinId = data.magasins[0]._id;
+          if (onlyMagasinId) {
+            this.userData.update((current) => ({
+              ...(current ?? {}),
+              magasin: onlyMagasinId
+            }));
+          }
+        }
+
         this.formConfig.update(config => ({
           ...config,
           fields: config.fields.map(field => {

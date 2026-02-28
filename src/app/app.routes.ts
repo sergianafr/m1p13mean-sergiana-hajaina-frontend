@@ -152,19 +152,19 @@ export const routes: Routes = [
       },
       {
         path: 'produits',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
         loadComponent: () =>
           import('./features/backoffice/produit/pages/produit-list/produit-list.component').then(m => m.ProduitListComponent)
       },
       {
         path: 'produits/create',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
         loadComponent: () =>
           import('./features/backoffice/produit/pages/produit-form/produit-form.component').then(m => m.ProduitFormComponent)
       },
       {
         path: 'produits/:id',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
         loadComponent: () =>
           import('./features/backoffice/produit/pages/produit-form/produit-form.component').then(m => m.ProduitFormComponent)
       },

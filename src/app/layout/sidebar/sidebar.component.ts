@@ -30,7 +30,7 @@ export class SidebarComponent {
     { label: 'Box', icon: 'bookmark_border', link: '/boxs', roles: ['ADMIN'] },
     { label: 'Assignation Magasin-Box', icon: 'link', link: '/box-magasins', roles: ['ADMIN'] },
     { label: 'Magasin', icon: 'store', link: '/magasins', roles: ['ADMIN', 'BOUTIQUE'] },
-    { label: 'Produit', icon: 'store', link: '/produits', roles: ['ADMIN', 'BOUTIQUE'] },
+    { label: 'Produit', icon: 'store', link: '/produits', roles: ['BOUTIQUE'] },
 
     { label: 'Utilisateurs', icon: 'people', link: '/users', roles: ['ADMIN'] },
   ];

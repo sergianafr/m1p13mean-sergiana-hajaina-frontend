@@ -39,6 +39,10 @@ export class MagasinService extends CrudService<Magasin> {
     this.setEndpoint('magasins');
   }
 
+  getMine(): Observable<Magasin[]> {
+    return this.httpClient.get<Magasin[]>(`${this.apiUrl}/magasins/mine`);
+  }
+
   // Récupérer tous les utilisateurs (pour le select)
   getAllUsers(): Observable<User[]> {
     // return this.httpClient.get<User[]>(`${this.apiUrl}/users`);
