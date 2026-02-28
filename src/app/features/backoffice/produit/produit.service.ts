@@ -29,6 +29,7 @@ export interface ProduitDTO {
   unite: string;
   typeProduit: string;
   magasin: string;
+  prixUnitaire?: number;
 }
 
 @Injectable({
@@ -56,6 +57,9 @@ export class ProduitService extends CrudService<Produit> {
     formData.append('unite', dto.unite);
     formData.append('typeProduit', dto.typeProduit);
     formData.append('magasin', dto.magasin);
+    if (dto.prixUnitaire !== undefined && dto.prixUnitaire !== null) {
+      formData.append('prixUnitaire', dto.prixUnitaire.toString());
+    }
 
     photos.forEach((photo) => {
       formData.append('photos', photo, photo.name);

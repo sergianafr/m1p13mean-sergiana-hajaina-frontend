@@ -10,9 +10,11 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProduitService, Produit } from '../../produit.service';
 import { DynamicTableComponent, ListHeaderComponent } from '../../../../../shared';
 import { DynamicTableConfig } from '../../../../../shared/models/table-config.model';
+import { PrixDialogComponent } from '../../components/prix-dialog/prix-dialog.component';
 
 @Component({
   selector: 'app-produit-list',
@@ -21,6 +23,7 @@ import { DynamicTableConfig } from '../../../../../shared/models/table-config.mo
     CommonModule,
     MatCardModule,
     MatSnackBarModule,
+    MatDialogModule,
     DynamicTableComponent,
     ListHeaderComponent
   ],
@@ -32,6 +35,7 @@ export class ProduitListComponent implements OnInit {
   private readonly produitService = inject(ProduitService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
 
   protected readonly produits = signal<Produit[]>([]);
   protected readonly isLoading = signal(false);
@@ -80,6 +84,15 @@ export class ProduitListComponent implements OnInit {
     rowRoute: '/produits',
     idField: '_id',    showActions: true,
     actions: [
+      {
+        label: 'Prix',
+        icon: 'payments',
+        color: 'primary',
+        handler: (row: unknown) => {
+          const p = row as Produit;
+          this.openPrixDialog(p);
+        }
+      },
       {
         label: 'Stock',
         icon: 'inventory',
@@ -166,5 +179,15 @@ export class ProduitListComponent implements OnInit {
     }
 
     return '-';
+  }
+
+  protected openPrixDialog(produit: Produit): void {
+    this.dialog.open(PrixDialogComponent, {
+      width: '700px',
+      data: {
+        produitId: produit._id,
+        nomProduit: produit.nomProduit
+      }
+    });
   }
 }

@@ -88,6 +88,13 @@ export class ProduitFormComponent implements OnInit {
         required: true,
         options: []
       },
+      {
+        key: 'prixUnitaire',
+        label: 'Prix unitaire (Ar)',
+        type: 'number',
+        min: 0,
+        hint: 'Prix initial du produit'
+      },
       { 
         key: 'photos', 
         label: 'Photos du produit', 
@@ -229,7 +236,8 @@ export class ProduitFormComponent implements OnInit {
       seuilNotification: data['seuilNotification'] as number,
       unite: data['unite'] as string,
       typeProduit: data['typeProduit'] as string,
-      magasin: data['magasin'] as string
+      magasin: data['magasin'] as string,
+      prixUnitaire: data['prixUnitaire'] as number
     };
 
     console.log(data);
