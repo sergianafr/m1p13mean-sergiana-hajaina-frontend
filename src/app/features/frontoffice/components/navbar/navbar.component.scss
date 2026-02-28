@@ -1,0 +1,153 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+  padding: 0 24px;
+
+  .navbar-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    gap: 24px;
+  }
+
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #fff;
+    flex-shrink: 0;
+
+    .brand-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+      color: #e94560;
+    }
+
+    .brand-text {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #e94560, #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .navbar-search {
+    flex: 1;
+    max-width: 500px;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 0 16px;
+    transition: all 0.3s ease;
+
+    &:focus-within {
+      background: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.3);
+    }
+
+    .search-icon {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #fff;
+      font-size: 14px;
+      padding: 10px 0;
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.45);
+      }
+    }
+  }
+
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+
+    .nav-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      mat-icon {
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
+      }
+
+      &:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    .user-btn {
+      gap: 6px;
+      padding: 6px 10px;
+
+      .user-name {
+        font-size: 13px;
+        font-weight: 500;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .dropdown-arrow {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: rgba(255, 255, 255, 0.5);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 12px;
+
+    .navbar-container {
+      gap: 12px;
+    }
+
+    .navbar-search {
+      display: none;
+    }
+
+    .user-name {
+      display: none !important;
+    }
+  }
+}

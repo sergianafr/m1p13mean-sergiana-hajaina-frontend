@@ -1,1 +1,46 @@
-<p>navbar works!</p>
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo / Brand -->
+    <a routerLink="/shop" class="navbar-brand">
+      <mat-icon class="brand-icon">storefront</mat-icon>
+      <span class="brand-text">MiShop</span>
+    </a>
+
+    <!-- Search Bar -->
+    <div class="navbar-search">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input type="text" placeholder="Rechercher un produit..." class="search-input" />
+    </div>
+
+    <!-- Right Actions -->
+    <div class="navbar-actions">
+      <!-- Favoris -->
+      <a routerLink="/shop/favoris" class="nav-action" matTooltip="Mes favoris">
+        <mat-icon>favorite_border</mat-icon>
+      </a>
+
+      <!-- Panier -->
+      <a routerLink="/shop/panier" class="nav-action" matTooltip="Mon panier">
+        <mat-icon>shopping_cart</mat-icon>
+      </a>
+
+      <!-- User Menu -->
+      <button class="nav-action user-btn" [matMenuTriggerFor]="userMenu">
+        <mat-icon>person</mat-icon>
+        <span class="user-name" *ngIf="currentUser">{{ currentUser.name || currentUser.email }}</span>
+        <mat-icon class="dropdown-arrow">arrow_drop_down</mat-icon>
+      </button>
+
+      <mat-menu #userMenu="matMenu" class="user-dropdown">
+        <button mat-menu-item routerLink="/home">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Déconnexion</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</nav>

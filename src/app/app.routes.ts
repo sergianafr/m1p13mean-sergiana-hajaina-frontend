@@ -241,6 +241,12 @@ export const routes: Routes = [
       
     ]
   },
+  {
+    path: 'shop',
+    canActivate: [authGuard, roleGuard(['CLIENT'])],
+    loadChildren: () =>
+      import('./features/frontoffice/frontoffice.routes').then(m => m.frontofficeRoutes)
+  },
   { path: '**', redirectTo: 'login' }
 ];
  
