@@ -40,6 +40,10 @@ export class PanierComponent implements OnInit {
     this.items().reduce((sum, item) => sum + (item.qte || 1), 0)
   );
 
+  readonly totalPrix = computed(() =>
+    this.items().reduce((sum, item) => sum + ((item.produit?.prixActuel ?? 0) * (item.qte || 1)), 0)
+  );
+
   ngOnInit(): void {
     this.loadCart();
   }

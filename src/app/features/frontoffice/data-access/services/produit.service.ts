@@ -16,6 +16,7 @@ export interface ProduitFront {
   unite: { _id: string; nomUnite: string };
   typeProduit: { _id: string; nomTypeProduit: string };
   magasin: { _id: string; nomMagasin: string };
+  prixActuel: number | null;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -14,6 +14,7 @@ export interface PanierItem {
     unite: { _id: string; nomUnite: string };
     typeProduit: { _id: string; nomTypeProduit: string };
     magasin: { _id: string; nomMagasin: string };
+    prixActuel: number | null;
   };
   appUser: string;
   createdAt: Date;

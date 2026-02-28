@@ -17,5 +17,12 @@
       <mat-icon class="shop-icon">store</mat-icon>
       {{ produit().magasin?.nomMagasin || 'Boutique' }}
     </p>
+    <div class="product-price">
+      @if (produit().prixActuel !== null && produit().prixActuel !== undefined) {
+        <span class="price-amount">{{ produit().prixActuel | number:'1.0-0' }} Ar</span>
+      } @else {
+        <span class="price-none">Prix non défini</span>
+      }
+    </div>
   </div>
 </div>

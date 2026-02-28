@@ -112,5 +112,19 @@
         color: #aaa;
       }
     }
+
+    .product-price {
+      margin-top: 10px;
+      .price-amount {
+        font-size: 16px;
+        font-weight: 700;
+        color: #e94560;
+      }
+      .price-none {
+        font-size: 12px;
+        color: #bbb;
+        font-style: italic;
+      }
+    }
   }
 }

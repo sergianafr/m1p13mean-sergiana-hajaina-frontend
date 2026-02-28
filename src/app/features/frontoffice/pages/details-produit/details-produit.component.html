@@ -54,6 +54,16 @@
         <span class="unit-value">{{ produit()!.unite?.nomUnite }}</span>
       </div>
 
+      <!-- Prix -->
+      <div class="detail-price">
+        @if (produit()!.prixActuel !== null && produit()!.prixActuel !== undefined) {
+          <span class="price-label">Prix unitaire</span>
+          <span class="price-value">{{ produit()!.prixActuel | number:'1.0-0' }} Ar</span>
+        } @else {
+          <span class="price-undefined">Prix non défini</span>
+        }
+      </div>
+
       <!-- Quantity Selector -->
       <div class="quantity-selector">
         <span class="qty-label">Quantité</span>

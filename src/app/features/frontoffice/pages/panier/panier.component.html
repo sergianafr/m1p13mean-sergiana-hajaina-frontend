@@ -44,6 +44,14 @@
               <mat-icon>store</mat-icon>
               {{ item.produit.magasin?.nomMagasin || 'Boutique' }}
             </p>
+            <div class="cart-price-row">
+              @if (item.produit.prixActuel !== null && item.produit.prixActuel !== undefined) {
+                <span class="unit-price">{{ item.produit.prixActuel | number:'1.0-0' }} Ar / unité</span>
+                <span class="subtotal">Sous-total&nbsp;: <strong>{{ (item.produit.prixActuel * item.qte) | number:'1.0-0' }} Ar</strong></span>
+              } @else {
+                <span class="price-undefined">Prix non défini</span>
+              }
+            </div>
           </div>
           <!-- AliExpress-style quantity control -->
           <div class="cart-qty-control">
@@ -82,6 +90,12 @@
           <span class="summary-label">Produits différents</span>
           <span class="summary-value">{{ items().length }}</span>
         </div>
+        @if (totalPrix() > 0) {
+          <div class="summary-row summary-total">
+            <span class="summary-label">Total estimé</span>
+            <span class="summary-value total-amount">{{ totalPrix() | number:'1.0-0' }} Ar</span>
+          </div>
+        }
       </div>
       <div class="summary-actions">
         <button class="btn-continue" routerLink="/shop">
