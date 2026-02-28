@@ -4,6 +4,7 @@ import { DynamicTableComponent, ListHeaderComponent } from '../../../../../share
 import { DynamicTableConfig } from '../../../../../shared/models';
 import { MagasinService, Magasin } from '../../magasin.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthService } from '../../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-magasin-list',
@@ -21,8 +22,13 @@ export class MagasinListComponent implements OnInit {
   private readonly magasinService = inject(MagasinService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly authService = inject(AuthService);
 
   protected readonly magasins = signal<Magasin[]>([]);
+
+  protected get canCreateMagasin(): boolean {
+    return this.authService.hasRole('ADMIN');
+  }
 
   protected readonly tableConfig = signal<DynamicTableConfig>({
     columns: [

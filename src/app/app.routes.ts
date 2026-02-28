@@ -181,7 +181,7 @@ export const routes: Routes = [
       },
       {
         path: 'magasins/nouveau',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/backoffice/magasin/pages/magasin-form/magasin-form.component').then(m => m.MagasinFormComponent)
       },
