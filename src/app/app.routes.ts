@@ -30,22 +30,6 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'shop',
-    canActivate: [authGuard, roleGuard(['CLIENT'])],
-    loadComponent: () =>
-      import('./features/frontoffice/layout/shop-layout/shop-layout.component').then(
-        m => m.ShopLayoutComponent
-      ),
-    children: [
-      {
-        path: 'home',
-        loadComponent: () =>
-          import('./features/frontoffice/pages/home/home.component').then(m => m.HomeComponent)
-      },
-      { path: '', redirectTo: 'home', pathMatch: 'full' }
-    ]
-  },
-  {
     path: '',
     loadComponent: () =>
       import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),

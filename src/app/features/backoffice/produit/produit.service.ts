@@ -3,7 +3,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CrudService } from '../../../core/services/crud.service';
 import { environment } from '../../../../environments/environment';
-import type { Unite } from '../unite/unite.service';
 
 export interface PhotoProduit {
   url: string;
@@ -16,7 +15,7 @@ export interface Produit {
   descriptionProduit?: string;
   seuilNotification?: number;
   photos?: PhotoProduit[];
-  unite: string | Unite;
+  unite: string;
   typeProduit: string;
   magasin: string;
   createdAt?: Date;
