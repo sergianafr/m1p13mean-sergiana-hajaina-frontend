@@ -1,0 +1,396 @@
+.magasin-detail {
+  min-height: calc(100vh - 64px);
+  background: #f8f9fa;
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 80px 0;
+    color: #888;
+  }
+
+  .magasin-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 48px 24px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+      background-size: cover;
+      background-position: bottom;
+      opacity: 0.5;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+
+      .magasin-icon {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+        .store-icon {
+          font-size: 56px;
+          width: 56px;
+          height: 56px;
+          color: #fff;
+        }
+      }
+
+      .magasin-info {
+        flex: 1;
+
+        .magasin-type {
+          display: inline-block;
+          background: rgba(255, 255, 255, 0.2);
+          color: #fff;
+          padding: 4px 12px;
+          border-radius: 12px;
+          font-size: 12px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 8px;
+        }
+
+        .magasin-name {
+          font-size: 36px;
+          font-weight: 800;
+          color: #fff;
+          margin: 0 0 12px 0;
+          line-height: 1.2;
+        }
+
+        .rating-section {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .stars {
+            display: flex;
+            gap: 4px;
+
+            .star {
+              font-size: 20px;
+              width: 20px;
+              height: 20px;
+              color: rgba(255, 255, 255, 0.3);
+
+              &.filled {
+                color: #ffc107;
+              }
+            }
+          }
+
+          .rating-text {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+
+  .content-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    display: grid;
+    gap: 40px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      mat-icon {
+        color: #667eea;
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+    }
+  }
+
+  .products-section {
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      background: #fff;
+      border-radius: 16px;
+
+      .empty-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: #ddd;
+        margin-bottom: 16px;
+      }
+
+      h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #555;
+        margin: 0 0 8px 0;
+      }
+
+      p {
+        font-size: 14px;
+        color: #999;
+        margin: 0;
+      }
+    }
+  }
+
+  .reviews-section {
+    .review-form {
+      margin-bottom: 32px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+      .rating-input {
+        margin-bottom: 24px;
+
+        label {
+          display: block;
+          font-size: 14px;
+          font-weight: 600;
+          color: #555;
+          margin-bottom: 8px;
+        }
+
+        .stars-input {
+          display: flex;
+          gap: 8px;
+
+          .star-btn {
+            font-size: 32px;
+            width: 32px;
+            height: 32px;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover,
+            &.active {
+              color: #ffc107;
+              transform: scale(1.1);
+            }
+          }
+        }
+      }
+
+      .full-width {
+        width: 100%;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 16px;
+      }
+    }
+
+    .reviews-list {
+      display: grid;
+      gap: 16px;
+
+      .review-card {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+
+        &:hover {
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        &.my-review {
+          border: 2px solid #667eea;
+          background: linear-gradient(to bottom right, rgba(102, 126, 234, 0.02), rgba(102, 126, 234, 0.05));
+        }
+
+        .review-header {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .user-icon {
+              color: #667eea;
+              font-size: 24px;
+              width: 24px;
+              height: 24px;
+            }
+
+            .username {
+              font-weight: 600;
+              color: #1a1a2e;
+            }
+          }
+
+          .review-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .review-date {
+              font-size: 13px;
+              color: #888;
+            }
+
+            .delete-btn {
+              transition: all 0.2s ease;
+
+              &:hover {
+                transform: scale(1.1);
+              }
+            }
+          }
+        }
+
+        .review-stars {
+          display: flex;
+          gap: 4px;
+          margin-bottom: 12px;
+
+          .star {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+            color: #ddd;
+
+            &.filled {
+              color: #ffc107;
+            }
+          }
+        }
+
+        .review-comment {
+          font-size: 14px;
+          color: #555;
+          line-height: 1.6;
+          margin: 0;
+        }
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      background: #fff;
+      border-radius: 16px;
+
+      .empty-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: #ddd;
+        margin-bottom: 16px;
+      }
+
+      h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #555;
+        margin: 0 0 8px 0;
+      }
+
+      p {
+        font-size: 14px;
+        color: #999;
+        margin: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .magasin-detail {
+    .magasin-header {
+      padding: 32px 16px;
+
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+
+        .magasin-icon {
+          width: 80px;
+          height: 80px;
+
+          .store-icon {
+            font-size: 40px;
+            width: 40px;
+            height: 40px;
+          }
+        }
+
+        .magasin-info {
+          .magasin-name {
+            font-size: 24px;
+          }
+
+          .rating-section {
+            justify-content: center;
+          }
+        }
+      }
+    }
+
+    .content-wrapper {
+      padding: 24px 16px;
+      gap: 32px;
+    }
+
+    .products-section {
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+      }
+    }
+  }
+}

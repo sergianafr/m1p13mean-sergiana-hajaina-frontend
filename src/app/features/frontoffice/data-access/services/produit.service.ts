@@ -17,8 +17,33 @@ export interface ProduitFront {
   typeProduit: { _id: string; nomTypeProduit: string };
   magasin: { _id: string; nomMagasin: string };
   prixActuel: number | null;
+  averageRating?: number;
+  totalReviews?: number;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface AvisProduit {
+  _id: string;
+  commentaire: string;
+  nombreEtoile: number;
+  dateAjout: Date;
+  produit: string;
+  appUser: {
+    _id: string;
+    name: string;
+  };
+}
+
+export interface CreateAvisProduitDto {
+  commentaire: string;
+  nombreEtoile: number;
+  produit: string;
+}
+
+export interface UpdateAvisProduitDto {
+  commentaire?: string;
+  nombreEtoile?: number;
 }
 
 @Injectable({
@@ -32,14 +57,44 @@ export class ProductService {
     return this.http.get<ProduitFront[]>(`${this.apiUrl}/produits`);
   }
 
+  getAllProduitsWithRatings(): Observable<ProduitFront[]> {
+    return this.http.get<ProduitFront[]>(`${this.apiUrl}/produits/with-ratings`);
+  }
+
   getRandomProduits(count: number = 20): Observable<ProduitFront[]> {
-    return this.getAllProduits().pipe(
+    return this.getAllProduitsWithRatings().pipe(
       map(produits => this.shuffleArray(produits).slice(0, count))
     );
   }
 
   getProduitById(id: string): Observable<ProduitFront> {
     return this.http.get<ProduitFront>(`${this.apiUrl}/produits/${id}`);
+  }
+
+  getProduitByIdWithRating(id: string): Observable<ProduitFront> {
+    return this.http.get<ProduitFront>(`${this.apiUrl}/produits/${id}/with-rating`);
+  }
+
+  getReviewsByProduitId(id: string): Observable<AvisProduit[]> {
+    return this.http.get<AvisProduit[]>(`${this.apiUrl}/produits/${id}/avis`);
+  }
+
+  addReview(dto: CreateAvisProduitDto): Observable<{ message: string; avisProduit: AvisProduit }> {
+    return this.http.post<{ message: string; avisProduit: AvisProduit }>(
+      `${this.apiUrl}/avis-produits`,
+      dto
+    );
+  }
+
+  updateReview(id: string, dto: UpdateAvisProduitDto): Observable<{ message: string; avisProduit: AvisProduit }> {
+    return this.http.put<{ message: string; avisProduit: AvisProduit }>(
+      `${this.apiUrl}/avis-produits/${id}`,
+      dto
+    );
+  }
+
+  deleteReview(id: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/avis-produits/${id}`);
   }
 
   private shuffleArray<T>(array: T[]): T[] {
