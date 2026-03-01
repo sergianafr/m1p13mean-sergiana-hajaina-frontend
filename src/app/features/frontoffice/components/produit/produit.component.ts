@@ -25,6 +25,12 @@ export class ProduitCardComponent {
       : 'https://via.placeholder.com/300x200?text=Pas+de+photo';
   }
 
+  get ratingStars(): number[] {
+    const p = this.produit();
+    const rating = p.averageRating || 0;
+    return Array(5).fill(0).map((_, i) => (i < Math.round(rating) ? 1 : 0));
+  }
+
   goToDetail(): void {
     this.router.navigate(['/shop/produit', this.produit()._id]);
   }

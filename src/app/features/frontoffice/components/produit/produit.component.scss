@@ -103,7 +103,7 @@
       gap: 4px;
       font-size: 12px;
       color: #888;
-      margin: 0;
+      margin: 0 0 8px 0;
 
       .shop-icon {
         font-size: 14px;
@@ -113,7 +113,37 @@
       }
     }
 
+    .product-rating {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+
+      .stars {
+        display: flex;
+        gap: 2px;
+
+        .star {
+          font-size: 14px;
+          width: 14px;
+          height: 14px;
+          color: #ddd;
+
+          &.filled {
+            color: #ffc107;
+          }
+        }
+      }
+
+      .rating-text {
+        font-size: 11px;
+        color: #666;
+        font-weight: 500;
+      }
+    }
+
     .product-price {
+
       margin-top: 10px;
       .price-amount {
         font-size: 16px;
