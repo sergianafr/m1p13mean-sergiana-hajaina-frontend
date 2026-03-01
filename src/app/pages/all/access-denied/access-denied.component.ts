@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-access-denied',
@@ -30,9 +31,17 @@ import { MatIconModule } from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccessDeniedComponent {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   goHome(): void {
+    const user = this.authService.getCurrentUser();
+    if (user?.role === 'CLIENT') {
+      this.router.navigate(['/shop']);
+      return;
+    }
     this.router.navigate(['/home']);
   }
 }

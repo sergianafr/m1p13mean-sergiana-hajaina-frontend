@@ -10,8 +10,7 @@ export const authGuard: CanActivateFn = () => {
     return true;
   }
 
-  router.navigate(['/login']);
-  return false;
+  return router.createUrlTree(['/login']);
 };
 
 /** Guard inverse : redirige vers /home si déjà connecté (protège login/register) */
@@ -23,6 +22,10 @@ export const guestGuard: CanActivateFn = () => {
     return true;
   }
 
-  router.navigate(['/home']);
-  return false;
+  const user = authService.getCurrentUser();
+  if (user?.role === 'CLIENT') {
+    return router.createUrlTree(['/shop']);
+  } else {
+    return router.createUrlTree(['/home']);
+  }
 };

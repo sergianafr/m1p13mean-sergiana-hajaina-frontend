@@ -11,15 +11,13 @@ export function roleGuard(allowedRoles: Role[]): CanActivateFn {
     const user = authService.getCurrentUser();
     
     if (!user) {
-      router.navigate(['/login']);
-      return false;
+      return router.createUrlTree(['/login']);
     }
 
     if (allowedRoles.includes(user.role)) {
       return true;
     }
 
-    router.navigate(['/access-denied']);
-    return false;
+    return router.createUrlTree(['/access-denied']);
   };
 }

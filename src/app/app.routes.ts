@@ -4,6 +4,12 @@ import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
+    path: 'access-denied',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/all/access-denied/access-denied.component').then(m => m.AccessDeniedComponent)
+  },
+  {
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () =>
@@ -36,15 +42,9 @@ export const routes: Routes = [
     children: [
       {
         path: 'home',
-        canActivate: [authGuard],
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
           import('./pages/all/home/home.component').then(m => m.HomeComponent)
-      },
-      {
-        path: 'access-denied',
-        canActivate: [authGuard],
-        loadComponent: () =>
-          import('./pages/all/access-denied/access-denied.component').then(m => m.AccessDeniedComponent)
       },
       {
         path: 'type-produits',
@@ -271,6 +271,6 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./features/frontoffice/frontoffice.routes').then(m => m.frontofficeRoutes)
   },
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'access-denied' }
 ];
  

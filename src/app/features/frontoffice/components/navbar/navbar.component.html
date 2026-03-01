@@ -37,7 +37,7 @@
       </button>
 
       <mat-menu #userMenu="matMenu" class="user-dropdown">
-        <button mat-menu-item routerLink="/home">
+        <button mat-menu-item routerLink="/home" *ngIf="currentUser?.role !== 'CLIENT'">
           <mat-icon>dashboard</mat-icon>
           <span>Dashboard</span>
         </button>
