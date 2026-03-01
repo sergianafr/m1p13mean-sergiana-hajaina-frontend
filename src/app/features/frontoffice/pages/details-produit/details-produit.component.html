@@ -7,10 +7,7 @@
 <!-- Product Detail -->
 <div class="product-detail" *ngIf="!isLoading() && produit()">
   <!-- Back Button -->
-  <button class="back-btn" (click)="goBack()">
-    <mat-icon>arrow_back</mat-icon>
-    <span>Retour</span>
-  </button>
+  <app-fo-goback-button (clicked)="goBack()"/>
 
   <div class="detail-container">
     <!-- Left: Images -->
@@ -114,18 +111,6 @@
           <span class="review-count">({{ produit()!.totalReviews }})</span>
         }
       </h2>
-      @if (produit()!.averageRating && produit()!.averageRating! > 0) {
-        <div class="average-rating">
-          <span class="rating-value">{{ produit()!.averageRating | number:'1.1-1' }}</span>
-          <div class="stars">
-            @for (star of ratingStars; track $index) {
-              <mat-icon class="star" [class.filled]="star === 1">
-                {{ star === 1 ? 'star' : 'star_border' }}
-              </mat-icon>
-            }
-          </div>
-        </div>
-      }
       <button 
         mat-raised-button 
         color="primary" 

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +16,7 @@ import { ProduitCardComponent } from '../../components/produit/produit.component
 import { PanierService } from '../../data-access/services/panier.service';
 import { FavoriesService } from '../../data-access/services/favories.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { FoGobackButtonComponent } from '../../../../shared/components/fo-goback-button/fo-goback-button.component';
 
 @Component({
   selector: 'app-magasin-detail',
@@ -31,13 +32,15 @@ import { AuthService } from '../../../../core/services/auth.service';
     MatFormFieldModule,
     MatInputModule,
     MatDialogModule,
-    ProduitCardComponent
+    ProduitCardComponent,
+    FoGobackButtonComponent
   ],
   templateUrl: './magasin-detail.component.html',
   styleUrl: './magasin-detail.component.scss'
 })
 export class MagasinDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly magasinService = inject(MagasinService);
   private readonly panierService = inject(PanierService);
   private readonly favoriesService = inject(FavoriesService);
@@ -255,5 +258,9 @@ export class MagasinDetailComponent implements OnInit {
         this.snackBar.open(err.error?.message || 'Erreur lors de la suppression', 'Fermer', { duration: 3000 });
       }
     });
+  }
+
+  goBack(): void {
+    this.router.navigate(['/shop/magasins']);
   }
 }

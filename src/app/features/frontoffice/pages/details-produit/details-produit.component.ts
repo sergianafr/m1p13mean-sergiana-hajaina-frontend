@@ -13,6 +13,7 @@ import { ProductService, ProduitFront, AvisProduit } from '../../data-access/ser
 import { PanierService } from '../../data-access/services/panier.service';
 import { FavoriesService } from '../../data-access/services/favories.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { FoGobackButtonComponent } from '../../../../shared/components/fo-goback-button/fo-goback-button.component';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -28,7 +29,8 @@ import { forkJoin } from 'rxjs';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FoGobackButtonComponent
   ],
   templateUrl: './details-produit.component.html',
   styleUrl: './details-produit.component.scss'

@@ -13,31 +13,8 @@
   margin: 0 auto;
   padding: 32px 24px 60px;
 
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: none;
-    border: none;
-    color: #555;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 8px;
+  app-fo-goback-button {
     margin-bottom: 24px;
-    transition: all 0.2s;
-
-    mat-icon {
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-    }
-
-    &:hover {
-      background: rgba(0, 0, 0, 0.05);
-      color: #1a1a2e;
-    }
   }
 
   .detail-container {
