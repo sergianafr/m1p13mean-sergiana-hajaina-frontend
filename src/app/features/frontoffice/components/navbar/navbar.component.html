@@ -8,8 +8,26 @@
 
     <!-- Search Bar -->
     <div class="navbar-search">
-      <mat-icon class="search-icon">search</mat-icon>
-      <input type="text" placeholder="Rechercher un produit..." class="search-input" />
+      <button 
+        class="search-btn" 
+        (click)="performSearch()"
+        matTooltip="Rechercher">
+        <mat-icon class="search-icon">search</mat-icon>
+      </button>
+      <input 
+        type="text" 
+        placeholder="Rechercher un produit..." 
+        class="search-input" 
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="performSearch()"
+      />
+      <button 
+        *ngIf="searchTerm" 
+        class="clear-btn" 
+        (click)="clearSearch()"
+        matTooltip="Effacer la recherche">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
 
     <!-- Right Actions -->

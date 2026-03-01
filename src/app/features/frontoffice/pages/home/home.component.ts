@@ -1,13 +1,16 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatChipsModule } from '@angular/material/chips';
 import { ProductService, ProduitFront } from '../../data-access/services/produit.service';
 import { ProduitCardComponent } from '../../components/produit/produit.component';
 import { PanierService } from '../../data-access/services/panier.service';
 import { FavoriesService } from '../../data-access/services/favories.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { SearchService } from '../../data-access/services/search.service';
+import { TypeProduitService, TypeProduit } from '../../../backoffice/type-produit/type-produit.service';
 
 @Component({
   selector: 'app-shop-home',
@@ -17,6 +20,7 @@ import { AuthService } from '../../../../core/services/auth.service';
     MatProgressSpinnerModule,
     MatIconModule,
     MatSnackBarModule,
+    MatChipsModule,
     ProduitCardComponent
   ],
   templateUrl: './home.component.html',
@@ -28,19 +32,46 @@ export class ShopHomeComponent implements OnInit {
   private readonly favoriesService = inject(FavoriesService);
   private readonly authService = inject(AuthService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly searchService = inject(SearchService);
+  private readonly typeProduitService = inject(TypeProduitService);
 
-  readonly produits = signal<ProduitFront[]>([]);
+  readonly allProduits = signal<ProduitFront[]>([]);
+  readonly typesProduits = signal<TypeProduit[]>([]);
   readonly isLoading = signal(true);
+  readonly selectedTypeId = computed(() => this.searchService.selectedTypeId());
+  readonly searchTerm = computed(() => this.searchService.searchTerm());
+
+  readonly produits = computed(() => {
+    let filtered = this.allProduits();
+    
+    // Filter by type
+    const typeId = this.selectedTypeId();
+    if (typeId) {
+      filtered = filtered.filter(p => p.typeProduit?._id === typeId);
+    }
+    
+    // Filter by search term
+    const term = this.searchTerm();
+    if (term && term.trim()) {
+      const searchLower = term.toLowerCase().trim();
+      filtered = filtered.filter(p => 
+        p.nomProduit.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    return filtered;
+  });
 
   ngOnInit(): void {
     this.loadProducts();
+    this.loadTypesProduits();
   }
 
   loadProducts(): void {
     this.isLoading.set(true);
-    this.productService.getRandomProduits(20).subscribe({
+    this.productService.getAllProduitsWithRatings().subscribe({
       next: (data) => {
-        this.produits.set(data);
+        this.allProduits.set(data);
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -48,6 +79,25 @@ export class ShopHomeComponent implements OnInit {
         this.isLoading.set(false);
       }
     });
+  }
+
+  loadTypesProduits(): void {
+    this.typeProduitService.getAll().subscribe({
+      next: (data) => {
+        this.typesProduits.set(data);
+      },
+      error: (err) => {
+        console.error('Erreur chargement types produits', err);
+      }
+    });
+  }
+
+  selectType(typeId: string | null): void {
+    this.searchService.setSelectedType(typeId);
+  }
+
+  isTypeSelected(typeId: string | null): boolean {
+    return this.selectedTypeId() === typeId;
   }
 
   onAddToCart(produit: ProduitFront): void {
