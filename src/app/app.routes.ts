@@ -174,6 +174,29 @@ export const routes: Routes = [
         pathMatch: 'full'
       },
       {
+        path: 'promotions',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/promotion/page/promotion-list/promotion-list.component').then(m => m.PromotionListComponent)
+      },
+      {
+        path: 'promotions/nouvelle',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/promotion/page/promotion-form/promotion-form.component').then(m => m.PromotionFormComponent)
+      },
+      {
+        path: 'promotions/:id',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/promotion/page/promotion-form/promotion-form.component').then(m => m.PromotionFormComponent)
+      },
+      {
+        path: 'promotion',
+        redirectTo: 'promotions',
+        pathMatch: 'full'
+      },
+      {
         path: 'stocks',
         canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
         loadComponent: () =>

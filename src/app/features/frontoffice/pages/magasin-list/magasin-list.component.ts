@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,7 +20,8 @@ import { MagasinCardComponent } from '../../components/magasin/magasin-card.comp
     MagasinCardComponent
   ],
   templateUrl: './magasin-list.component.html',
-  styleUrl: './magasin-list.component.scss'
+  styleUrl: './magasin-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MagasinListComponent implements OnInit {
   private readonly magasinService = inject(MagasinService);
