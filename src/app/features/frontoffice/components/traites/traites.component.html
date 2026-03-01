@@ -50,7 +50,7 @@
         <!-- Order Items -->
         <div class="order-items">
           @for (detail of order.details; track detail._id) {
-            <div class="order-item" (click)="detail.produit?._id && goToDetail(detail.produit._id)">
+            <div class="order-item" (click)="goToDetail(detail.produit?._id)">
               <div class="item-image">
                 <img [src]="getPhoto(detail)" [alt]="detail.produit?.nomProduit" />
               </div>

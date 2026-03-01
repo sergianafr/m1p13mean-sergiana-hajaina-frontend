@@ -44,7 +44,8 @@ export class TraitesComponent implements OnInit {
       : 'https://via.placeholder.com/80x80?text=No+photo';
   }
 
-  goToDetail(produitId: string): void {
+  goToDetail(produitId?: string | null): void {
+    if (!produitId) return;
     this.router.navigate(['/shop/produit', produitId]);
   }
 

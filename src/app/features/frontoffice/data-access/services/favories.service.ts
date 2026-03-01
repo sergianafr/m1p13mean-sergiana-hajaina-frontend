@@ -11,9 +11,9 @@ export interface FavoriItem {
     nomProduit: string;
     descriptionProduit?: string;
     photos: { url: string; dateAjout: Date }[];
-    unite: { _id: string; nomUnite: string };
-    typeProduit: { _id: string; nomTypeProduit: string };
-    magasin: { _id: string; nomMagasin: string };
+    unite?: { _id: string; nomUnite: string } | null;
+    typeProduit?: { _id: string; nomTypeProduit: string } | null;
+    magasin?: { _id: string; nomMagasin: string } | null;
   };
   appUser: string;
   createdAt: Date;
