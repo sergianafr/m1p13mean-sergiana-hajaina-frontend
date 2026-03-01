@@ -1,6 +1,6 @@
 .magasin-list {
   .hero-banner {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #a864a8 100%);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     padding: 60px 24px;
     text-align: center;
     position: relative;
@@ -13,7 +13,7 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+      background: radial-gradient(circle, rgba(233, 69, 96, 0.08) 0%, transparent 50%);
       animation: pulse 8s ease-in-out infinite;
     }
 
@@ -32,7 +32,7 @@
       letter-spacing: -1px;
 
       span {
-        background: linear-gradient(135deg, #ffd89b, #19547b);
+        background: linear-gradient(135deg, #e94560, #ff6b6b);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -41,7 +41,7 @@
 
     .hero-subtitle {
       font-size: 17px;
-      color: rgba(255, 255, 255, 0.85);
+      color: rgba(255, 255, 255, 0.65);
       margin: 0;
       line-height: 1.6;
     }

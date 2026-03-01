@@ -34,11 +34,16 @@ export interface AvisMagasin {
   magasin: string;
   appUser: {
     _id: string;
-    username: string;
+    name: string;
     email: string;
   };
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface UpdateAvisMagasinDto {
+  nombreEtoile: number;
+  commentaire?: string;
 }
 
 export interface AddAvisMagasinDto {
@@ -80,5 +85,13 @@ export class MagasinService {
 
   addReview(reviewData: AddAvisMagasinDto): Observable<any> {
     return this.http.post(`${this.apiUrl}/avis-magasins`, reviewData);
+  }
+
+  updateReview(reviewId: string, reviewData: UpdateAvisMagasinDto): Observable<any> {
+    return this.http.put(`${this.apiUrl}/avis-magasins/${reviewId}`, reviewData);
+  }
+
+  deleteReview(reviewId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/avis-magasins/${reviewId}`);
   }
 }

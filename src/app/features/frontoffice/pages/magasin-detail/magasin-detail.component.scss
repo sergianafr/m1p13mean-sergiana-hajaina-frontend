@@ -244,6 +244,11 @@
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
         }
 
+        &.my-review {
+          border: 2px solid #667eea;
+          background: linear-gradient(to bottom right, rgba(102, 126, 234, 0.02), rgba(102, 126, 234, 0.05));
+        }
+
         .review-header {
           width: 100%;
           display: flex;
@@ -268,9 +273,23 @@
             }
           }
 
-          .review-date {
-            font-size: 13px;
-            color: #888;
+          .review-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .review-date {
+              font-size: 13px;
+              color: #888;
+            }
+
+            .delete-btn {
+              transition: all 0.2s ease;
+
+              &:hover {
+                transform: scale(1.1);
+              }
+            }
           }
         }
 

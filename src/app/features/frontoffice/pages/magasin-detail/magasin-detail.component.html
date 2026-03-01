@@ -79,9 +79,13 @@
             <mat-icon>rate_review</mat-icon>
             Avis clients
           </h2>
-          <button mat-raised-button color="primary" (click)="toggleReviewForm()">
-            <mat-icon>add_comment</mat-icon>
-            Laisser un avis
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="toggleReviewForm()"
+          >
+            <mat-icon>{{ userReview() ? 'edit' : 'add_comment' }}</mat-icon>
+            {{ userReview() ? 'Modifier mon avis' : 'Laisser un avis' }}
           </button>
         </div>
 
@@ -89,7 +93,9 @@
         @if (showReviewForm()) {
           <mat-card class="review-form">
             <mat-card-header>
-              <mat-card-title>Donner votre avis sur cette boutique</mat-card-title>
+              <mat-card-title>
+                {{ isEditMode() ? 'Modifier votre avis' : 'Donner votre avis sur cette boutique' }}
+              </mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
@@ -164,14 +170,27 @@
         @if (!isLoadingAvis() && avis().length > 0) {
           <div class="reviews-list">
             @for (review of avis(); track review._id) {
-              <mat-card class="review-card">
+              <mat-card class="review-card" [class.my-review]="isMyReview(review)">
                 <mat-card-header>
                   <div class="review-header">
                     <div class="user-info">
                       <mat-icon class="user-icon">account_circle</mat-icon>
-                      <span class="username">{{ review.appUser?.username || 'Utilisateur' }}</span>
+                      <span class="username">{{ getReviewAuthorName(review) }}</span>
                     </div>
-                    <span class="review-date">{{ formatDate(review.dateAjout) }}</span>
+                    <div class="review-actions">
+                      <span class="review-date">{{ formatDate(review.dateAjout) }}</span>
+                      @if (isMyReview(review)) {
+                        <button
+                          mat-icon-button
+                          color="warn"
+                          (click)="deleteReview(review._id)"
+                          title="Supprimer mon avis"
+                          class="delete-btn"
+                        >
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      }
+                    </div>
                   </div>
                 </mat-card-header>
                 <mat-card-content>

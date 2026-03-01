@@ -49,11 +49,13 @@ export class MagasinDetailComponent implements OnInit {
   readonly magasin = signal<MagasinFront | null>(null);
   readonly produits = signal<ProduitFront[]>([]);
   readonly avis = signal<AvisMagasin[]>([]);
+  readonly userReview = signal<AvisMagasin | null>(null);
   readonly isLoading = signal(true);
   readonly isLoadingProduits = signal(true);
   readonly isLoadingAvis = signal(true);
   readonly showReviewForm = signal(false);
   readonly isSubmitting = signal(false);
+  readonly isEditMode = signal(false);
 
   readonly reviewForm = this.fb.group({
     nombreEtoile: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
@@ -102,9 +104,17 @@ export class MagasinDetailComponent implements OnInit {
 
   loadAvis(id: string): void {
     this.isLoadingAvis.set(true);
+    const currentUser = this.authService.getCurrentUser();
+    
     this.magasinService.getReviewsByMagasinId(id).subscribe({
       next: (data) => {
         this.avis.set(data);
+        
+        if (currentUser) {
+          const myReview = data.find(avis => avis.appUser._id === currentUser.id);
+          this.userReview.set(myReview || null);
+        }
+        
         this.isLoadingAvis.set(false);
       },
       error: (err) => {
@@ -129,6 +139,19 @@ export class MagasinDetailComponent implements OnInit {
       this.snackBar.open('Vous devez être connecté pour laisser un avis', 'Fermer', { duration: 3000 });
       return;
     }
+
+    const existingReview = this.userReview();
+    if (existingReview) {
+      this.isEditMode.set(true);
+      this.reviewForm.patchValue({
+        nombreEtoile: existingReview.nombreEtoile,
+        commentaire: existingReview.commentaire || ''
+      });
+    } else {
+      this.isEditMode.set(false);
+      this.reviewForm.reset({ nombreEtoile: 5, commentaire: '' });
+    }
+
     this.showReviewForm.update(v => !v);
   }
 
@@ -144,22 +167,32 @@ export class MagasinDetailComponent implements OnInit {
 
     this.isSubmitting.set(true);
     const reviewData = {
-      magasin: this.magasin()!._id,
       nombreEtoile: this.reviewForm.value.nombreEtoile!,
       commentaire: this.reviewForm.value.commentaire || ''
     };
 
-    this.magasinService.addReview(reviewData).subscribe({
+    const existingReview = this.userReview();
+    const request$ = existingReview
+      ? this.magasinService.updateReview(existingReview._id, reviewData)
+      : this.magasinService.addReview({
+          magasin: this.magasin()!._id,
+          ...reviewData
+        });
+
+    console.log(request$);
+    request$.subscribe({
       next: () => {
-        this.snackBar.open('Avis ajouté avec succès', 'OK', { duration: 2000 });
+        const message = existingReview ? 'Avis modifié avec succès' : 'Avis ajouté avec succès';
+        this.snackBar.open(message, 'OK', { duration: 2000 });
         this.reviewForm.reset({ nombreEtoile: 5, commentaire: '' });
         this.showReviewForm.set(false);
+        this.isEditMode.set(false);
         this.loadAvis(this.magasin()!._id);
         this.loadMagasin(this.magasin()!._id);
         this.isSubmitting.set(false);
       },
       error: (err) => {
-        this.snackBar.open(err.error?.message || 'Erreur lors de l\'ajout de l\'avis', 'Fermer', { duration: 3000 });
+        this.snackBar.open(err.error?.message || 'Erreur lors de l\'opération', 'Fermer', { duration: 3000 });
         this.isSubmitting.set(false);
       }
     });
@@ -194,6 +227,33 @@ export class MagasinDetailComponent implements OnInit {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
+    });
+  }
+
+  isMyReview(review: AvisMagasin): boolean {
+    const user = this.authService.getCurrentUser();
+    return user ? review.appUser._id === user.id : false;
+  }
+
+  getReviewAuthorName(review: AvisMagasin): string {
+    return this.isMyReview(review) ? 'Votre avis' : review.appUser.name || 'Utilisateur';
+  }
+
+  deleteReview(reviewId: string): void {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer votre avis ?')) {
+      return;
+    }
+
+    this.magasinService.deleteReview(reviewId).subscribe({
+      next: () => {
+        this.snackBar.open('Avis supprimé avec succès', 'OK', { duration: 2000 });
+        this.userReview.set(null);
+        this.loadAvis(this.magasin()!._id);
+        this.loadMagasin(this.magasin()!._id);
+      },
+      error: (err) => {
+        this.snackBar.open(err.error?.message || 'Erreur lors de la suppression', 'Fermer', { duration: 3000 });
+      }
     });
   }
 }
