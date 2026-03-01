@@ -3,6 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 
+export interface PromotionInfo {
+  _id: string;
+  pourcentage: number;
+  dateDebut: Date;
+  dateFin: Date;
+  qte: number;
+}
+
 export interface PanierItem {
   _id: string;
   qte: number;
@@ -15,6 +23,8 @@ export interface PanierItem {
     typeProduit?: { _id: string; nomTypeProduit: string } | null;
     magasin?: { _id: string; nomMagasin: string } | null;
     prixActuel: number | null;
+    promotion?: PromotionInfo | null;
+    prixPromo?: number | null;
   };
   appUser: string;
   createdAt: Date;

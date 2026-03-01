@@ -8,6 +8,14 @@ export interface PhotoProduit {
   dateAjout: Date;
 }
 
+export interface PromotionInfo {
+  _id: string;
+  pourcentage: number;
+  dateDebut: Date;
+  dateFin: Date;
+  qte: number;
+}
+
 export interface ProduitFront {
   _id: string;
   nomProduit: string;
@@ -17,6 +25,8 @@ export interface ProduitFront {
   typeProduit?: { _id: string; nomTypeProduit: string } | null;
   magasin?: { _id: string; nomMagasin: string } | null;
   prixActuel: number | null;
+  promotion?: PromotionInfo | null;
+  prixPromo?: number | null;
   averageRating?: number;
   totalReviews?: number;
   createdAt: Date;

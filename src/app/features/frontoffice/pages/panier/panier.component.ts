@@ -41,7 +41,14 @@ export class PanierComponent implements OnInit {
   );
 
   readonly totalPrix = computed(() =>
-    this.items().reduce((sum, item) => sum + ((item.produit?.prixActuel ?? 0) * (item.qte || 1)), 0)
+    this.items().reduce((sum, item) => {
+      const qte = item.qte || 1;
+      // Utiliser le prix promo si disponible, sinon le prix actuel
+      const prix = (item.produit?.promotion && item.produit?.prixPromo !== null && item.produit?.prixPromo !== undefined)
+        ? item.produit.prixPromo
+        : (item.produit?.prixActuel ?? 0);
+      return sum + (prix * qte);
+    }, 0)
   );
 
   ngOnInit(): void {
