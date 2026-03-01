@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject, OnInit, effect } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { DynamicFormComponent, DynamicFormConfig, TitleComponent } from '../../../../../shared';
@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { PromotionService, PromotionDTO } from '../../promotion.service';
 import { ProduitService } from '../../../produit/produit.service';
 import { MagasinService } from '../../../magasin/magasin.service';
+import { AuthService } from '../../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-promotion-form',
@@ -31,6 +32,7 @@ export class PromotionFormComponent implements OnInit {
   private readonly promotionService = inject(PromotionService);
   private readonly produitService = inject(ProduitService);
   private readonly magasinService = inject(MagasinService);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
@@ -39,6 +41,7 @@ export class PromotionFormComponent implements OnInit {
   protected readonly isEditMode = signal(false);
   protected readonly promotionId = signal<string | null>(null);
   protected readonly userData = signal<Record<string, unknown> | undefined>(undefined);
+  protected readonly selectedTypePromotion = signal<string>('');
 
   protected readonly formConfig = signal<DynamicFormConfig>({
     mode: 'create',
@@ -59,13 +62,17 @@ export class PromotionFormComponent implements OnInit {
         key: 'produit',
         label: 'Produit',
         type: 'select',
-        options: []
+        options: [],
+        disabled: true,
+        required: false
       },
       {
         key: 'magasin',
         label: 'Magasin',
         type: 'select',
-        options: []
+        options: [],
+        disabled: true,
+        required: false
       },
       {
         key: 'pourcentage',
@@ -115,18 +122,28 @@ export class PromotionFormComponent implements OnInit {
   private loadSelectOptions(): void {
     this.isLoading.set(true);
 
+    const currentUser = this.authService.getCurrentUser();
+
     forkJoin({
       produits: this.produitService.getAll(),
-      magasins: this.magasinService.getAll()
+      magasins: this.magasinService.getMine()
     }).subscribe({
       next: (data) => {
+        const currentUserId = currentUser?.id;
+        const magasinIds = data.magasins.map(m => m._id);
+        
+        const filteredProduits = data.produits.filter(p => {
+          const magasinId = typeof p.magasin === 'string' ? p.magasin : p.magasin?._id;
+          return magasinIds.includes(magasinId);
+        });
+
         this.formConfig.update(config => ({
           ...config,
           fields: config.fields.map(field => {
             if (field.key === 'produit') {
               return {
                 ...field,
-                options: data.produits.map(p => ({
+                options: filteredProduits.map(p => ({
                   value: p._id!,
                   label: p.nomProduit
                 }))
@@ -172,6 +189,8 @@ export class PromotionFormComponent implements OnInit {
           dateFin: this.formatDateForInput(data.dateFin)
         };
         this.userData.set(formData);
+        this.selectedTypePromotion.set(typePromotion);
+        this.updateFieldsDisabledState(typePromotion);
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -184,6 +203,37 @@ export class PromotionFormComponent implements OnInit {
         this.goBack();
       }
     });
+  }
+
+  onFormDataChange(data: Record<string, unknown>): void {
+    const typePromotion = data['typePromotion'] as string;
+    if (typePromotion && typePromotion !== this.selectedTypePromotion()) {
+      this.selectedTypePromotion.set(typePromotion);
+      this.updateFieldsDisabledState(typePromotion);
+    }
+  }
+
+  private updateFieldsDisabledState(typePromotion: string): void {
+    this.formConfig.update(config => ({
+      ...config,
+      fields: config.fields.map(field => {
+        if (field.key === 'produit') {
+          return { 
+            ...field, 
+            disabled: typePromotion !== 'produit',
+            required: typePromotion === 'produit'
+          };
+        }
+        if (field.key === 'magasin') {
+          return { 
+            ...field, 
+            disabled: typePromotion !== 'magasin',
+            required: typePromotion === 'magasin'
+          };
+        }
+        return field;
+      })
+    }));
   }
 
   onSubmit(data: Record<string, unknown>): void {
