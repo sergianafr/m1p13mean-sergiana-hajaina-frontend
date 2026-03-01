@@ -19,7 +19,7 @@ export interface MagasinFront {
     username: string;
     email: string;
   };
-  typeMagasin: TypeMagasin;
+  typeMagasin?: TypeMagasin | null;
   averageRating?: number;
   totalReviews?: number;
   createdAt: Date;
