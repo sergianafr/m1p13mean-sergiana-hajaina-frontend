@@ -17,7 +17,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Magasin, MagasinService } from '../magasin/magasin.service';
 import { PaiementLoyerEntity, PaiementLoyerFilters, PaiementLoyerService } from './paiement-loyer.service';
 
-type PaymentTableRow = PaiementLoyerEntity & { periode: string; nbBoxes: number };
+type PaymentTableRow = PaiementLoyerEntity & { periode: string; nbBoxes: number; statut: string };
 
 @Component({
   selector: 'app-paiement-loyer-list',
@@ -83,6 +83,16 @@ export class PaiementLoyerListComponent implements OnInit {
         key: 'periode',
         label: 'Période',
         sortable: true
+      },
+      {
+        key: 'statut',
+        label: 'Statut',
+        sortable: true,
+        format: (value: unknown) => value ? String(value) : '-',
+        cellClass: (row: unknown) => {
+          const current = row as PaymentTableRow;
+          return current.statut === 'Payé' ? 'status-paid' : 'status-unpaid';
+        }
       },
       {
         key: 'nbBoxes',
@@ -226,7 +236,8 @@ export class PaiementLoyerListComponent implements OnInit {
       .map(item => ({
         ...item,
         periode: `${String(item.mois).padStart(2, '0')}/${item.annee}`,
-        nbBoxes: Array.isArray(item.details) ? item.details.length : 0
+        nbBoxes: Array.isArray(item.details) ? item.details.length : 0,
+        statut: Number(item.montantPaye) > 0 ? 'Payé' : 'Non payé'
       }))
       .sort((left, right) => new Date(String(right.datePaiement)).getTime() - new Date(String(left.datePaiement)).getTime());
   }

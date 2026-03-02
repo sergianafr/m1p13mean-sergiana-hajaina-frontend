@@ -42,12 +42,6 @@
         <input matInput type="date" formControlName="datePaiement" required />
       </mat-form-field>
 
-      <div class="md:col-span-2 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900">
-        <p class="font-medium">Montant calculé automatiquement</p>
-        <p class="mt-1">Le montant payé sera la somme des loyers actifs de tous les box associés au magasin pour la période choisie.</p>
-        <p class="mt-2">Box actifs détectés: <span class="font-semibold">{{ totalBoxesActifs() }}</span></p>
-      </div>
-
       <div class="md:col-span-2 flex justify-end gap-2">
         <button mat-stroked-button type="button" (click)="goBack()">Annuler</button>
         <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting() || isLoading()">

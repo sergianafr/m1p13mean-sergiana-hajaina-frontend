@@ -304,6 +304,12 @@ export const routes: Routes = [
           import('./features/backoffice/paiement-loyer/paiement-loyer-form.component').then(m => m.PaiementLoyerFormComponent)
       },
       {
+        path: 'paiement-loyers/suivi',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/backoffice/paiement-loyer/paiement-loyer-admin-status.component').then(m => m.PaiementLoyerAdminStatusComponent)
+      },
+      {
         path: 'user',
         redirectTo: 'users',
         pathMatch: 'full'
