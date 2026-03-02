@@ -5,9 +5,5 @@
     (action)="onCreate()">
   </list-header>
 
-  <mat-card class="w-full rounded-lg shadow-md border border-gray-200 bg-white">
-    <mat-card-content>
-      <dynamic-table [config]="tableConfig()" [data]="produits()"></dynamic-table>
-    </mat-card-content>
-  </mat-card>
+  <dynamic-table [config]="tableConfig()" [data]="produits()"></dynamic-table>
 </div>

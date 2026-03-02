@@ -66,13 +66,13 @@ export const routes: Routes = [
       },
       {
         path: 'type-produits/create',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/backoffice/type-produit/type-produit.component').then(m => m.TypeProduitForm)
       },
       {
         path: 'type-produits/:id',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/backoffice/type-produit/type-produit.component').then(m => m.TypeProduitForm)
       },
@@ -112,13 +112,13 @@ export const routes: Routes = [
       },
       {
         path: 'unites/create',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/backoffice/unite/pages/unite-form/unite-form.component').then(m => m.UniteFormComponent)
       },
       {
         path: 'unites/:id',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/backoffice/unite/pages/unite-form/unite-form.component').then(m => m.UniteFormComponent)
       },

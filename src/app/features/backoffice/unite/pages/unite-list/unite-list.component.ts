@@ -4,6 +4,7 @@ import { DynamicTableComponent, ListHeaderComponent } from '../../../../../share
 import { DynamicTableConfig } from '../../../../../shared/models';
 import { UniteService, Unite } from '../../unite.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthService } from '../../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-unite-list',
@@ -21,8 +22,10 @@ export class UniteListComponent implements OnInit {
   private readonly uniteService = inject(UniteService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly authService = inject(AuthService);
 
   protected readonly unites = signal<Unite[]>([]);
+  protected readonly canManage = signal(false);
 
   protected readonly tableConfig = signal<DynamicTableConfig>({
     columns: [
@@ -51,6 +54,11 @@ export class UniteListComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.canManage.set(this.authService.hasRole('ADMIN'));
+    this.tableConfig.update(config => ({
+      ...config,
+      clickable: this.canManage()
+    }));
     this.loadData();
   }
 
