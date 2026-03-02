@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed, effect } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,6 +13,8 @@ import { SearchService } from '../../data-access/services/search.service';
 import { TypeProduitService, TypeProduit } from '../../../backoffice/type-produit/type-produit.service';
 
 type PriceSortOrder = 'asc' | 'desc' | null;
+type RatingSortOrder = 'asc' | 'desc' | null;
+const PROMO_FILTER_ID = '__PROMO__';
 
 @Component({
   selector: 'app-shop-home',
@@ -41,6 +43,7 @@ export class ShopHomeComponent implements OnInit {
   readonly typesProduits = signal<TypeProduit[]>([]);
   readonly isLoading = signal(true);
   readonly priceSortOrder = signal<PriceSortOrder>(null);
+  readonly ratingSortOrder = signal<RatingSortOrder>(null);
   readonly selectedTypeId = computed(() => this.searchService.selectedTypeId());
   readonly searchTerm = computed(() => this.searchService.searchTerm());
   readonly showPriceSort = computed(() => !!this.selectedTypeId());
@@ -50,7 +53,11 @@ export class ShopHomeComponent implements OnInit {
     
     // Filter by type
     const typeId = this.selectedTypeId();
-    if (typeId) {
+    if (typeId === PROMO_FILTER_ID) {
+      filtered = filtered.filter(
+        produit => (produit.prixPromo !== null && produit.prixPromo !== undefined) || !!produit.promotion
+      );
+    } else if (typeId) {
       filtered = filtered.filter(p => p.typeProduit?._id === typeId);
     }
     
@@ -74,6 +81,20 @@ export class ShopHomeComponent implements OnInit {
         }
 
         return secondPrice - firstPrice;
+      });
+    }
+
+    if (typeId && this.ratingSortOrder()) {
+      const direction = this.ratingSortOrder();
+      filtered = [...filtered].sort((first, second) => {
+        const firstRating = first.averageRating ?? 0;
+        const secondRating = second.averageRating ?? 0;
+
+        if (direction === 'asc') {
+          return firstRating - secondRating;
+        }
+
+        return secondRating - firstRating;
       });
     }
     
@@ -115,6 +136,7 @@ export class ShopHomeComponent implements OnInit {
 
     if (!typeId) {
       this.priceSortOrder.set(null);
+      this.ratingSortOrder.set(null);
     }
   }
 
@@ -122,12 +144,30 @@ export class ShopHomeComponent implements OnInit {
     return this.selectedTypeId() === typeId;
   }
 
+  selectPromo(): void {
+    this.selectType(PROMO_FILTER_ID);
+  }
+
+  isPromoSelected(): boolean {
+    return this.selectedTypeId() === PROMO_FILTER_ID;
+  }
+
   selectPriceSort(order: PriceSortOrder): void {
     this.priceSortOrder.set(order);
+    this.ratingSortOrder.set(null);
   }
 
   isPriceSortSelected(order: Exclude<PriceSortOrder, null>): boolean {
     return this.priceSortOrder() === order;
+  }
+
+  selectRatingSort(order: RatingSortOrder): void {
+    this.ratingSortOrder.set(order);
+    this.priceSortOrder.set(null);
+  }
+
+  isRatingSortSelected(order: Exclude<RatingSortOrder, null>): boolean {
+    return this.ratingSortOrder() === order;
   }
 
   onAddToCart(produit: ProduitFront): void {

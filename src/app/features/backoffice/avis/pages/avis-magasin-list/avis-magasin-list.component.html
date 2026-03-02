@@ -1,0 +1,28 @@
+<div class="container p-4 flex flex-col gap-3">
+  <list-header
+    title="Avis magasins"
+    subtitle="Consulter tous les avis magasins selon votre rôle"
+    [showAction]="false">
+  </list-header>
+
+  <mat-card class="rounded-lg border border-gray-200 shadow-sm">
+    <div class="p-3 grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+      <mat-form-field appearance="outline" class="w-full md:col-span-2">
+        <mat-label>Filtrer par magasin</mat-label>
+        <mat-select [formControl]="filtersForm.controls.magasinId">
+          <mat-option value="ALL">Tous les magasins</mat-option>
+          @for (magasin of magasins(); track magasin._id) {
+            <mat-option [value]="magasin._id">{{ magasin.nomMagasin }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div class="flex gap-2">
+        <button mat-flat-button color="primary" type="button" (click)="applyFilters()">Filtrer</button>
+        <button mat-stroked-button type="button" (click)="resetFilters()">Réinitialiser</button>
+      </div>
+    </div>
+  </mat-card>
+
+  <dynamic-table [config]="tableConfig()" [data]="filteredAvis()"></dynamic-table>
+</div>
