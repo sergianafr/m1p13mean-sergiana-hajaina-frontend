@@ -11,7 +11,10 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { forkJoin, map, Observable } from 'rxjs';
 import { ProduitService, Produit } from '../../produit.service';
+import { MagasinService } from '../../../magasin/magasin.service';
+import { AuthService } from '../../../../../core/services/auth.service';
 import { DynamicTableComponent, ListHeaderComponent } from '../../../../../shared';
 import { DynamicTableConfig } from '../../../../../shared/models/table-config.model';
 import { PrixDialogComponent } from '../../components/prix-dialog/prix-dialog.component';
@@ -33,12 +36,18 @@ import { PrixDialogComponent } from '../../components/prix-dialog/prix-dialog.co
 })
 export class ProduitListComponent implements OnInit {
   private readonly produitService = inject(ProduitService);
+  private readonly magasinService = inject(MagasinService);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
 
   protected readonly produits = signal<Produit[]>([]);
   protected readonly isLoading = signal(false);
+  protected get isBoutique(): boolean {
+    return this.authService.hasRole('BOUTIQUE');
+  }
+
   protected readonly tableConfig = computed<DynamicTableConfig>(() => ({
     columns: [
       { key: 'nomProduit', label: 'Nom du produit', sortable: true },
@@ -113,7 +122,25 @@ export class ProduitListComponent implements OnInit {
 
   private loadProduits(): void {
     this.isLoading.set(true);
-    this.produitService.getAll().subscribe({
+
+    const request$: Observable<Produit[]> = this.isBoutique
+      ? forkJoin({
+          produits: this.produitService.getAll(),
+          magasins: this.magasinService.getMine()
+        }).pipe(
+          map(({ produits, magasins }) => {
+            const userMagasinIds = new Set(
+              magasins
+                .map((magasin) => magasin._id)
+                .filter((id): id is string => typeof id === 'string' && id.length > 0)
+            );
+
+            return produits.filter((produit) => userMagasinIds.has(this.getMagasinId(produit.magasin)));
+          })
+        )
+      : this.produitService.getAll();
+
+    request$.subscribe({
       next: (data) => {
         this.produits.set(data);
         this.isLoading.set(false);
@@ -127,6 +154,18 @@ export class ProduitListComponent implements OnInit {
         console.error('Erreur:', error);
       }
     });
+  }
+
+  private getMagasinId(value: Produit['magasin']): string {
+    if (typeof value === 'string') {
+      return value;
+    }
+
+    if (value && typeof value === 'object' && typeof value._id === 'string') {
+      return value._id;
+    }
+
+    return '';
   }
 
   protected onCreate(): void {
