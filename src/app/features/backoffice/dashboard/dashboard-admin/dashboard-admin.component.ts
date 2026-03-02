@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { ListHeaderComponent } from '../../../../shared';
 import { DashboardService } from '../../../../core/services/dashboard.service';
-import { AdminDashboard, AdminMagasinStat } from '../../../../core/models/dashboard';
+import { AdminDashboard } from '../../../../core/models/dashboard';
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -39,16 +39,6 @@ export class DashboardAdminComponent implements OnInit {
   protected readonly availableYears = computed(() => {
     const current = new Date().getFullYear();
     return [current, current - 1, current - 2];
-  });
-
-  protected readonly topMagasinsByYear = computed<AdminMagasinStat[]>(() => {
-    const magasins = this.dashboard()?.magasins ?? [];
-    return [...magasins].sort((a, b) => (b.revenue || 0) - (a.revenue || 0)).slice(0, 5);
-  });
-
-  protected readonly totalRevenueYear = computed(() => {
-    const monthly = this.dashboard()?.monthly ?? [];
-    return monthly.reduce((sum, m) => sum + (m.revenue || 0), 0);
   });
 
   ngOnInit(): void {

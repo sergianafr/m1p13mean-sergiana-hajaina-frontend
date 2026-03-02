@@ -11,10 +11,13 @@ export type AdminDashboardSummary = {
     boutiques: number;
     clients: number;
   };
-  ventesRecent: {
-    nombreVentes: number;
+  boxes: {
+    total: number;
+    occupes: number;
+    libres: number;
+  };
+  loyersRecent: {
     revenue: number;
-    clientsUniques: number;
   };
   promotions: {
     actives: number;
@@ -22,20 +25,12 @@ export type AdminDashboardSummary = {
   };
 };
 
-export type AdminMagasinStat = {
+export type AdminMagasinAvisStat = {
   magasinId: string;
   nomMagasin: string;
-  nombreVentes: number;
-  revenue: number;
   avisMoyen: number;
   nombreAvis: number;
-};
-
-export type AdminTopMagasin = {
-  magasinId: string;
-  nomMagasin: string;
-  nombreVentes: number;
-  revenue: number;
+  avisMonthly: Array<{ avisMoyen: number; nombreAvis: number }>; // 12 mois
 };
 
 export type AdminDashboard = {
@@ -43,9 +38,8 @@ export type AdminDashboard = {
   annee: number;
   recentDays: number;
   summary: AdminDashboardSummary;
-  monthly: DashboardMonthlyPoint[]; // 12 points
-  magasins: AdminMagasinStat[];
-  topMagasinsRecent: AdminTopMagasin[];
+  totalRevenueYear: number;
+  magasinsAvis: AdminMagasinAvisStat[];
 };
 
 export type BoutiqueDashboardSummary = {
