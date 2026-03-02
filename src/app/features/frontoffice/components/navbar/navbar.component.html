@@ -1,0 +1,71 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo / Brand -->
+    <a routerLink="/shop" class="navbar-brand">
+      <mat-icon class="brand-icon">storefront</mat-icon>
+      <span class="brand-text">MeanShop</span>
+    </a>
+
+    <!-- Search Bar -->
+    <div class="navbar-search">
+      <button 
+        class="search-btn" 
+        (click)="performSearch()"
+        matTooltip="Rechercher">
+        <mat-icon class="search-icon">search</mat-icon>
+      </button>
+      <input 
+        type="text" 
+        placeholder="Rechercher un produit..." 
+        class="search-input" 
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="performSearch()"
+      />
+      <button 
+        *ngIf="searchTerm" 
+        class="clear-btn" 
+        (click)="clearSearch()"
+        matTooltip="Effacer la recherche">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="navbar-actions">
+      <a routerLink="/shop/magasins" class="nav-action" matTooltip="Magasins">
+        <mat-icon>shopping_basket</mat-icon>      
+      </a>
+      <!-- Favoris -->
+      <a routerLink="/shop/favoris" class="nav-action" matTooltip="Mes favoris">
+        <mat-icon>favorite_border</mat-icon>
+      </a>
+
+      <!-- Panier -->
+      <a routerLink="/shop/panier" class="nav-action" matTooltip="Mon panier">
+        <mat-icon>shopping_cart</mat-icon>
+      </a>
+
+      <a routerLink="/shop/traites" class="nav-action" matTooltip="Mes commandes">
+        <mat-icon>receipt_long</mat-icon>
+      </a>
+
+      <!-- User Menu -->
+      <button class="nav-action user-btn" [matMenuTriggerFor]="userMenu">
+        <mat-icon>person</mat-icon>
+        <span class="user-name" *ngIf="currentUser">{{ currentUser.name || currentUser.email }}</span>
+        <mat-icon class="dropdown-arrow">arrow_drop_down</mat-icon>
+      </button>
+
+      <mat-menu #userMenu="matMenu" class="user-dropdown">
+        <button mat-menu-item routerLink="/home" *ngIf="currentUser?.role !== 'CLIENT'">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Déconnexion</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</nav>

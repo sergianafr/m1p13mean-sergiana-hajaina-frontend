@@ -1,0 +1,22 @@
+<mat-card class="title-card">
+  <mat-card-content class="flex justify-between py-4 px-6">
+    <div class="flex gap-3">
+      @if (showBackButton()) {
+        <div class="mt-5">
+          <button mat-icon-button (click)="onRedirect()" class="p-0 mt-3">
+            <mat-icon class="text-sm">arrow_back</mat-icon>
+          </button>
+        </div>
+      }
+      
+      <div class="flex flex-col justify-center">
+        <span class="text-sm text-gray-500">{{ textHead() }}</span>
+        <span class="text-lg font-semibold text-gray-800">{{ formTitle() }}</span>
+      </div>
+    </div>
+    
+    <div class="my-auto">
+      <ng-content />
+    </div>
+  </mat-card-content>
+</mat-card>

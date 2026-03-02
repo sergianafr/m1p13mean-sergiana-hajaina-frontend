@@ -1,0 +1,13 @@
+<div class="container mx-auto p-6">
+  <list-header
+    title="Unités"
+    [showAction]="canManage()"
+    actionLabel="Nouvelle Unité"
+    (action)="createNew()">
+  </list-header>
+
+  <dynamic-table
+    [config]="tableConfig()"
+    [data]="unites()">
+  </dynamic-table>
+</div>

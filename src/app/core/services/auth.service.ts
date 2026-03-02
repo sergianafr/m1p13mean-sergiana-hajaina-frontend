@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse, User } from '../models/user';
+import { LoginRequest, LoginResponse, RegisterRequest, Role, User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +26,12 @@ export class AuthService {
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.API_URL}/login`, credentials).pipe(
+      tap(response => this.handleAuthSuccess(response))
+    );
+  }
+
+  register(data: RegisterRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.API_URL}/register`, data).pipe(
       tap(response => this.handleAuthSuccess(response))
     );
   }
@@ -56,6 +62,36 @@ export class AuthService {
   hasRole(role: string): boolean {
     const user = this.getCurrentUser();
     return user?.role === role;
+  }
+
+  hasAnyRole(roles: string[]): boolean {
+    const user = this.getCurrentUser();
+    return user ? roles.includes(user.role) : false;
+  }
+
+  hasAllRoles(roles: string[]): boolean {
+    const user = this.getCurrentUser();
+    return user ? roles.every(role => user.role === role) : false;
+  }
+
+  getDefaultLandingByRole(role: Role | null | undefined): string {
+    if (role === 'ADMIN') {
+      return '/dashboard/admin';
+    }
+
+    if (role === 'BOUTIQUE') {
+      return '/dashboard/boutique';
+    }
+
+    if (role === 'CLIENT') {
+      return '/shop';
+    }
+
+    return '/login';
+  }
+
+  getDefaultLandingForCurrentUser(): string {
+    return this.getDefaultLandingByRole(this.getCurrentUser()?.role);
   }
 
   private handleAuthSuccess(response: LoginResponse): void {

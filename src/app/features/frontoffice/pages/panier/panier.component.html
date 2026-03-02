@@ -1,0 +1,136 @@
+<section class="panier-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <mat-icon class="title-icon">shopping_cart</mat-icon>
+        Mon Panier
+      </h1>
+      <p class="page-subtitle" *ngIf="!isLoading()">{{ totalItems() }} article{{ totalItems() > 1 ? 's' : '' }}</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading()">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Chargement de votre panier...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading() && items().length === 0">
+    <div class="empty-icon-wrapper">
+      <mat-icon class="empty-icon">remove_shopping_cart</mat-icon>
+    </div>
+    <h3>Votre panier est vide</h3>
+    <p>D\u00e9couvrez nos produits et remplissez votre panier !</p>
+    <button class="btn-explore" routerLink="/shop">
+      <mat-icon>storefront</mat-icon>
+      <span>Continuer mes achats</span>
+    </button>
+  </div>
+
+  <!-- Cart Content -->
+  <div class="panier-content" *ngIf="!isLoading() && items().length > 0">
+    <!-- Cart Items -->
+    <div class="cart-items">
+      @for (item of items(); track item._id) {
+        <div class="cart-card">
+          <div class="cart-image" (click)="goToDetail(item.produit._id)">
+            <img [src]="getPhoto(item)" [alt]="item.produit.nomProduit" />
+            @if (item.produit.promotion) {
+              <div class="cart-promo-badge">
+                <span class="badge-percent">-{{ item.produit.promotion!.pourcentage }}%</span>
+              </div>
+            }
+          </div>
+          <div class="cart-info" (click)="goToDetail(item.produit._id)">
+            <span class="cart-category">{{ item.produit.typeProduit?.nomTypeProduit || 'Produit' }}</span>
+            <h3 class="cart-name">{{ item.produit.nomProduit }}</h3>
+            <p class="cart-shop">
+              <mat-icon>store</mat-icon>
+              {{ item.produit.magasin?.nomMagasin || 'Boutique' }}
+            </p>
+            <div class="cart-price-row">
+              @if (item.produit.prixActuel !== null && item.produit.prixActuel !== undefined) {
+                @if (item.produit.promotion && item.produit.prixPromo !== null && item.produit.prixPromo !== undefined) {
+                  <!-- Prix avec promotion -->
+                  <div class="price-with-promo">
+                    <span class="unit-price-original">{{ item.produit.prixActuel | number:'1.0-0' }} Ar</span>
+                    <span class="unit-price-promo">{{ item.produit.prixPromo | number:'1.0-0' }} Ar / unité</span>
+                  </div>
+                  <div class="subtotal-with-promo">
+                    <span class="subtotal-original">{{ (item.produit.prixActuel * item.qte) | number:'1.0-0' }} Ar</span>
+                    <span class="subtotal">Sous-total&nbsp;: <strong>{{ (item.produit.prixPromo * item.qte) | number:'1.0-0' }} Ar</strong></span>
+                  </div>
+                  <span class="savings-badge">Économie : {{ ((item.produit.prixActuel - item.produit.prixPromo) * item.qte) | number:'1.0-0' }} Ar</span>
+                } @else {
+                  <!-- Prix normal -->
+                  <span class="unit-price">{{ item.produit.prixActuel | number:'1.0-0' }} Ar / unité</span>
+                  <span class="subtotal">Sous-total&nbsp;: <strong>{{ (item.produit.prixActuel * item.qte) | number:'1.0-0' }} Ar</strong></span>
+                }
+              } @else {
+                <span class="price-undefined">Prix non défini</span>
+              }
+            </div>
+          </div>
+          <!-- AliExpress-style quantity control -->
+          <div class="cart-qty-control">
+            <button class="qty-btn" (click)="changeQte(item, -1)" [disabled]="item.qte <= 1">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <input
+              type="number"
+              class="qty-input"
+              [value]="item.qte"
+              min="1"
+              (change)="onQteInput(item, $event)"
+              (keyup.enter)="onQteInput(item, $event)"
+            />
+            <button class="qty-btn" (click)="changeQte(item, 1)">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <div class="cart-actions">
+            <button class="btn-remove" (click)="removeItem(item)" title="Retirer du panier">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Summary Footer -->
+    <div class="cart-summary">
+      <div class="summary-info">
+        <div class="summary-row">
+          <span class="summary-label">Total articles</span>
+          <span class="summary-value">{{ totalItems() }}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Produits différents</span>
+          <span class="summary-value">{{ items().length }}</span>
+        </div>
+        @if (totalPrix() > 0) {
+          <div class="summary-row summary-total">
+            <span class="summary-label">Total estimé</span>
+            <span class="summary-value total-amount">{{ totalPrix() | number:'1.0-0' }} Ar</span>
+          </div>
+        }
+      </div>
+      <div class="summary-actions">
+        <button class="btn-continue" routerLink="/shop">
+          <mat-icon>arrow_back</mat-icon>
+          Continuer mes achats
+        </button>
+        <button class="btn-checkout" (click)="checkout()" [disabled]="isCheckingOut()">
+          @if (isCheckingOut()) {
+            <mat-spinner diameter="20"></mat-spinner>
+            <span>Traitement...</span>
+          } @else {
+            <mat-icon>payment</mat-icon>
+            <span>Passer la commande</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

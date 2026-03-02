@@ -1,0 +1,26 @@
+<mat-sidenav-container class="h-screen bg-gray-100">
+	<mat-sidenav
+		class="w-64 border-r border-gray-200 shadow-sm"
+		[mode]="sidenavMode()"
+		[opened]="sidenavOpened()"
+		(backdropClick)="closeIfHandset()"
+		role="navigation"
+		aria-label="Primary navigation"
+	>
+		<app-sidebar (navigate)="closeIfHandset()" />
+	</mat-sidenav>
+
+	<mat-sidenav-content class="h-full bg-gray-50">
+		<div class="h-full flex flex-col">
+			<app-header (toggleSidenav)="toggleSidenav()" />
+
+			<main class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+				<div class="max-w-6xl w-full mx-auto">
+					<router-outlet />
+				</div>
+			</main>
+
+			<app-footer />
+		</div>
+	</mat-sidenav-content>
+</mat-sidenav-container>

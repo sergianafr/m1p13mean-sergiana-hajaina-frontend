@@ -1,0 +1,39 @@
+<mat-toolbar class="bg-white/95 border-b border-gray-200 backdrop-blur-sm">
+	<div class="w-full flex items-center px-2 sm:px-3">
+		<button
+			mat-icon-button
+			type="button"
+			aria-label="Toggle navigation"
+			class="mr-2 text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/35"
+			(click)="toggleSidenav.emit()"
+		>
+			<mat-icon>menu</mat-icon>
+		</button>
+
+		<div class="hidden sm:flex flex-col leading-tight">
+			<span class="text-[11px] uppercase tracking-[0.14em] text-gray-400">Espace admin</span>
+			<span class="text-base font-semibold text-gray-800">Dashboard</span>
+		</div>
+		<span class="sm:hidden text-base font-semibold text-gray-800">Dashboard</span>
+		<span class="flex-1"></span>
+
+		<button
+			mat-button
+			type="button"
+			[matMenuTriggerFor]="userMenu"
+			aria-label="User menu"
+			class="ml-2 sm:ml-4 rounded-lg border border-gray-200 bg-gray-50/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/35"
+		>
+			<mat-icon class="mr-2 text-gray-600">account_circle</mat-icon>
+			<span class="hidden sm:inline text-gray-700">{{ userLabel() }}</span>
+			<mat-icon class="hidden sm:inline text-gray-500 text-base ml-1">expand_more</mat-icon>
+		</button>
+
+		<mat-menu #userMenu="matMenu">
+			<button mat-menu-item type="button" (click)="logout()">
+				<mat-icon>logout</mat-icon>
+				<span>Déconnexion</span>
+			</button>
+		</mat-menu>
+	</div>
+</mat-toolbar>

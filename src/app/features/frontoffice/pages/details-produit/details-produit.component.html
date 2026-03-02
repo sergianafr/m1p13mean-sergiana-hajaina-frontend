@@ -1,0 +1,245 @@
+<!-- Loading State -->
+<div class="detail-loading" *ngIf="isLoading()">
+  <mat-spinner diameter="48"></mat-spinner>
+  <p>Chargement du produit...</p>
+</div>
+
+<!-- Product Detail -->
+<div class="product-detail" *ngIf="!isLoading() && produit()">
+  <!-- Back Button -->
+  <app-fo-goback-button (clicked)="goBack()"/>
+
+  <div class="detail-container">
+    <!-- Left: Images -->
+    <div class="detail-images">
+      <div class="main-image">
+        <img [src]="mainPhoto" [alt]="produit()!.nomProduit" />
+      </div>
+      <div class="thumbnail-row" *ngIf="produit()!.photos && produit()!.photos.length > 1">
+        @for (photo of produit()!.photos; track photo.url; let i = $index) {
+          <div
+            class="thumbnail"
+            [class.active]="selectedPhotoIndex() === i"
+            (click)="selectPhoto(i)"
+          >
+            <img [src]="photo.url" [alt]="'Photo ' + (i + 1)" />
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Right: Info -->
+    <div class="detail-info">
+      <span class="detail-category">
+        {{ produit()!.typeProduit?.nomTypeProduit || 'Produit' }}
+      </span>
+
+      <h1 class="detail-name">{{ produit()!.nomProduit }}</h1>
+
+      <div class="detail-shop">
+        <mat-icon>store</mat-icon>
+        <span>{{ produit()!.magasin?.nomMagasin || 'Boutique' }}</span>
+      </div>
+
+      <div class="detail-rating">
+        <div class="stars">
+          @for (star of ratingStars; track $index) {
+            <mat-icon class="star" [class.filled]="star === 1">
+              {{ star === 1 ? 'star' : 'star_border' }}
+            </mat-icon>
+          }
+        </div>
+        <span class="rating-text">{{ produit()!.averageRating || 0 | number:'1.1-1' }} / 5</span>
+        <span class="review-count">({{ produit()!.totalReviews || 0 }} avis)</span>
+      </div>
+
+      <div class="detail-description" *ngIf="produit()!.descriptionProduit">
+        <h3>Description</h3>
+        <p>{{ produit()!.descriptionProduit }}</p>
+      </div>
+
+      <div class="detail-unit" *ngIf="produit()!.unite">
+        <span class="unit-label">Unité :</span>
+        <span class="unit-value">{{ produit()!.unite?.nomUnite }}</span>
+      </div>
+
+      <!-- Prix -->
+      <div class="detail-price">
+        @if (produit()!.prixActuel !== null && produit()!.prixActuel !== undefined) {
+          <span class="price-label">Prix unitaire</span>
+          <span class="price-value">{{ produit()!.prixActuel | number:'1.0-0' }} Ar</span>
+        } @else {
+          <span class="price-undefined">Prix non défini</span>
+        }
+      </div>
+
+      <!-- Quantity Selector -->
+      <div class="quantity-selector">
+        <span class="qty-label">Quantité</span>
+        <div class="qty-controls">
+          <button class="qty-btn" (click)="decrementQty()" [disabled]="quantity() <= 1">
+            <mat-icon>remove</mat-icon>
+          </button>
+          <span class="qty-value">{{ quantity() }}</span>
+          <button class="qty-btn" (click)="incrementQty()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="detail-actions">
+        <button class="btn-add-cart" (click)="addToCart()" [disabled]="addingToCart()">
+          <mat-icon>shopping_cart</mat-icon>
+          <span>{{ addingToCart() ? 'Ajout en cours...' : 'Ajouter au panier' }}</span>
+        </button>
+
+        <button class="btn-favorite" [class.is-favorite]="isFavorite()" (click)="toggleFavorite()">
+          <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_border' }}</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div class="reviews-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <mat-icon>rate_review</mat-icon>
+        Avis clients
+        @if (produit()!.totalReviews) {
+          <span class="review-count">({{ produit()!.totalReviews }})</span>
+        }
+      </h2>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="toggleReviewForm()"
+      >
+        <mat-icon>{{ userReview() ? 'edit' : 'add_comment' }}</mat-icon>
+        {{ userReview() ? 'Modifier mon avis' : 'Laisser un avis' }}
+      </button>
+    </div>
+
+    <!-- Review Form -->
+    @if (showReviewForm()) {
+      <mat-card class="review-form">
+        <mat-card-header>
+          <mat-card-title>
+            {{ isEditMode() ? 'Modifier votre avis' : 'Donner votre avis sur ce produit' }}
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+            <div class="rating-input">
+              <label>Note :</label>
+              <div class="stars-input">
+                @for (star of stars; track star) {
+                  <mat-icon
+                    class="star-btn"
+                    [class.active]="star <= (reviewForm.value.nombreEtoile || 0)"
+                    (click)="setRating(star)"
+                  >
+                    {{ star <= (reviewForm.value.nombreEtoile || 0) ? 'star' : 'star_border' }}
+                  </mat-icon>
+                }
+              </div>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Commentaire (optionnel)</mat-label>
+              <textarea
+                matInput
+                formControlName="commentaire"
+                rows="4"
+                placeholder="Partagez votre expérience avec ce produit..."
+              ></textarea>
+            </mat-form-field>
+
+            <div class="form-actions">
+              <button
+                mat-button
+                type="button"
+                (click)="toggleReviewForm()"
+                [disabled]="isSubmitting()"
+              >
+                Annuler
+              </button>
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="reviewForm.invalid || isSubmitting()"
+              >
+                @if (isSubmitting()) {
+                  <mat-spinner diameter="20"></mat-spinner>
+                } @else {
+                  Publier l'avis
+                }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    <!-- Reviews List -->
+    @if (isLoadingAvis()) {
+      <div class="loading-container">
+        <mat-spinner diameter="32"></mat-spinner>
+        <p>Chargement des avis...</p>
+      </div>
+    }
+
+    @if (!isLoadingAvis() && avis().length === 0) {
+      <div class="empty-state">
+        <mat-icon class="empty-icon">comment</mat-icon>
+        <h3>Aucun avis pour le moment</h3>
+        <p>Soyez le premier à laisser un avis sur ce produit</p>
+      </div>
+    }
+
+    @if (!isLoadingAvis() && avis().length > 0) {
+      <div class="reviews-list">
+        @for (review of avis(); track review._id) {
+          <mat-card class="review-card" [class.my-review]="isMyReview(review)">
+            <mat-card-header>
+              <div class="review-header">
+                <div class="user-info">
+                  <mat-icon class="user-icon">account_circle</mat-icon>
+                  <span class="username">{{ getReviewAuthorName(review) }}</span>
+                </div>
+                <div class="review-actions">
+                  <span class="review-date">{{ formatDate(review.dateAjout) }}</span>
+                  @if (isMyReview(review)) {
+                    <button
+                      mat-icon-button
+                      color="warn"
+                      (click)="deleteReview(review._id)"
+                      title="Supprimer mon avis"
+                      class="delete-btn"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  }
+                </div>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="review-stars">
+                @for (star of getRatingStarsForReview(review.nombreEtoile); track $index) {
+                  <mat-icon class="star" [class.filled]="star === 1">
+                    {{ star === 1 ? 'star' : 'star_border' }}
+                  </mat-icon>
+                }
+              </div>
+              @if (review.commentaire) {
+                <p class="review-comment">{{ review.commentaire }}</p>
+              }
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,60 @@
+<mat-card class="w-full border border-gray-200/80 shadow-xl rounded-2xl bg-white/95 backdrop-blur-sm">
+  <mat-card-content class="px-6 sm:px-8 py-7 sm:py-8">
+    <div class="flex items-center justify-center mb-5">
+      <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-slate-800 to-slate-600 text-white flex items-center justify-center shadow-md">
+        <mat-icon>shopping_bag</mat-icon>
+      </div>
+    </div>
+
+    <div class="text-center mb-6">
+      <p class="text-xs tracking-[0.16em] uppercase text-gray-400 font-semibold">MeanShop</p>
+      <h1 class="text-2xl font-semibold text-gray-800 mt-1">Bon retour</h1>
+      <p class="text-sm text-gray-500 mt-1">Connectez-vous pour acceder a votre espace.</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" placeholder="Email" class="bg-transparent" />
+        <mat-icon matPrefix>email</mat-icon>
+        @if (email?.hasError('required') && email?.touched) {
+          <mat-error>L'email est requis</mat-error>
+        }
+        @if (email?.hasError('email') && email?.touched) {
+          <mat-error>Format d'email invalide</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Mot de passe" class="bg-transparent" />
+        <mat-icon matPrefix>lock</mat-icon>
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (password?.hasError('required') && password?.touched) {
+          <mat-error>Le mot de passe est requis</mat-error>
+        }
+        @if (password?.hasError('minlength') && password?.touched) {
+          <mat-error>Minimum 6 caractères</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" class="w-full h-12 text-base font-medium tracking-wide !rounded-xl" [disabled]="isLoading">
+        @if (isLoading) {
+          <mat-progress-spinner diameter="24" mode="indeterminate" class="inline-block align-middle mr-2"></mat-progress-spinner>
+          Connexion...
+        } @else {
+          Se connecter
+        }
+      </button>
+
+      <div class="text-center mt-1">
+        <p class="text-sm text-gray-600">
+          Vous n'avez pas encore de compte ?
+          <a routerLink="/register" class="text-blue-600 hover:text-blue-800 font-medium">S'inscrire</a>
+        </p>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

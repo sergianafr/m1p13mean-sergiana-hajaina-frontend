@@ -1,0 +1,331 @@
+@if (form()) {
+  <form [formGroup]="form()!" (ngSubmit)="onSubmit()" class="dynamic-form">
+    @for (field of config().fields; track field.key) {
+      <div class="form-field" [class]="field.class ?? ''">
+        @switch (field.type) {
+          @case ('text') {
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
+              <mat-label>{{ field.label }}</mat-label>
+              <input 
+                matInput
+                [formControlName]="field.key"
+                [placeholder]="field.placeholder ?? ''">
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+              @if (hasError(field.key)) {
+                <mat-error>{{ getErrorMessage(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          @case ('email') {
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
+              <mat-label>{{ field.label }}</mat-label>
+              <input
+                matInput
+                type="email"
+                [formControlName]="field.key"
+                [placeholder]="field.placeholder ?? ''"
+              />
+              <mat-icon matSuffix>email</mat-icon>
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+              @if (hasError(field.key)) {
+                <mat-error>{{ getErrorMessage(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          @case ('password') {
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
+              <mat-label>{{ field.label }}</mat-label>
+              <input
+                matInput
+                type="password"
+                [formControlName]="field.key"
+                [placeholder]="field.placeholder ?? ''"
+              />
+              <mat-icon matSuffix>lock</mat-icon>
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+              @if (hasError(field.key)) {
+                <mat-error>{{ getErrorMessage(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          @case ('number') {
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
+              <mat-label>{{ field.label }}</mat-label>
+              <input
+                matInput
+                type="number"
+                [formControlName]="field.key"
+                [placeholder]="field.placeholder ?? ''"
+                [min]="field.min ?? null"
+                [max]="field.max ?? null"
+              />
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+              @if (hasError(field.key)) {
+                <mat-error>{{ getErrorMessage(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          @case ('textarea') {
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
+              <mat-label>{{ field.label }}</mat-label>
+              <textarea
+                matInput
+                [formControlName]="field.key"
+                [placeholder]="field.placeholder ?? ''"
+                [rows]="field.rows ?? 4"
+              ></textarea>
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+              @if (hasError(field.key)) {
+                <mat-error>{{ getErrorMessage(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          @case ('select') {
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
+              <mat-label>{{ field.label }}</mat-label>
+              <mat-select [formControlName]="field.key">
+                @for (option of field.options; track option.value) {
+                  <mat-option [value]="option.value">
+                    {{ option.label }}
+                  </mat-option>
+                }
+              </mat-select>
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+              @if (hasError(field.key)) {
+                <mat-error>{{ getErrorMessage(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          @case ('checkbox') {
+            <div class="checkbox-field">
+              <mat-checkbox [formControlName]="field.key">
+                {{ field.label }}
+              </mat-checkbox>
+              @if (field.hint) {
+                <mat-hint class="checkbox-hint">{{ field.hint }}</mat-hint>
+              }
+            </div>
+          }
+
+          @case ('radio') {
+            <div class="radio-field">
+              <label class="radio-label">{{ field.label }}</label>
+              <mat-radio-group [formControlName]="field.key">
+                @for (option of field.options; track option.value) {
+                  <mat-radio-button [value]="option.value">
+                    {{ option.label }}
+                  </mat-radio-button>
+                }
+              </mat-radio-group>
+              @if (field.hint) {
+                <mat-hint class="radio-hint">{{ field.hint }}</mat-hint>
+              }
+            </div>
+          }
+
+          @case ('date') {
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
+              <mat-label>{{ field.label }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="picker"
+                [formControlName]="field.key"
+                [placeholder]="field.placeholder ?? ''"
+              />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+              @if (hasError(field.key)) {
+                <mat-error>{{ getErrorMessage(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          @case ('file') {
+            <div class="file-field full-width">
+              <label class="file-label" [for]="field.key">{{ field.label }}</label>
+
+              @if (mode() === 'edit' && getExistingImages(field).length > 0) {
+                <div class="existing-images">
+                  @for (imageUrl of getExistingImages(field); track imageUrl) {
+                    <div class="existing-image-item">
+                      <img class="existing-image-preview" [src]="imageUrl" [alt]="field.label" />
+                      @if (canDeleteImage(field)) {
+                        <button
+                          mat-icon-button
+                          type="button"
+                          color="warn"
+                          class="existing-image-delete"
+                          [disabled]="loading() || isDeletingImage(imageUrl)"
+                          [attr.aria-label]="'Supprimer image'"
+                          (click)="deleteExistingImage(field, imageUrl)"
+                        >
+                          @if (isDeletingImage(imageUrl)) {
+                            <mat-spinner diameter="18"></mat-spinner>
+                          } @else {
+                            <mat-icon>delete</mat-icon>
+                          }
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+
+              <input
+                class="file-input"
+                type="file"
+                [id]="field.key"
+                [attr.multiple]="field.multiple === false ? null : ''"
+                [attr.accept]="field.accept ?? null"
+                (change)="onFileChange($event, field)"
+              />
+              <span class="file-names">{{ getSelectedFilesLabel(field.key) }}</span>
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+            </div>
+          }
+
+          @case ('user-search') {
+            <div class="user-search-field">
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{ field.label }}</label>
+              
+              <mat-button-toggle-group 
+                [value]="userSearchMode()[field.key] || 'select'"
+                (change)="onUserModeChange(field.key, $event.value)"
+                class="mb-3 w-full">
+                <mat-button-toggle value="select" class="flex-1">
+                  <mat-icon>person_search</mat-icon>
+                  Sélectionner un utilisateur existant
+                </mat-button-toggle>
+                <mat-button-toggle value="create" class="flex-1">
+                  <mat-icon>person_add</mat-icon>
+                  Créer un propriétaire
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+
+              @if ((userSearchMode()[field.key] || 'select') === 'select') {
+                <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
+                  <mat-label>Rechercher par nom ou email</mat-label>
+                  <input
+                    matInput
+                    [placeholder]="field.placeholder ?? 'Rechercher par nom ou email'"
+                    [(ngModel)]="searchQuery()[field.key]"
+                    [ngModelOptions]="{standalone: true}"
+                    autocomplete="off"
+                  />
+                  <button 
+                    mat-icon-button 
+                    matSuffix 
+                    type="button"
+                    (click)="onSearchUser(field)"
+                    [disabled]="loading()">
+                    <mat-icon>search</mat-icon>
+                  </button>
+                </mat-form-field>
+                
+                @if (searchResults()[field.key] && searchResults()[field.key].length > 0) {
+                  <div class="search-results">
+                    @for (user of searchResults()[field.key]; track user._id || user.id) {
+                      <div 
+                        class="search-result-item" 
+                        [class.selected]="form()?.get(field.key)?.value === (user._id || user.id)"
+                        (click)="selectUser(field.key, user)">
+                        <div class="user-info">
+                          <span class="user-name">{{ user.name }}</span>
+                          <span class="user-email">{{ user.email }}</span>
+                        </div>
+                        @if (form()?.get(field.key)?.value === (user._id || user.id)) {
+                          <mat-icon class="check-icon">check_circle</mat-icon>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+                
+                @if (searchResults()[field.key] && searchResults()[field.key].length === 0 && searchQuery()[field.key]) {
+                  <div class="no-results">
+                    Aucun utilisateur trouvé
+                  </div>
+                }
+              } @else {
+                <div class="create-user-section">
+                  <p class="text-sm text-gray-500 mb-3">Vous allez être redirigé vers le formulaire de création d'utilisateur.</p>
+                  <button 
+                    mat-flat-button 
+                    color="primary" 
+                    type="button"
+                    (click)="onCreateEntity(field.key)">
+                    <mat-icon>person_add</mat-icon>
+                    Créer un propriétaire
+                  </button>
+                </div>
+              }
+              
+              @if (hasError(field.key)) {
+                <mat-error>{{ getErrorMessage(field) }}</mat-error>
+              }
+            </div>
+          }
+        }
+      </div>
+    }
+
+    <div class="form-actions">
+      @if (showDelete()) {
+        <button
+          mat-stroked-button
+          color="warn"
+          type="button"
+          (click)="onDelete()"
+          [disabled]="loading()"
+          class="delete-button"
+        >
+          <mat-icon>delete</mat-icon>
+          Supprimer
+        </button>
+      }
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="onCancel()"
+        [disabled]="loading()"
+      >
+        {{ cancelLabel() }}
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="loading() || !isFormValid()"
+      >
+        @if (loading()) {
+          <mat-spinner diameter="20"></mat-spinner>
+        } @else {
+          {{ submitLabel() }}
+        }
+      </button>
+    </div>
+  </form>
+}

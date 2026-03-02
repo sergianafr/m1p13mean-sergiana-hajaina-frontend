@@ -1,0 +1,97 @@
+<section class="traites-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <mat-icon class="title-icon">receipt_long</mat-icon>
+        Mes Commandes
+      </h1>
+      <p class="page-subtitle" *ngIf="!isLoading()">{{ orders().length }} commande{{ orders().length > 1 ? 's' : '' }}</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading()">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Chargement de vos commandes...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading() && orders().length === 0">
+    <div class="empty-icon-wrapper">
+      <mat-icon class="empty-icon">inventory_2</mat-icon>
+    </div>
+    <h3>Aucune commande</h3>
+    <p>Vous n'avez pas encore pass&eacute; de commande.</p>
+    <button class="btn-explore" routerLink="/shop">
+      <mat-icon>storefront</mat-icon>
+      <span>D&eacute;couvrir les produits</span>
+    </button>
+  </div>
+
+  <!-- Orders List -->
+  <div class="orders-list" *ngIf="!isLoading() && orders().length > 0">
+    @for (order of orders(); track order._id) {
+      <div class="order-card">
+        <!-- Order Header -->
+        <div class="order-header">
+          <div class="order-meta">
+            <div class="order-badge">
+              <mat-icon>check_circle</mat-icon>
+              <span>Trait&eacute;e</span>
+            </div>
+            <span class="order-date">{{ formatDate(order.dateVente) }}</span>
+          </div>
+          <div class="order-store">
+            <mat-icon>store</mat-icon>
+            <span>{{ order.magasin?.nomMagasin || 'Boutique' }}</span>
+          </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="order-items">
+          @for (detail of order.details; track detail._id) {
+            <div class="order-item" (click)="goToDetail(detail.produit?._id)">
+              <div class="item-image">
+                <img [src]="getPhoto(detail)" [alt]="detail.produit?.nomProduit" />
+              </div>
+              <div class="item-info">
+                <span class="item-category">{{ detail.produit?.typeProduit?.nomTypeProduit || 'Produit' }}</span>
+                <h4 class="item-name">{{ detail.produit?.nomProduit }}</h4>
+                <div class="item-details">
+                  <span class="item-qty">Qty: {{ detail.qte }}</span>
+                  @if (detail.prixUnitaire) {
+                    <span class="item-price">{{ detail.prixUnitaire | number:'1.0-0' }} Ar/u</span>
+                  }
+                  @if (detail.pourcentagePromotion > 0) {
+                    <span class="item-promo">-{{ detail.pourcentagePromotion }}%</span>
+                  }
+                </div>
+              </div>
+              @if (detail.prixTotal) {
+                <div class="item-total">
+                  <span>{{ detail.prixTotal | number:'1.0-0' }} Ar</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Order Footer -->
+        <div class="order-footer">
+          <div class="order-summary">
+            <span class="summary-label">{{ getTotalQte(order) }} article{{ getTotalQte(order) > 1 ? 's' : '' }}</span>
+            @if (order.pourcentagePromotion > 0) {
+              <span class="order-promo">Remise magasin: -{{ order.pourcentagePromotion }}%</span>
+            }
+          </div>
+          @if (order.totalPrix) {
+            <div class="order-total">
+              <span class="total-label">Total</span>
+              <span class="total-value">{{ order.totalPrix | number:'1.0-0' }} Ar</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</section>

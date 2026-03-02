@@ -1,0 +1,21 @@
+.magasin-select {
+  min-width: 200px;
+  margin-right: 12px;
+}
+
+::ng-deep {
+  .stock-danger {
+    color: #d32f2f;
+    font-weight: 700;
+  }
+
+  .stock-warning {
+    color: #f57c00;
+    font-weight: 700;
+  }
+
+  .stock-ok {
+    color: #2e7d32;
+    font-weight: 700;
+  }
+}

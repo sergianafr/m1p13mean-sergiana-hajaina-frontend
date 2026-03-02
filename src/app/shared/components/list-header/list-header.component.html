@@ -1,0 +1,23 @@
+<mat-card class="header-card">
+  <mat-card-content class="flex items-center justify-between py-6 px-6 m-4">
+    <div class="flex flex-col justify-center">
+      @if (subtitle()) {
+        <span class="text-sm text-gray-500">{{ subtitle() }}</span>
+      }
+      <span class="text-lg font-semibold text-gray-800">{{ title() }}</span>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      @if (showAction() && actionLabel()) {
+        <button 
+          mat-raised-button 
+          color="primary"
+          (click)="onAction()">
+          <mat-icon>{{ actionIcon() }}</mat-icon>
+          {{ actionLabel() }}
+        </button>
+      }
+      <ng-content />
+    </div>
+  </mat-card-content>
+</mat-card>
