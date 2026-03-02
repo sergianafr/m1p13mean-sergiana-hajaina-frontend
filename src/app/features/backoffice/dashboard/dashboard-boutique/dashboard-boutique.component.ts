@@ -52,6 +52,12 @@ export class DashboardBoutiqueComponent implements OnInit {
     return monthly.reduce((sum, m) => sum + (m.revenue || 0), 0);
   });
 
+  protected readonly maxVentesQte = computed(() => {
+    const topVentes = this.dashboard()?.topProduitsByVentes ?? [];
+    if (topVentes.length === 0) return 0;
+    return Math.max(...topVentes.map(p => p.qteVendue || 0));
+  });
+
   ngOnInit(): void {
     this.loadMagasins();
   }

@@ -77,6 +77,40 @@ export type BoutiqueTopProduit = {
   revenue: number;
 };
 
+export type BoutiqueTopProduitByVentes = {
+  produitId: string;
+  nomProduit: string;
+  photos: Array<{ url?: string; dateAjout?: string | Date }>;
+  qteVendue: number;
+  revenue: number;
+};
+
+export type BoutiqueTopProduitByAvis = {
+  produitId: string;
+  nomProduit: string;
+  photos: Array<{ url?: string; dateAjout?: string | Date }>;
+  avisMoyen: number;
+  nombreAvis: number;
+};
+
+export type BoutiquePromotionDetail = {
+  promotionId: string;
+  pourcentage: number;
+  qte: number;
+  dateDebut: string | Date;
+  dateFin: string | Date;
+  produit: {
+    produitId: string;
+    nomProduit: string;
+    photos: Array<{ url?: string; dateAjout?: string | Date }>;
+  } | null;
+};
+
+export type BoutiquePromotionsDetails = {
+  promotionsActives: BoutiquePromotionDetail[];
+  promotionsExpirentBientot: BoutiquePromotionDetail[];
+};
+
 export type BoutiqueDashboard = {
   generatedAt: string;
   annee: number;
@@ -88,5 +122,7 @@ export type BoutiqueDashboard = {
   summary: BoutiqueDashboardSummary;
   monthly: DashboardMonthlyPoint[]; // 12 points
   stockAlerts: BoutiqueStockAlerts;
-  topProduits: BoutiqueTopProduit[];
+  topProduitsByVentes: BoutiqueTopProduitByVentes[];
+  topProduitsByAvis: BoutiqueTopProduitByAvis[];
+  promotionsDetails: BoutiquePromotionsDetails;
 };
