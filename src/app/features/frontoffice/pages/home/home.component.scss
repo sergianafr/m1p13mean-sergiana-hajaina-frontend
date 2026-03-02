@@ -84,7 +84,9 @@
     .filters-container {
       margin-bottom: 32px;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
 
       .type-filters {
         display: flex;
@@ -109,6 +111,10 @@
             height: 18px;
           }
         }
+      }
+
+      .price-filters {
+        opacity: 0.95;
       }
     }
 

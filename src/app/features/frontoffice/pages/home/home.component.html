@@ -36,6 +36,27 @@
           </mat-chip-option>
         }
       </mat-chip-listbox>
+
+      @if (showPriceSort()) {
+        <mat-chip-listbox class="type-filters price-filters" aria-label="Trier par prix">
+          <mat-chip-option
+            [selected]="isPriceSortSelected('asc')"
+            (click)="selectPriceSort('asc')"
+            color="primary"
+          >
+            <mat-icon>south</mat-icon>
+            Prix croissant
+          </mat-chip-option>
+          <mat-chip-option
+            [selected]="isPriceSortSelected('desc')"
+            (click)="selectPriceSort('desc')"
+            color="primary"
+          >
+            <mat-icon>north</mat-icon>
+            Prix décroissant
+          </mat-chip-option>
+        </mat-chip-listbox>
+      }
     </div>
 
     <!-- Loading -->
