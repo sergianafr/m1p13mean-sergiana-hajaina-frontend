@@ -63,6 +63,14 @@
       border-bottom: 1px solid #e0e0e0;
     }
 
+    td.status-paid {
+      color: #15803d !important;
+    }
+
+    td.status-unpaid {
+      color: #dc2626 !important;
+    }
+
     .cell-image {
       width: 48px;
       height: 48px;

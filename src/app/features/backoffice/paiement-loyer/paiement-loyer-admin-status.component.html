@@ -1,0 +1,36 @@
+<div class="container p-4 flex flex-col gap-3">
+  <list-header
+    title="Suivi paiements loyers"
+    subtitle="Visualiser qui a payé le loyer pour une période donnée"
+    [showAction]="false">
+  </list-header>
+
+  <mat-card class="rounded-lg border border-gray-200 shadow-sm md-6">
+    <div class="p-3 grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Mois</mat-label>
+        <mat-select [formControl]="filtersForm.controls.mois">
+          @for (month of months; track month.value) {
+            <mat-option [value]="month.value">{{ month.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Année</mat-label>
+        <mat-select [formControl]="filtersForm.controls.annee">
+          @for (year of years; track year) {
+            <mat-option [value]="year">{{ year }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div class="flex gap-2">
+        <button mat-flat-button color="primary" type="button" (click)="applyFilters()">Filtrer</button>
+        <button mat-stroked-button type="button" (click)="resetFilters()">Réinitialiser</button>
+      </div>
+    </div>
+  </mat-card>
+
+  <dynamic-table [config]="tableConfig()" [data]="rows()"></dynamic-table>
+</div>
