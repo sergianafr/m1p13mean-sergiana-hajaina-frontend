@@ -16,16 +16,21 @@ export const authGuard: CanActivateFn = () => {
 /** Guard inverse : redirige vers /home si déjà connecté (protège login/register) */
 export const guestGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
-  const router = inject(Router);
 
   if (!authService.isAuthenticated()) {
     return true;
   }
 
-  const user = authService.getCurrentUser();
-  if (user?.role === 'CLIENT') {
-    return router.createUrlTree(['/shop']);
-  } else {
-    return router.createUrlTree(['/home']);
+  return inject(Router).createUrlTree([authService.getDefaultLandingForCurrentUser()]);
+};
+
+export const landingRedirectGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (!authService.isAuthenticated()) {
+    return router.createUrlTree(['/login']);
   }
+
+  return router.createUrlTree([authService.getDefaultLandingForCurrentUser()]);
 };

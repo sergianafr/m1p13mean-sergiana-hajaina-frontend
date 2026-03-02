@@ -23,7 +23,6 @@ export class SidebarComponent {
   readonly navigate = output<void>();
 
   protected readonly navItems: NavItem[] = [
-    { label: 'Home', icon: 'home', link: '/home' },
     { label: 'Dashboard', icon: 'dashboard', link: '/dashboard/admin', roles: ['ADMIN'] },
     { label: 'Dashboard', icon: 'dashboard', link: '/dashboard/boutique', roles: ['BOUTIQUE'] },
     { label: 'Type produit', icon: 'bookmark_border', link: '/type-produits', roles: ['ADMIN', 'BOUTIQUE'] },
