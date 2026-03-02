@@ -1,16 +1,18 @@
-import { ChangeDetectionStrategy, Component, signal, inject, OnInit, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { DynamicFormComponent, DynamicFormConfig, TitleComponent } from '../../../../../shared';
+import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { PromotionService, PromotionDTO } from '../../promotion.service';
-import { ProduitService } from '../../../produit/produit.service';
-import { MagasinService } from '../../../magasin/magasin.service';
-import { AuthService } from '../../../../../core/services/auth.service';
+import { Produit, ProduitService } from '../../../produit/produit.service';
+import { Magasin, MagasinService } from '../../../magasin/magasin.service';
 
 @Component({
   selector: 'app-promotion-form',
@@ -18,13 +20,16 @@ import { AuthService } from '../../../../../core/services/auth.service';
   templateUrl: './promotion-form.component.html',
   styleUrl: './promotion-form.component.scss',
   imports: [
+    CommonModule,
     DynamicFormComponent,
     TitleComponent,
     MatCardModule,
     MatIconModule,
     MatDividerModule,
     MatSnackBarModule,
-    MatButtonModule
+    MatButtonModule,
+    MatFormFieldModule,
+    MatSelectModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -32,7 +37,6 @@ export class PromotionFormComponent implements OnInit {
   private readonly promotionService = inject(PromotionService);
   private readonly produitService = inject(ProduitService);
   private readonly magasinService = inject(MagasinService);
-  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
@@ -42,6 +46,9 @@ export class PromotionFormComponent implements OnInit {
   protected readonly promotionId = signal<string | null>(null);
   protected readonly userData = signal<Record<string, unknown> | undefined>(undefined);
   protected readonly selectedTypePromotion = signal<string>('');
+  protected readonly magasins = signal<Magasin[]>([]);
+  protected readonly selectedMagasinId = signal<string>('');
+  private readonly allProduits = signal<Produit[]>([]);
 
   protected readonly formConfig = signal<DynamicFormConfig>({
     mode: 'create',
@@ -61,14 +68,6 @@ export class PromotionFormComponent implements OnInit {
       {
         key: 'produit',
         label: 'Produit',
-        type: 'select',
-        options: [],
-        disabled: true,
-        required: false
-      },
-      {
-        key: 'magasin',
-        label: 'Magasin',
         type: 'select',
         options: [],
         disabled: true,
@@ -106,8 +105,6 @@ export class PromotionFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.loadSelectOptions();
-
     this.route.params.subscribe(params => {
       const id = params['id'];
       if (id && id !== 'nouvelle') {
@@ -117,50 +114,40 @@ export class PromotionFormComponent implements OnInit {
         this.formConfig.update(config => ({ ...config, mode: 'edit' }));
       }
     });
+
+    this.loadSelectOptions();
   }
 
   private loadSelectOptions(): void {
     this.isLoading.set(true);
-
-    const currentUser = this.authService.getCurrentUser();
 
     forkJoin({
       produits: this.produitService.getAll(),
       magasins: this.magasinService.getMine()
     }).subscribe({
       next: (data) => {
-        const currentUserId = currentUser?.id;
-        const magasinIds = data.magasins.map(m => m._id);
-        
-        const filteredProduits = data.produits.filter(p => {
-          const magasinId = typeof p.magasin === 'string' ? p.magasin : p.magasin?._id;
-          return magasinIds.includes(magasinId);
-        });
+        this.magasins.set(data.magasins);
+        this.allProduits.set(data.produits);
 
-        this.formConfig.update(config => ({
-          ...config,
-          fields: config.fields.map(field => {
-            if (field.key === 'produit') {
-              return {
-                ...field,
-                options: filteredProduits.map(p => ({
-                  value: p._id!,
-                  label: p.nomProduit
-                }))
-              };
-            }
-            if (field.key === 'magasin') {
-              return {
-                ...field,
-                options: data.magasins.map(m => ({
-                  value: m._id!,
-                  label: m.nomMagasin
-                }))
-              };
-            }
-            return field;
-          })
-        }));
+        if (!data.magasins.length) {
+          this.snackBar.open('Aucune boutique disponible', 'Fermer', {
+            duration: 3000,
+            panelClass: ['error-snackbar']
+          });
+          this.isLoading.set(false);
+          return;
+        }
+
+        const currentSelected = this.selectedMagasinId();
+        const selectedExists = data.magasins.some((m) => m._id === currentSelected);
+        const defaultMagasinId = selectedExists
+          ? currentSelected
+          : (data.magasins[0]._id ?? '');
+
+        if (defaultMagasinId) {
+          this.applyMagasinFilter(defaultMagasinId, { resetProduit: false });
+        }
+
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -178,11 +165,11 @@ export class PromotionFormComponent implements OnInit {
     this.isLoading.set(true);
     this.promotionService.getById(id).subscribe({
       next: (data) => {
+        const magasinId = typeof data.magasin === 'string' ? data.magasin : data.magasin?._id;
         const typePromotion = data.produit ? 'produit' : 'magasin';
         const formData = {
           typePromotion,
           produit: typeof data.produit === 'string' ? data.produit : data.produit?._id,
-          magasin: typeof data.magasin === 'string' ? data.magasin : data.magasin?._id,
           pourcentage: data.pourcentage,
           qte: data.qte,
           dateDebut: this.formatDateForInput(data.dateDebut),
@@ -191,6 +178,10 @@ export class PromotionFormComponent implements OnInit {
         this.userData.set(formData);
         this.selectedTypePromotion.set(typePromotion);
         this.updateFieldsDisabledState(typePromotion);
+
+        if (typeof magasinId === 'string' && magasinId.length > 0) {
+          this.applyMagasinFilter(magasinId, { resetProduit: false });
+        }
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -213,6 +204,48 @@ export class PromotionFormComponent implements OnInit {
     }
   }
 
+  onMagasinChange(magasinId: string): void {
+    this.applyMagasinFilter(magasinId, { resetProduit: true });
+  }
+
+  private applyMagasinFilter(magasinId: string, options?: { resetProduit?: boolean }): void {
+    if (!magasinId) {
+      return;
+    }
+
+    this.selectedMagasinId.set(magasinId);
+
+    const filteredProduits = this.allProduits().filter((p) => {
+      const produitMagasinId = typeof p.magasin === 'string' ? p.magasin : p.magasin?._id;
+      return produitMagasinId === magasinId;
+    });
+
+    this.formConfig.update(config => ({
+      ...config,
+      fields: config.fields.map(field => {
+        if (field.key === 'produit') {
+          return {
+            ...field,
+            options: filteredProduits
+              .filter((p) => typeof p._id === 'string' && p._id.length > 0)
+              .map(p => ({
+                value: p._id as string,
+                label: p.nomProduit
+              }))
+          };
+        }
+        return field;
+      })
+    }));
+
+    if (options?.resetProduit) {
+      this.userData.update((current) => ({
+        ...(current ?? {}),
+        produit: undefined
+      }));
+    }
+  }
+
   private updateFieldsDisabledState(typePromotion: string): void {
     this.formConfig.update(config => ({
       ...config,
@@ -224,33 +257,34 @@ export class PromotionFormComponent implements OnInit {
             required: typePromotion === 'produit'
           };
         }
-        if (field.key === 'magasin') {
-          return { 
-            ...field, 
-            disabled: typePromotion !== 'magasin',
-            required: typePromotion === 'magasin'
-          };
-        }
         return field;
       })
     }));
   }
 
   onSubmit(data: Record<string, unknown>): void {
+    const magasinId = this.selectedMagasinId();
+    if (!magasinId) {
+      this.snackBar.open('Veuillez sélectionner une boutique', 'Fermer', {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
+
     this.isLoading.set(true);
 
     const dto: PromotionDTO = {
       pourcentage: data['pourcentage'] as number,
       qte: (data['qte'] as number) ?? -1,
       dateDebut: new Date(data['dateDebut'] as string),
-      dateFin: new Date(data['dateFin'] as string)
+      dateFin: new Date(data['dateFin'] as string),
+      magasin: magasinId
     };
 
     const typePromotion = data['typePromotion'] as string;
     if (typePromotion === 'produit') {
       dto.produit = data['produit'] as string;
-    } else if (typePromotion === 'magasin') {
-      dto.magasin = data['magasin'] as string;
     }
 
     if (this.isEditMode()) {
