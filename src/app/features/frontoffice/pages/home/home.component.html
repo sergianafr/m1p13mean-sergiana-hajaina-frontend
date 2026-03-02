@@ -27,6 +27,13 @@
           <mat-icon>apps</mat-icon>
           Tous les produits
         </mat-chip-option>
+        <mat-chip-option
+          [selected]="isPromoSelected()"
+          (click)="selectPromo()"
+          color="primary">
+          <mat-icon>local_offer</mat-icon>
+          Produits en promo
+        </mat-chip-option>
         @for (type of typesProduits(); track type._id) {
           <mat-chip-option 
             [selected]="isTypeSelected(type._id!)"
@@ -54,6 +61,23 @@
           >
             <mat-icon>north</mat-icon>
             Prix décroissant
+          </mat-chip-option>
+        
+          <mat-chip-option
+            [selected]="isRatingSortSelected('asc')"
+            (click)="selectRatingSort('asc')"
+            color="primary"
+          >
+            <mat-icon>star_half</mat-icon>
+            Avis croissants
+          </mat-chip-option>
+          <mat-chip-option
+            [selected]="isRatingSortSelected('desc')"
+            (click)="selectRatingSort('desc')"
+            color="primary"
+          >
+            <mat-icon>star</mat-icon>
+            Avis décroissants
           </mat-chip-option>
         </mat-chip-listbox>
       }
