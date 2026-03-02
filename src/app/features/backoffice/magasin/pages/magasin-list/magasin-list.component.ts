@@ -5,6 +5,7 @@ import { DynamicTableConfig } from '../../../../../shared/models';
 import { MagasinService, Magasin } from '../../magasin.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../../../../core/services/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-magasin-list',
@@ -28,6 +29,10 @@ export class MagasinListComponent implements OnInit {
 
   protected get canCreateMagasin(): boolean {
     return this.authService.hasRole('ADMIN');
+  }
+
+  protected get isBoutique(): boolean {
+    return this.authService.hasRole('BOUTIQUE');
   }
 
   protected readonly tableConfig = signal<DynamicTableConfig>({
@@ -93,8 +98,12 @@ export class MagasinListComponent implements OnInit {
 
   private loadData(): void {
     this.tableConfig.update(config => ({ ...config, loading: true }));
-    
-    this.magasinService.getAll().subscribe({
+
+    const request$: Observable<Magasin[]> = this.isBoutique
+      ? this.magasinService.getMine()
+      : this.magasinService.getAll();
+
+    request$.subscribe({
       next: (data) => {
         this.magasins.set(data);
         this.tableConfig.update(config => ({
