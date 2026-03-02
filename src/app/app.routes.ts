@@ -169,6 +169,18 @@ export const routes: Routes = [
           import('./features/backoffice/produit/pages/produit-list/produit-list.component').then(m => m.ProduitListComponent)
       },
       {
+        path: 'avis-produits',
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/avis/pages/avis-produit-list/avis-produit-list.component').then(m => m.AvisProduitListComponent)
+      },
+      {
+        path: 'avis-magasins',
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/avis/pages/avis-magasin-list/avis-magasin-list.component').then(m => m.AvisMagasinListComponent)
+      },
+      {
         path: 'produits/create',
         canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
         loadComponent: () =>

@@ -34,6 +34,8 @@ export class SidebarComponent {
     { label: 'Suivi loyers', icon: 'fact_check', link: '/paiement-loyers/suivi', roles: ['ADMIN'] },
     { label: 'Magasin', icon: 'store', link: '/magasins', roles: ['ADMIN', 'BOUTIQUE'] },
     { label: 'Produit', icon: 'shopping_bag', link: '/produits', roles: ['BOUTIQUE'] },
+    { label: 'Avis magasins', icon: 'rate_review', link: '/avis-magasins', roles: ['ADMIN', 'BOUTIQUE'] },
+    { label: 'Avis produits', icon: 'reviews', link: '/avis-produits', roles: ['ADMIN', 'BOUTIQUE'] },
     { label: 'Stock', icon: 'inventory', link: '/stocks', roles: ['BOUTIQUE'] },
     { label: 'Utilisateurs', icon: 'group', link: '/users', roles: ['ADMIN'] },
     { label: 'Promotion', icon: 'local_offer', link: '/promotions', roles: ['BOUTIQUE'] },
