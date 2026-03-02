@@ -62,7 +62,7 @@ export class RegisterComponent {
     this.authService.register(registerData).subscribe({
       next: () => {
         this.snackBar.open('Inscription réussie !', 'OK', { duration: 3000 });
-        this.router.navigate(['/home']);
+        this.router.navigate(['/shop']);
       },
       error: (err) => {
         this.isLoading = false;

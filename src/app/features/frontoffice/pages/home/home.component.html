@@ -2,7 +2,7 @@
   <!-- Hero Banner -->
   <div class="hero-banner">
     <div class="hero-content">
-      <h1 class="hero-title">Bienvenue sur <span>MiShop</span></h1>
+      <h1 class="hero-title">Bienvenue sur <span>MeanShop</span></h1>
       <p class="hero-subtitle">Découvrez les meilleurs produits de nos boutiques partenaires</p>
     </div>
   </div>
@@ -14,7 +14,49 @@
         <mat-icon class="section-icon">local_fire_department</mat-icon>
         Produits à découvrir
       </h2>
-      <p class="section-subtitle">Une sélection aléatoire de produits de toutes nos boutiques</p>
+      <p class="section-subtitle">Filtrez par type de produit pour affiner votre recherche</p>
+    </div>
+
+    <!-- Type Filters -->
+    <div class="filters-container">
+      <mat-chip-listbox class="type-filters" aria-label="Filtrer par type">
+        <mat-chip-option 
+          [selected]="isTypeSelected(null)"
+          (click)="selectType(null)"
+          color="primary">
+          <mat-icon>apps</mat-icon>
+          Tous les produits
+        </mat-chip-option>
+        @for (type of typesProduits(); track type._id) {
+          <mat-chip-option 
+            [selected]="isTypeSelected(type._id!)"
+            (click)="selectType(type._id!)"
+            color="primary">
+            {{ type.nomTypeProduit }}
+          </mat-chip-option>
+        }
+      </mat-chip-listbox>
+
+      @if (showPriceSort()) {
+        <mat-chip-listbox class="type-filters price-filters" aria-label="Trier par prix">
+          <mat-chip-option
+            [selected]="isPriceSortSelected('asc')"
+            (click)="selectPriceSort('asc')"
+            color="primary"
+          >
+            <mat-icon>south</mat-icon>
+            Prix croissant
+          </mat-chip-option>
+          <mat-chip-option
+            [selected]="isPriceSortSelected('desc')"
+            (click)="selectPriceSort('desc')"
+            color="primary"
+          >
+            <mat-icon>north</mat-icon>
+            Prix décroissant
+          </mat-chip-option>
+        </mat-chip-listbox>
+      }
     </div>
 
     <!-- Loading -->
@@ -27,7 +69,7 @@
     <div class="empty-state" *ngIf="!isLoading() && produits().length === 0">
       <mat-icon class="empty-icon">inventory_2</mat-icon>
       <h3>Aucun produit disponible</h3>
-      <p>Revenez plus tard pour découvrir nos nouveautés !</p>
+      <p>{{ searchTerm() ? 'Aucun produit ne correspond à votre recherche.' : 'Revenez plus tard pour découvrir nos nouveautés !' }}</p>
     </div>
 
     <!-- Product Grid -->

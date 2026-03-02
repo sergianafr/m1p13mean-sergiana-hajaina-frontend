@@ -36,6 +36,11 @@
         <div class="cart-card">
           <div class="cart-image" (click)="goToDetail(item.produit._id)">
             <img [src]="getPhoto(item)" [alt]="item.produit.nomProduit" />
+            @if (item.produit.promotion) {
+              <div class="cart-promo-badge">
+                <span class="badge-percent">-{{ item.produit.promotion!.pourcentage }}%</span>
+              </div>
+            }
           </div>
           <div class="cart-info" (click)="goToDetail(item.produit._id)">
             <span class="cart-category">{{ item.produit.typeProduit?.nomTypeProduit || 'Produit' }}</span>
@@ -46,8 +51,22 @@
             </p>
             <div class="cart-price-row">
               @if (item.produit.prixActuel !== null && item.produit.prixActuel !== undefined) {
-                <span class="unit-price">{{ item.produit.prixActuel | number:'1.0-0' }} Ar / unité</span>
-                <span class="subtotal">Sous-total&nbsp;: <strong>{{ (item.produit.prixActuel * item.qte) | number:'1.0-0' }} Ar</strong></span>
+                @if (item.produit.promotion && item.produit.prixPromo !== null && item.produit.prixPromo !== undefined) {
+                  <!-- Prix avec promotion -->
+                  <div class="price-with-promo">
+                    <span class="unit-price-original">{{ item.produit.prixActuel | number:'1.0-0' }} Ar</span>
+                    <span class="unit-price-promo">{{ item.produit.prixPromo | number:'1.0-0' }} Ar / unité</span>
+                  </div>
+                  <div class="subtotal-with-promo">
+                    <span class="subtotal-original">{{ (item.produit.prixActuel * item.qte) | number:'1.0-0' }} Ar</span>
+                    <span class="subtotal">Sous-total&nbsp;: <strong>{{ (item.produit.prixPromo * item.qte) | number:'1.0-0' }} Ar</strong></span>
+                  </div>
+                  <span class="savings-badge">Économie : {{ ((item.produit.prixActuel - item.produit.prixPromo) * item.qte) | number:'1.0-0' }} Ar</span>
+                } @else {
+                  <!-- Prix normal -->
+                  <span class="unit-price">{{ item.produit.prixActuel | number:'1.0-0' }} Ar / unité</span>
+                  <span class="subtotal">Sous-total&nbsp;: <strong>{{ (item.produit.prixActuel * item.qte) | number:'1.0-0' }} Ar</strong></span>
+                }
               } @else {
                 <span class="price-undefined">Prix non défini</span>
               }

@@ -9,14 +9,14 @@ export interface VenteDetailItem {
   prixUnitaire: number;
   prixTotal: number;
   pourcentagePromotion: number;
-  produit: {
+  produit?: {
     _id: string;
     nomProduit: string;
-    photos: { url: string; dateAjout: Date }[];
-    unite: { _id: string; nomUnite: string };
-    typeProduit: { _id: string; nomTypeProduit: string };
-    magasin: { _id: string; nomMagasin: string };
-  };
+    photos?: { url: string; dateAjout: Date }[];
+    unite?: { _id: string; nomUnite: string } | null;
+    typeProduit?: { _id: string; nomTypeProduit: string } | null;
+    magasin?: { _id: string; nomMagasin: string } | null;
+  } | null;
 }
 
 export interface VenteItem {
@@ -24,7 +24,7 @@ export interface VenteItem {
   dateVente: Date;
   totalPrix: number;
   pourcentagePromotion: number;
-  magasin: { _id: string; nomMagasin: string };
+  magasin?: { _id: string; nomMagasin: string } | null;
   details: VenteDetailItem[];
   createdAt: Date;
 }

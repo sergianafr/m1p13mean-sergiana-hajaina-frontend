@@ -20,7 +20,7 @@ export interface MvtStock {
   qteEntree: number;
   qteSortie: number;
   dateMvtStock: Date;
-  unite: { _id: string; nomUnite: string };
+  unite?: { _id: string; nomUnite: string } | null;
   produit: { _id: string; nomProduit: string };
   createdAt: Date;
 }

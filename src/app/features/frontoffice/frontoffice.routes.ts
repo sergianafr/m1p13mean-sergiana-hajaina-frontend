@@ -17,6 +17,16 @@ export const frontofficeRoutes: Routes = [
           import('./pages/details-produit/details-produit.component').then(m => m.DetailsProduitComponent)
       },
       {
+        path: 'magasins',
+        loadComponent: () =>
+          import('./pages/magasin-list/magasin-list.component').then(m => m.MagasinListComponent)
+      },
+      {
+        path: 'magasin/:id',
+        loadComponent: () =>
+          import('./pages/magasin-detail/magasin-detail.component').then(m => m.MagasinDetailComponent)
+      },
+      {
         path: 'favoris',
         loadComponent: () =>
           import('./pages/favories/favories.component').then(m => m.FavoriesComponent)

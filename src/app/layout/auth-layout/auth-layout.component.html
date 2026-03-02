@@ -1,7 +1,7 @@
-<div class="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-	<mat-card class="w-full max-w-md shadow-lg">
-		<mat-card-content class="p-8">
-			<router-outlet />
-		</mat-card-content>
-	</mat-card>
+<div class="auth-shell min-h-screen flex items-center justify-center p-4 sm:p-6">
+	<div class="auth-bg-orb auth-bg-orb-left" aria-hidden="true"></div>
+	<div class="auth-bg-orb auth-bg-orb-right" aria-hidden="true"></div>
+	<div class="w-full max-w-md relative z-10">
+		<router-outlet />
+	</div>
 </div>

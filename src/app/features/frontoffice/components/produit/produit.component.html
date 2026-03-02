@@ -1,6 +1,15 @@
 <div class="product-card" (click)="goToDetail()">
   <div class="product-image-wrapper">
     <img [src]="photo" [alt]="produit().nomProduit" class="product-image" />
+    
+    <!-- Badge Promotion -->
+    @if (produit().promotion) {
+      <div class="promo-badge">
+        <span class="promo-percent">-{{ produit().promotion!.pourcentage }}%</span>
+        <span class="promo-label">PROMO</span>
+      </div>
+    }
+    
     <div class="product-overlay">
       <button class="overlay-btn" (click)="onAddToFavoris(); $event.stopPropagation()" title="Ajouter aux favoris">
         <mat-icon>favorite_border</mat-icon>
@@ -17,9 +26,29 @@
       <mat-icon class="shop-icon">store</mat-icon>
       {{ produit().magasin?.nomMagasin || 'Boutique' }}
     </p>
+    <div class="product-rating">
+      <div class="stars">
+        @for (star of ratingStars; track $index) {
+          <mat-icon class="star" [class.filled]="star === 1">
+            {{ star === 1 ? 'star' : 'star_border' }}
+          </mat-icon>
+        }
+      </div>
+      <span class="rating-text">{{ produit().averageRating || 0 | number:'1.1-1' }} ({{ produit().totalReviews || 0 }})</span>
+    </div>
     <div class="product-price">
       @if (produit().prixActuel !== null && produit().prixActuel !== undefined) {
-        <span class="price-amount">{{ produit().prixActuel | number:'1.0-0' }} Ar</span>
+        @if (produit().promotion && produit().prixPromo !== null && produit().prixPromo !== undefined) {
+          <!-- Prix avec promotion -->
+          <div class="price-with-promo">
+            <span class="price-original">{{ produit().prixActuel | number:'1.0-0' }} Ar</span>
+            <span class="price-promo">{{ produit().prixPromo | number:'1.0-0' }} Ar</span>
+          </div>
+          <span class="savings-text">Économisez {{ (produit().prixActuel! - produit().prixPromo!) | number:'1.0-0' }} Ar</span>
+        } @else {
+          <!-- Prix normal -->
+          <span class="price-amount">{{ produit().prixActuel | number:'1.0-0' }} Ar</span>
+        }
       } @else {
         <span class="price-none">Prix non défini</span>
       }

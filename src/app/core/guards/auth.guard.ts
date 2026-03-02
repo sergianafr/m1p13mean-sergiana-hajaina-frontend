@@ -10,19 +10,27 @@ export const authGuard: CanActivateFn = () => {
     return true;
   }
 
-  router.navigate(['/login']);
-  return false;
+  return router.createUrlTree(['/login']);
 };
 
 /** Guard inverse : redirige vers /home si déjà connecté (protège login/register) */
 export const guestGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
-  const router = inject(Router);
 
   if (!authService.isAuthenticated()) {
     return true;
   }
 
-  router.navigate(['/home']);
-  return false;
+  return inject(Router).createUrlTree([authService.getDefaultLandingForCurrentUser()]);
+};
+
+export const landingRedirectGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (!authService.isAuthenticated()) {
+    return router.createUrlTree(['/login']);
+  }
+
+  return router.createUrlTree([authService.getDefaultLandingForCurrentUser()]);
 };

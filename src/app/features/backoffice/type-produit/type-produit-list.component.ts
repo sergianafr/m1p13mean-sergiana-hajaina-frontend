@@ -4,6 +4,7 @@ import { DynamicTableComponent, ListHeaderComponent } from '../../../shared/comp
 import { DynamicTableConfig } from '../../../shared/models';
 import { TypeProduitService, TypeProduit } from './type-produit.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'type-produit-list',
@@ -17,6 +18,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     <div class="container mx-auto p-6">
       <list-header
         title="Types de Produits"
+        [showAction]="canManage()"
         actionLabel="Nouveau Type"
         (action)="createNew()">
       </list-header>
@@ -33,8 +35,10 @@ export class TypeProduitListComponent implements OnInit {
   private readonly typeProduitService = inject(TypeProduitService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly authService = inject(AuthService);
 
   protected readonly typeProduits = signal<TypeProduit[]>([]);
+  protected readonly canManage = signal(false);
 
   protected readonly tableConfig = signal<DynamicTableConfig>({
     columns: [
@@ -63,6 +67,11 @@ export class TypeProduitListComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.canManage.set(this.authService.hasRole('ADMIN'));
+    this.tableConfig.update(config => ({
+      ...config,
+      clickable: this.canManage()
+    }));
     this.loadData();
   }
 

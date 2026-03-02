@@ -1,0 +1,147 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+	<list-header
+		title="Dashboard Administrateur"
+		subtitle="Vue d'ensemble de la plateforme"
+		[showAction]="false">
+		<mat-form-field appearance="outline" class="w-[140px]">
+			<mat-label>Année</mat-label>
+			<mat-select [value]="selectedYear()" (selectionChange)="onYearChange($event.value)">
+				@for (y of availableYears(); track y) {
+					<mat-option [value]="y">{{ y }}</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
+	</list-header>
+
+	@if (isLoading()) {
+		<div class="flex justify-center items-center py-20">
+			<mat-spinner diameter="50"></mat-spinner>
+		</div>
+	} @else if (!dashboard()) {
+		<div class="flex flex-col items-center justify-center py-20 text-gray-500">
+			<mat-icon class="text-6xl mb-4">inbox</mat-icon>
+			<p class="text-lg">Aucune donnée disponible</p>
+		</div>
+	} @else {
+		<!-- Statistiques principales -->
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+			<mat-card class="bg-white">
+				<mat-card-content class="p-4">
+					<p class="text-xs text-gray-500 uppercase">Magasins</p>
+					<p class="text-2xl font-bold text-gray-900 mt-1">{{ dashboard()!.summary.magasinsCount }}</p>
+				</mat-card-content>
+			</mat-card>
+
+			<mat-card class="bg-white">
+				<mat-card-content class="p-4">
+					<p class="text-xs text-gray-500 uppercase">Utilisateurs</p>
+					<p class="text-2xl font-bold text-gray-900 mt-1">{{ dashboard()!.summary.users.total }}</p>
+					<div class="flex gap-2 mt-2 text-xs text-gray-600">
+						<span>Boutique: {{ dashboard()!.summary.users.boutiques }}</span>
+						<span>Client: {{ dashboard()!.summary.users.clients }}</span>
+					</div>
+				</mat-card-content>
+			</mat-card>
+
+			<mat-card class="bg-white">
+				<mat-card-content class="p-4">
+					<p class="text-xs text-gray-500 uppercase">CA Année {{ dashboard()!.annee }}</p>
+					<p class="text-2xl font-bold text-gray-900 mt-1">{{ dashboard()!.totalRevenueYear | number:'1.0-0' }} Ar</p>
+					<p class="text-xs text-gray-500 mt-1">Loyers de boxes</p>
+				</mat-card-content>
+			</mat-card>
+		</div>
+
+		<!-- Occupation des boxes -->
+		<mat-card class="bg-white mt-6">
+			<mat-card-content class="p-6">
+				<h3 class="text-lg font-semibold text-gray-800 mb-4">Occupation des Boxes</h3>
+				
+				<div class="grid grid-cols-3 gap-6 mb-6">
+					<div class="text-center">
+						<p class="text-xs text-gray-500 uppercase mb-1">Total</p>
+						<p class="text-3xl font-bold text-gray-900">{{ dashboard()!.summary.boxes.total }}</p>
+					</div>
+					<div class="text-center">
+						<p class="text-xs text-gray-500 uppercase mb-1">Occupés</p>
+						<p class="text-3xl font-bold text-green-600">{{ dashboard()!.summary.boxes.occupes }}</p>
+					</div>
+					<div class="text-center">
+						<p class="text-xs text-gray-500 uppercase mb-1">Libres</p>
+						<p class="text-3xl font-bold text-blue-600">{{ dashboard()!.summary.boxes.libres }}</p>
+					</div>
+				</div>
+
+				<div class="relative w-full h-12 bg-gray-200 rounded overflow-hidden">
+					<div 
+						class="absolute left-0 top-0 h-full bg-green-500 flex items-center justify-center text-white text-sm font-semibold"
+						[style.width.%]="dashboard()!.summary.boxes.total > 0 ? (dashboard()!.summary.boxes.occupes / dashboard()!.summary.boxes.total * 100) : 0">
+						@if (dashboard()!.summary.boxes.occupes > 0) {
+							{{ (dashboard()!.summary.boxes.occupes / dashboard()!.summary.boxes.total * 100).toFixed(1) }}% occupés
+						}
+					</div>
+					<div 
+						class="absolute right-0 top-0 h-full bg-blue-400 flex items-center justify-center text-white text-sm font-semibold"
+						[style.width.%]="dashboard()!.summary.boxes.total > 0 ? (dashboard()!.summary.boxes.libres / dashboard()!.summary.boxes.total * 100) : 0">
+						@if (dashboard()!.summary.boxes.libres > 0) {
+							{{ (dashboard()!.summary.boxes.libres / dashboard()!.summary.boxes.total * 100).toFixed(1) }}% libres
+						}
+					</div>
+				</div>
+			</mat-card-content>
+		</mat-card>
+
+		<!-- Classement des magasins par avis -->
+		<mat-card class="bg-white mt-6">
+			<mat-card-content class="p-6">
+				<h3 class="text-lg font-semibold text-gray-800 mb-6">Classement des Magasins par Avis ({{ dashboard()!.annee }})</h3>
+
+				@if (dashboard()!.magasinsAvis.length === 0) {
+					<p class="text-sm text-gray-500 text-center py-8">Aucun magasin enregistré</p>
+				} @else {
+					<div class="space-y-4">
+						@for (m of dashboard()!.magasinsAvis; track m.magasinId) {
+							<div class="border-b border-gray-100 pb-4 last:border-b-0">
+								<div class="flex items-center justify-between mb-2">
+									<div class="flex-1">
+										<p class="text-sm font-semibold text-gray-800">{{ m.nomMagasin }}</p>
+										<p class="text-xs text-gray-500">
+											@if (m.nombreAvis > 0) {
+												{{ m.nombreAvis }} avis
+											} @else {
+												Aucun avis
+											}
+										</p>
+									</div>
+									<div class="flex items-center gap-2">
+										@if (m.avisMoyen > 0) {
+											<span class="text-sm font-bold text-gray-900">{{ m.avisMoyen }}</span>
+											<span class="text-xs text-gray-500">/5</span>
+											<mat-icon class="text-yellow-500 text-base">star</mat-icon>
+										} @else {
+											<span class="text-xs text-gray-400">N/A</span>
+										}
+									</div>
+								</div>
+								
+								<div class="relative w-full h-8 bg-gray-100 rounded overflow-hidden">
+									@if (m.avisMoyen > 0) {
+										<div 
+											class="absolute left-0 top-0 h-full bg-yellow-400 flex items-center px-3"
+											[style.width.%]="(m.avisMoyen / 5 * 100)">
+											<span class="text-xs font-semibold text-gray-900">{{ m.avisMoyen }}/5</span>
+										</div>
+									} @else {
+										<div class="absolute inset-0 flex items-center justify-center">
+											<span class="text-xs text-gray-400">Aucune note</span>
+										</div>
+									}
+								</div>
+							</div>
+						}
+					</div>
+				}
+			</mat-card-content>
+		</mat-card>
+	}
+</div>

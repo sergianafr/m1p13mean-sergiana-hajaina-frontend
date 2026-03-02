@@ -46,12 +46,7 @@ export class LoginComponent {
     this.authService.login(credentials).subscribe({
       next: () => {
         this.snackBar.open('Connexion réussie !', 'OK', { duration: 3000 });
-        const user = this.authService.getCurrentUser();
-        if (user?.role === 'CLIENT') {
-          this.router.navigate(['/shop']);
-        } else {
-          this.router.navigate(['/home']);
-        }
+        this.router.navigateByUrl(this.authService.getDefaultLandingForCurrentUser());
       },
       error: (err) => {
         this.isLoading = false;

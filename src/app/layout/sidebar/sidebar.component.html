@@ -1,9 +1,10 @@
-<div class="h-full flex flex-col bg-white w-60">
-	<div class="p-6 border-b border-gray-200">
-		<h2 class="text-lg font-bold text-gray-900">MEAN</h2>
+<div class="h-full flex flex-col bg-white w-64">
+	<div class="px-5 py-6 border-b border-gray-200">
+		<p class="text-xs font-semibold tracking-[0.18em] uppercase text-gray-400">Backoffice</p>
+		<h2 class="mt-1 text-lg font-semibold text-gray-900">MEAN</h2>
 	</div>
 
-	<mat-nav-list class="flex-1 pt-4">
+	<mat-nav-list class="flex-1 px-2 py-4 overflow-y-auto">
 		@for (item of navItems; track item.link) {
 			@if (!item.roles) {
 				<a
@@ -13,13 +14,15 @@
 					#rla="routerLinkActive"
 					[activated]="rla.isActive"
 					[attr.aria-current]="rla.isActive ? 'page' : null"
-					class="mx-2 mb-1 rounded-lg"
+					class="mb-1 rounded-xl transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/35"
 					[class.bg-blue-50]="rla.isActive"
 					[class.text-blue-700]="rla.isActive"
+					[class.shadow-sm]="rla.isActive"
+					[class.text-gray-600]="!rla.isActive"
 					(click)="navigate.emit()"
 				>
-					<mat-icon matListItemIcon [class.text-blue-700]="rla.isActive">{{ item.icon }}</mat-icon>
-					<span matListItemTitle class="font-medium">{{ item.label }}</span>
+					<mat-icon matListItemIcon class="!mr-3" [class.text-blue-700]="rla.isActive">{{ item.icon }}</mat-icon>
+					<span matListItemTitle class="font-medium text-sm leading-5 truncate" [title]="item.label">{{ item.label }}</span>
 				</a>
 			} @else {
 				<a
@@ -30,13 +33,15 @@
 					#rla="routerLinkActive"
 					[activated]="rla.isActive"
 					[attr.aria-current]="rla.isActive ? 'page' : null"
-					class="mx-2 mb-1 rounded-lg"
+					class="mb-1 rounded-xl transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/35"
 					[class.bg-blue-50]="rla.isActive"
 					[class.text-blue-700]="rla.isActive"
+					[class.shadow-sm]="rla.isActive"
+					[class.text-gray-600]="!rla.isActive"
 					(click)="navigate.emit()"
 				>
-					<mat-icon matListItemIcon [class.text-blue-700]="rla.isActive">{{ item.icon }}</mat-icon>
-					<span matListItemTitle class="font-medium">{{ item.label }}</span>
+					<mat-icon matListItemIcon class="!mr-3" [class.text-blue-700]="rla.isActive">{{ item.icon }}</mat-icon>
+					<span matListItemTitle class="font-medium text-sm leading-5 truncate" [title]="item.label">{{ item.label }}</span>
 				</a>
 			}
 		}

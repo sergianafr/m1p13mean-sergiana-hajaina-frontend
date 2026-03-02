@@ -17,7 +17,7 @@ export interface Produit {
   photos?: PhotoProduit[];
   unite: string;
   typeProduit: string;
-  magasin: string;
+  magasin: string | { _id: string; nomMagasin: string };
   createdAt?: Date;
   updatedAt?: Date;
 }

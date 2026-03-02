@@ -1,82 +1,87 @@
-<div class="min-h-screen flex items-center justify-center bg-white">
-  <mat-card class="w-full max-w-sm shadow-md rounded-lg border border-gray-200">
-    <mat-card-header class="flex flex-col items-center py-6">
-      <mat-icon class="text-4xl text-gray-500 mb-2">person_add</mat-icon>
-      <mat-card-title class="text-xl font-semibold text-gray-700">Inscription</mat-card-title>
-    </mat-card-header>
-    <mat-divider></mat-divider>
-    <mat-card-content>
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 mt-6">
-        <mat-form-field appearance="fill" class="w-full">
-          <mat-label>Nom</mat-label>
-          <input matInput formControlName="name" type="text" placeholder="Nom complet" class="bg-transparent" />
-          <mat-icon matPrefix>account_circle</mat-icon>
-          @if (name?.hasError('required') && name?.touched) {
-            <mat-error>Le nom est requis</mat-error>
-          }
-          @if (name?.hasError('minlength') && name?.touched) {
-            <mat-error>Minimum 3 caractères</mat-error>
-          }
-        </mat-form-field>
+<mat-card class="w-full border border-gray-200/80 shadow-xl rounded-2xl bg-white/95 backdrop-blur-sm">
+  <mat-card-content class="px-6 sm:px-8 py-7 sm:py-8">
+    <div class="flex items-center justify-center mb-5">
+      <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-rose-500 to-orange-500 text-white flex items-center justify-center shadow-md">
+        <mat-icon>person_add</mat-icon>
+      </div>
+    </div>
 
-        <mat-form-field appearance="fill" class="w-full">
-          <mat-label>Email</mat-label>
-          <input matInput formControlName="email" type="email" placeholder="Email" class="bg-transparent" />
-          <mat-icon matPrefix>email</mat-icon>
-          @if (email?.hasError('required') && email?.touched) {
-            <mat-error>L'email est requis</mat-error>
-          }
-          @if (email?.hasError('email') && email?.touched) {
-            <mat-error>Format d'email invalide</mat-error>
-          }
-        </mat-form-field>
+    <div class="text-center mb-6">
+      <p class="text-xs tracking-[0.16em] uppercase text-gray-400 font-semibold">MeanShop</p>
+      <h1 class="text-2xl font-semibold text-gray-800 mt-1">Créer un compte</h1>
+      <p class="text-sm text-gray-500 mt-1">Rejoignez la plateforme pour acheter et suivre vos commandes facilement.</p>
+    </div>
 
-        <mat-form-field appearance="fill" class="w-full">
-          <mat-label>Mot de passe</mat-label>
-          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Mot de passe" class="bg-transparent" />
-          <mat-icon matPrefix>lock</mat-icon>
-          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
-            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-          @if (password?.hasError('required') && password?.touched) {
-            <mat-error>Le mot de passe est requis</mat-error>
-          }
-          @if (password?.hasError('minlength') && password?.touched) {
-            <mat-error>Minimum 6 caractères</mat-error>
-          }
-        </mat-form-field>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Nom</mat-label>
+        <input matInput formControlName="name" type="text" placeholder="Nom complet" class="bg-transparent" />
+        <mat-icon matPrefix>account_circle</mat-icon>
+        @if (name?.hasError('required') && name?.touched) {
+          <mat-error>Le nom est requis</mat-error>
+        }
+        @if (name?.hasError('minlength') && name?.touched) {
+          <mat-error>Minimum 3 caractères</mat-error>
+        }
+      </mat-form-field>
 
-        <mat-form-field appearance="fill" class="w-full">
-          <mat-label>Confirmer le mot de passe</mat-label>
-          <input matInput formControlName="confirmPassword" [type]="hideConfirmPassword ? 'password' : 'text'" placeholder="Confirmer le mot de passe" class="bg-transparent" />
-          <mat-icon matPrefix>lock</mat-icon>
-          <button mat-icon-button matSuffix type="button" (click)="hideConfirmPassword = !hideConfirmPassword">
-            <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-          @if (confirmPassword?.hasError('required') && confirmPassword?.touched) {
-            <mat-error>Veuillez confirmer le mot de passe</mat-error>
-          }
-          @if (confirmPassword?.hasError('passwordMismatch') && confirmPassword?.touched) {
-            <mat-error>Les mots de passe ne correspondent pas</mat-error>
-          }
-        </mat-form-field>
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" placeholder="Email" class="bg-transparent" />
+        <mat-icon matPrefix>email</mat-icon>
+        @if (email?.hasError('required') && email?.touched) {
+          <mat-error>L'email est requis</mat-error>
+        }
+        @if (email?.hasError('email') && email?.touched) {
+          <mat-error>Format d'email invalide</mat-error>
+        }
+      </mat-form-field>
 
-        <button mat-raised-button color="primary" type="submit" class="w-full h-12 text-base font-medium tracking-wide" [disabled]="isLoading">
-          @if (isLoading) {
-            <mat-progress-spinner diameter="24" mode="indeterminate" class="inline-block align-middle mr-2"></mat-progress-spinner>
-            Inscription...
-          } @else {
-            S'inscrire
-          }
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Mot de passe" class="bg-transparent" />
+        <mat-icon matPrefix>lock</mat-icon>
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
+        @if (password?.hasError('required') && password?.touched) {
+          <mat-error>Le mot de passe est requis</mat-error>
+        }
+        @if (password?.hasError('minlength') && password?.touched) {
+          <mat-error>Minimum 6 caractères</mat-error>
+        }
+      </mat-form-field>
 
-        <div class="text-center mt-4">
-          <p class="text-sm text-gray-600">
-            Vous avez déjà un compte ?
-            <a routerLink="/login" class="text-blue-600 hover:text-blue-800 font-medium">Se connecter</a>
-          </p>
-        </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
-</div>
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Confirmer le mot de passe</mat-label>
+        <input matInput formControlName="confirmPassword" [type]="hideConfirmPassword ? 'password' : 'text'" placeholder="Confirmer le mot de passe" class="bg-transparent" />
+        <mat-icon matPrefix>lock</mat-icon>
+        <button mat-icon-button matSuffix type="button" (click)="hideConfirmPassword = !hideConfirmPassword">
+          <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (confirmPassword?.hasError('required') && confirmPassword?.touched) {
+          <mat-error>Veuillez confirmer le mot de passe</mat-error>
+        }
+        @if (confirmPassword?.hasError('passwordMismatch') && confirmPassword?.touched) {
+          <mat-error>Les mots de passe ne correspondent pas</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" class="w-full h-12 text-base font-medium tracking-wide !rounded-xl" [disabled]="isLoading">
+        @if (isLoading) {
+          <mat-progress-spinner diameter="24" mode="indeterminate" class="inline-block align-middle mr-2"></mat-progress-spinner>
+          Inscription...
+        } @else {
+          S'inscrire
+        }
+      </button>
+
+      <div class="text-center mt-1">
+        <p class="text-sm text-gray-600">
+          Vous avez déjà un compte ?
+          <a routerLink="/login" class="text-blue-600 hover:text-blue-800 font-medium">Se connecter</a>
+        </p>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

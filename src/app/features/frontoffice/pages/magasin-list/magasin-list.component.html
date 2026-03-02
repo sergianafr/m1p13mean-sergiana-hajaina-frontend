@@ -1,0 +1,62 @@
+<section class="magasin-list">
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <div class="hero-content">
+      <h1 class="hero-title">Nos <span>Boutiques</span></h1>
+      <p class="hero-subtitle">Découvrez toutes nos boutiques partenaires et leurs produits</p>
+    </div>
+  </div>
+
+  <!-- Magasins Section -->
+  <div class="magasins-section">
+    <!-- Header with Filter -->
+    <div class="section-header">
+      <div class="title-wrapper">
+        <h2 class="section-title">
+          <mat-icon class="section-icon">store</mat-icon>
+          Liste des boutiques
+        </h2>
+        <p class="section-subtitle">{{ filteredMagasins().length }} boutique(s) disponible(s)</p>
+      </div>
+
+      <mat-form-field class="filter-select" appearance="outline">
+        <mat-label>
+          <mat-icon>filter_list</mat-icon>
+          Filtrer par type
+        </mat-label>
+        <mat-select [value]="selectedTypeId()" (selectionChange)="onTypeChange($any($event).value)">
+          <mat-option value="all">Tous les types</mat-option>
+          @for (type of typeMagasins(); track type._id) {
+            <mat-option [value]="type._id">{{ type.nomTypeMagasin }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Loading -->
+    @if (isLoading()) {
+      <div class="loading-container">
+        <mat-spinner diameter="48"></mat-spinner>
+        <p>Chargement des boutiques...</p>
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (!isLoading() && filteredMagasins().length === 0) {
+      <div class="empty-state">
+        <mat-icon class="empty-icon">store_mall_directory</mat-icon>
+        <h3>Aucune boutique trouvée</h3>
+        <p>Essayez un autre filtre ou revenez plus tard</p>
+      </div>
+    }
+
+    <!-- Magasins Grid -->
+    @if (!isLoading() && filteredMagasins().length > 0) {
+      <div class="magasins-grid">
+        @for (magasin of filteredMagasins(); track magasin._id) {
+          <app-magasin-card [magasin]="magasin" />
+        }
+      </div>
+    }
+  </div>
+</section>

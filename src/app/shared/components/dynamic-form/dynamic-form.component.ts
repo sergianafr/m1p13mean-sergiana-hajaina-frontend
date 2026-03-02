@@ -80,6 +80,7 @@ export class DynamicFormComponent implements OnInit {
   readonly formCancel = output<void>();
   readonly formDelete = output<void>();
   readonly createEntity = output<string>();
+  readonly formValueChange = output<Record<string, unknown>>();
 
   // Internal state
   protected readonly form = signal<FormGroup | null>(null);
@@ -135,6 +136,33 @@ export class DynamicFormComponent implements OnInit {
       const currentForm = this.form();
       if (data && currentForm) {
         currentForm.patchValue(data);
+      }
+    });
+
+    // Effect to update field disabled/enabled state when config changes
+    effect(() => {
+      const currentForm = this.form();
+      const config = this.config();
+      if (!currentForm) return;
+
+      for (const field of config.fields) {
+        const control = currentForm.get(field.key);
+        if (!control) continue;
+
+        if (field.disabled) {
+          if (control.enabled) {
+            control.disable({ emitEvent: false });
+          }
+        } else {
+          if (control.disabled) {
+            control.enable({ emitEvent: false });
+          }
+        }
+
+        // Update validators when disabled/required state changes
+        const validators = this.getValidators(field);
+        control.setValidators(validators);
+        control.updateValueAndValidity({ emitEvent: false });
       }
     });
 
@@ -198,6 +226,11 @@ export class DynamicFormComponent implements OnInit {
     // Subscribe to form status changes to update validation signal
     formGroup.statusChanges.subscribe(() => {
       this.isFormValid.set(formGroup.valid);
+    });
+    
+    // Subscribe to value changes to emit to parent
+    formGroup.valueChanges.subscribe((value) => {
+      this.formValueChange.emit(value);
     });
     
     // Set initial validity

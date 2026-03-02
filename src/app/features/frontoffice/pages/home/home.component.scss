@@ -81,6 +81,43 @@
       }
     }
 
+    .filters-container {
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+
+      .type-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        max-width: 100%;
+
+        mat-chip-option {
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.2s ease;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(233, 69, 96, 0.2);
+          }
+
+          mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+          }
+        }
+      }
+
+      .price-filters {
+        opacity: 0.95;
+      }
+    }
+
     .loading-container {
       display: flex;
       flex-direction: column;

@@ -1,8 +1,14 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './core/guards/auth.guard';
+import { authGuard, guestGuard, landingRedirectGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
+  {
+    path: 'access-denied',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/all/access-denied/access-denied.component').then(m => m.AccessDeniedComponent)
+  },
   {
     path: 'login',
     canActivate: [guestGuard],
@@ -36,15 +42,21 @@ export const routes: Routes = [
     children: [
       {
         path: 'home',
-        canActivate: [authGuard],
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
           import('./pages/all/home/home.component').then(m => m.HomeComponent)
       },
       {
-        path: 'access-denied',
-        canActivate: [authGuard],
+        path: 'dashboard/admin',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
-          import('./pages/all/access-denied/access-denied.component').then(m => m.AccessDeniedComponent)
+          import('./features/backoffice/dashboard/dashboard-admin/dashboard-admin.component').then(m => m.DashboardAdminComponent)
+      },
+      {
+        path: 'dashboard/boutique',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/dashboard/dashboard-boutique/dashboard-boutique.component').then(m => m.DashboardBoutiqueComponent)
       },
       {
         path: 'type-produits',
@@ -54,13 +66,13 @@ export const routes: Routes = [
       },
       {
         path: 'type-produits/create',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/backoffice/type-produit/type-produit.component').then(m => m.TypeProduitForm)
       },
       {
         path: 'type-produits/:id',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/backoffice/type-produit/type-produit.component').then(m => m.TypeProduitForm)
       },
@@ -100,13 +112,13 @@ export const routes: Routes = [
       },
       {
         path: 'unites/create',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/backoffice/unite/pages/unite-form/unite-form.component').then(m => m.UniteFormComponent)
       },
       {
         path: 'unites/:id',
-        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
         loadComponent: () =>
           import('./features/backoffice/unite/pages/unite-form/unite-form.component').then(m => m.UniteFormComponent)
       },
@@ -171,6 +183,29 @@ export const routes: Routes = [
       {
         path: 'produit',
         redirectTo: 'produits',
+        pathMatch: 'full'
+      },
+      {
+        path: 'promotions',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/promotion/page/promotion-list/promotion-list.component').then(m => m.PromotionListComponent)
+      },
+      {
+        path: 'promotions/nouvelle',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/promotion/page/promotion-form/promotion-form.component').then(m => m.PromotionFormComponent)
+      },
+      {
+        path: 'promotions/:id',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/promotion/page/promotion-form/promotion-form.component').then(m => m.PromotionFormComponent)
+      },
+      {
+        path: 'promotion',
+        redirectTo: 'promotions',
         pathMatch: 'full'
       },
       {
@@ -261,7 +296,12 @@ export const routes: Routes = [
         redirectTo: 'users',
         pathMatch: 'full'
       },
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      {
+        path: '',
+        canActivate: [authGuard, landingRedirectGuard],
+        loadComponent: () =>
+          import('./pages/all/home/home.component').then(m => m.HomeComponent)
+      },
       
     ]
   },
@@ -271,6 +311,6 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./features/frontoffice/frontoffice.routes').then(m => m.frontofficeRoutes)
   },
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'access-denied' }
 ];
  

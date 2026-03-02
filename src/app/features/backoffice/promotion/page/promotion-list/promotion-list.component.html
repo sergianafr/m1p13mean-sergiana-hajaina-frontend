@@ -1,0 +1,9 @@
+<div class="flex flex-col min-h-[calc(100vh-200px)] p-6">
+  <list-header
+    title="Promotions"
+    actionLabel="Nouvelle promotion"
+    (action)="onCreate()">
+  </list-header>
+
+      <dynamic-table [config]="tableConfig()" [data]="promotions()"></dynamic-table>
+</div>
