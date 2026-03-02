@@ -102,9 +102,7 @@ export class ProduitFormComponent implements OnInit {
         multiple: true,
         accept: 'image/*',
         existingImageField: 'photos',
-        imageDeleteQueryParam: 'imageUrl',
-        hint: 'Vous pouvez sélectionner jusqu\'a 5 images'
-      }
+        imageDeleteQueryParam: 'imageUrl'      }
     ]
   });
 
