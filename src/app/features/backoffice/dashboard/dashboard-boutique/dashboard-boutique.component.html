@@ -200,7 +200,7 @@
 				<div class="mt-2 grid grid-cols-3 md:grid-cols-6 gap-2">
 					@for (m of dashboard()!.monthly; track $index) {
 						<div class="bg-gray-50 rounded-md px-2 py-2 border border-gray-200">
-							<p class="text-[11px] text-gray-500">M{{ $index + 1 }}</p>
+							<p class="text-[11px] text-gray-500">{{ monthlyDateLabels()[$index] }}</p>
 							<p class="text-xs font-semibold text-gray-900">{{ m.revenue | number:'1.0-0' }}</p>
 						</div>
 					}

@@ -33,6 +33,10 @@ export class DashboardBoutiqueComponent implements OnInit {
   private readonly dashboardService = inject(DashboardService);
   private readonly magasinService = inject(MagasinService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly monthDateFormatter = new Intl.DateTimeFormat('fr-FR', {
+    month: 'short',
+    year: '2-digit'
+  });
 
   protected readonly isLoading = signal(false);
   protected readonly isLoadingMagasins = signal(false);
@@ -45,6 +49,14 @@ export class DashboardBoutiqueComponent implements OnInit {
   protected readonly availableYears = computed(() => {
     const current = new Date().getFullYear();
     return [current, current - 1, current - 2];
+  });
+
+  protected readonly monthlyDateLabels = computed(() => {
+    const year = this.selectedYear();
+    return Array.from({ length: 12 }, (_, monthIndex) => {
+      const date = new Date(year, monthIndex, 1);
+      return this.monthDateFormatter.format(date);
+    });
   });
 
   protected readonly totalRevenueYear = computed(() => {
