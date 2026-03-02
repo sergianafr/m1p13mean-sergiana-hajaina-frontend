@@ -1,5 +1,11 @@
 <div class="magasin-card" (click)="goToDetail()">
   <div class="magasin-header">
+    @if (magasin().promotion) {
+      <div class="promo-badge">
+        <span class="promo-percent">-{{ magasin().promotion!.pourcentage }}%</span>
+        <span class="promo-label">PROMO</span>
+      </div>
+    }
     <div class="magasin-icon">
       <mat-icon class="store-icon">store</mat-icon>
     </div>

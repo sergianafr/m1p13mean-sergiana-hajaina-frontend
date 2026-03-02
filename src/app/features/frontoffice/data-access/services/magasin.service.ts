@@ -2,6 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { ProduitFront } from './produit.service';
+
+export interface PromotionInfo {
+  _id: string;
+  pourcentage: number;
+  dateDebut: Date;
+  dateFin: Date;
+  qte: number;
+}
 
 export interface TypeMagasin {
   _id: string;
@@ -22,6 +31,7 @@ export interface MagasinFront {
   typeMagasin?: TypeMagasin | null;
   averageRating?: number;
   totalReviews?: number;
+  promotion?: PromotionInfo | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -75,8 +85,8 @@ export class MagasinService {
     return this.http.get<MagasinFront>(`${this.apiUrl}/magasins/${id}/with-rating`);
   }
 
-  getProductsByMagasinId(id: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/magasins/${id}/produits`);
+  getProductsByMagasinId(id: string): Observable<ProduitFront[]> {
+    return this.http.get<ProduitFront[]>(`${this.apiUrl}/magasins/${id}/produits`);
   }
 
   getReviewsByMagasinId(id: string): Observable<AvisMagasin[]> {

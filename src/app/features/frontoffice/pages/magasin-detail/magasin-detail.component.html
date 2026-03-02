@@ -18,6 +18,12 @@
         <div class="magasin-info">
           <span class="magasin-type">{{ magasin()!.typeMagasin?.nomTypeMagasin }}</span>
           <h1 class="magasin-name">{{ magasin()!.nomMagasin }}</h1>
+          @if (magasin()!.promotion) {
+            <div class="promo-banner">
+              <mat-icon>local_offer</mat-icon>
+              <span>Promotion active: -{{ magasin()!.promotion!.pourcentage }}%</span>
+            </div>
+          }
           <div class="rating-section">
             <div class="stars">
               @for (star of ratingStars; track $index) {
@@ -43,6 +49,12 @@
             <mat-icon>shopping_bag</mat-icon>
             Produits de la boutique
           </h2>
+          @if (magasin()!.promotion) {
+            <span class="products-promo-chip">
+              <mat-icon>sell</mat-icon>
+              Promo magasin -{{ magasin()!.promotion!.pourcentage }}%
+            </span>
+          }
         </div>
 
         @if (isLoadingProduits()) {

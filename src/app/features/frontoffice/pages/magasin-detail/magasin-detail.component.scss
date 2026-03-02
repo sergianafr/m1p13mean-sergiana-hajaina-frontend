@@ -82,6 +82,26 @@
           line-height: 1.2;
         }
 
+        .promo-banner {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+          color: #fff;
+          padding: 6px 12px;
+          border-radius: 999px;
+          font-size: 13px;
+          font-weight: 700;
+          margin-bottom: 12px;
+          box-shadow: 0 6px 16px rgba(255, 75, 43, 0.35);
+
+          mat-icon {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+          }
+        }
+
         .rating-section {
           display: flex;
           align-items: center;
@@ -143,6 +163,24 @@
         font-size: 28px;
         width: 28px;
         height: 28px;
+      }
+    }
+
+    .products-promo-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ff4b2b;
+      background: rgba(255, 75, 43, 0.12);
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
       }
     }
   }
