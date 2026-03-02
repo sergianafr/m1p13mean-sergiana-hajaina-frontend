@@ -16,6 +16,10 @@ import { MagasinService } from '../../../magasin/magasin.service';
 import { Produit, ProduitService } from '../../../produit/produit.service';
 import { AvisBackofficeService, AvisProduitBackoffice } from '../../avis-backoffice.service';
 
+type AvisProduitRow = AvisProduitBackoffice & {
+  magasinNom: string;
+};
+
 @Component({
   selector: 'app-avis-produit-list',
   standalone: true,
@@ -43,8 +47,8 @@ export class AvisProduitListComponent implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
 
   protected readonly produits = signal<Produit[]>([]);
-  protected readonly allAvis = signal<AvisProduitBackoffice[]>([]);
-  protected readonly filteredAvis = signal<AvisProduitBackoffice[]>([]);
+  protected readonly allAvis = signal<AvisProduitRow[]>([]);
+  protected readonly filteredAvis = signal<AvisProduitRow[]>([]);
   protected readonly isLoading = signal(false);
 
   protected readonly filtersForm = this.fb.nonNullable.group({
@@ -63,13 +67,9 @@ export class AvisProduitListComponent implements OnInit {
         }
       },
       {
-        key: 'produitInfo',
+        key: 'magasinNom',
         label: 'Magasin',
-        sortable: true,
-        format: value => {
-          const produit = value as { nomMagasin?: string } | null;
-          return produit?.nomMagasin || '-';
-        }
+        sortable: true
       },
       {
         key: 'nombreEtoile',
@@ -173,8 +173,13 @@ export class AvisProduitListComponent implements OnInit {
 
     this.avisBackofficeService.getAvisProduitsByProduits(produits).subscribe({
       next: avis => {
-        this.allAvis.set(avis);
-        this.filteredAvis.set(avis);
+        const rows = avis.map(item => ({
+          ...item,
+          magasinNom: item.produitInfo.nomMagasin ?? '-'
+        }));
+
+        this.allAvis.set(rows);
+        this.filteredAvis.set(rows);
         this.isLoading.set(false);
       },
       error: () => this.handleLoadError('Erreur lors du chargement des avis produits')
