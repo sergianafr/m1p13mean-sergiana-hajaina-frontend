@@ -4,20 +4,23 @@
       <div class="form-field" [class]="field.class ?? ''">
         @switch (field.type) {
           @case ('text') {
-            <mat-form-field  appearance="outline">
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
               <mat-label>{{ field.label }}</mat-label>
               <input 
                 matInput
                 [formControlName]="field.key"
                 [placeholder]="field.placeholder ?? ''">
-            </mat-form-field>
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
               @if (hasError(field.key)) {
                 <mat-error>{{ getErrorMessage(field) }}</mat-error>
               }
+            </mat-form-field>
           }
 
           @case ('email') {
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
               <mat-label>{{ field.label }}</mat-label>
               <input
                 matInput
@@ -36,7 +39,7 @@
           }
 
           @case ('password') {
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
               <mat-label>{{ field.label }}</mat-label>
               <input
                 matInput
@@ -55,7 +58,7 @@
           }
 
           @case ('number') {
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
               <mat-label>{{ field.label }}</mat-label>
               <input
                 matInput
@@ -75,7 +78,7 @@
           }
 
           @case ('textarea') {
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
               <mat-label>{{ field.label }}</mat-label>
               <textarea
                 matInput
@@ -93,7 +96,7 @@
           }
 
           @case ('select') {
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
               <mat-label>{{ field.label }}</mat-label>
               <mat-select [formControlName]="field.key">
                 @for (option of field.options; track option.value) {
@@ -139,7 +142,7 @@
           }
 
           @case ('date') {
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
               <mat-label>{{ field.label }}</mat-label>
               <input
                 matInput
@@ -223,7 +226,7 @@
               </mat-button-toggle-group>
 
               @if ((userSearchMode()[field.key] || 'select') === 'select') {
-                <mat-form-field appearance="outline" class="full-width">
+                <mat-form-field appearance="fill" class="full-width df-form-field" subscriptSizing="dynamic">
                   <mat-label>Rechercher par nom ou email</mat-label>
                   <input
                     matInput

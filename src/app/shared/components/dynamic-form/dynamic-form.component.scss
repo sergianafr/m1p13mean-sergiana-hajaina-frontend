@@ -1,7 +1,7 @@
 .dynamic-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
   width: 100%;
 
   .form-field {
@@ -10,6 +10,49 @@
 
   .full-width {
     width: 100%;
+  }
+
+  .df-form-field {
+    width: 100%;
+  }
+
+  ::ng-deep .df-form-field {
+    .mat-mdc-text-field-wrapper {
+      border-radius: 12px;
+      min-height: 58px;
+      padding-left: 4px;
+      padding-right: 4px;
+      background-color: #ffffff;
+    }
+
+    .mat-mdc-form-field-infix {
+      min-height: 58px;
+      padding-top: 16px;
+      padding-bottom: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .mdc-floating-label {
+      font-size: 0.95rem;
+    }
+
+    .mat-mdc-select-value,
+    input.mat-mdc-input-element,
+    textarea.mat-mdc-input-element {
+      font-size: 1.05rem;
+      line-height: 1.35;
+    }
+
+    textarea.mat-mdc-input-element {
+      min-height: 120px;
+      resize: vertical;
+      align-self: stretch;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      margin-top: 4px;
+    }
   }
 
   .checkbox-field {
