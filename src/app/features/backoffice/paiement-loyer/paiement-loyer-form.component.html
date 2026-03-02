@@ -1,0 +1,66 @@
+<div class="flex flex-col min-h-[calc(100vh-200px)]">
+  <app-title
+    [textHead]="'Paiements loyers'"
+    [formTitle]="'Nouveau paiement mensuel'"
+    (redirect)="goBack()">
+  </app-title>
+
+  <mat-card class="w-full rounded-lg shadow-md border border-gray-200 bg-white">
+    <form class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4" [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="w-full md:col-span-2">
+        <mat-label>Magasin</mat-label>
+        <mat-select formControlName="magasin" required>
+          @for (magasin of magasins(); track magasin._id) {
+            <mat-option [value]="magasin._id">{{ magasin.nomMagasin }}</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.magasin.touched && form.controls.magasin.invalid) {
+          <mat-error>Magasin requis</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Mois</mat-label>
+        <mat-select formControlName="mois" required>
+          @for (month of months; track month.value) {
+            <mat-option [value]="month.value">{{ month.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Année</mat-label>
+        <mat-select formControlName="annee" required>
+          @for (year of years; track year) {
+            <mat-option [value]="year">{{ year }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full md:col-span-2">
+        <mat-label>Date de paiement</mat-label>
+        <input matInput type="date" formControlName="datePaiement" required />
+      </mat-form-field>
+
+      <div class="md:col-span-2 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900">
+        <p class="font-medium">Montant calculé automatiquement</p>
+        <p class="mt-1">Le montant payé sera la somme des loyers actifs de tous les box associés au magasin pour la période choisie.</p>
+        <p class="mt-2">Box actifs détectés: <span class="font-semibold">{{ totalBoxesActifs() }}</span></p>
+      </div>
+
+      <div class="md:col-span-2 flex justify-end gap-2">
+        <button mat-stroked-button type="button" (click)="goBack()">Annuler</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting() || isLoading()">
+          @if (isSubmitting()) {
+            <span class="inline-flex items-center gap-2">
+              <mat-spinner diameter="18"></mat-spinner>
+              Enregistrement...
+            </span>
+          } @else {
+            Enregistrer
+          }
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

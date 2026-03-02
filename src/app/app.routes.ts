@@ -292,6 +292,18 @@ export const routes: Routes = [
           import('./features/backoffice/box-magasin/pages/box-magasin-form/box-magasin-form.component').then(m => m.BoxMagasinFormComponent)
       },
       {
+        path: 'paiement-loyers',
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/paiement-loyer/paiement-loyer-list.component').then(m => m.PaiementLoyerListComponent)
+      },
+      {
+        path: 'paiement-loyers/nouveau',
+        canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/paiement-loyer/paiement-loyer-form.component').then(m => m.PaiementLoyerFormComponent)
+      },
+      {
         path: 'user',
         redirectTo: 'users',
         pathMatch: 'full'

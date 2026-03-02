@@ -30,6 +30,7 @@ export class SidebarComponent {
     { label: 'Unite', icon: 'straighten', link: '/unites', roles: ['ADMIN', 'BOUTIQUE'] },
     { label: 'Box', icon: 'inventory_2', link: '/boxs', roles: ['ADMIN'] },
     { label: 'Assignation Magasin-Box', icon: 'lan', link: '/box-magasins', roles: ['ADMIN'] },
+    { label: 'Paiements loyers', icon: 'payments', link: '/paiement-loyers', roles: ['ADMIN', 'BOUTIQUE'] },
     { label: 'Magasin', icon: 'store', link: '/magasins', roles: ['ADMIN', 'BOUTIQUE'] },
     { label: 'Produit', icon: 'shopping_bag', link: '/produits', roles: ['BOUTIQUE'] },
     { label: 'Stock', icon: 'inventory', link: '/stocks', roles: ['BOUTIQUE'] },
