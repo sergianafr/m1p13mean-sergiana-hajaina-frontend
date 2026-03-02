@@ -47,6 +47,18 @@ export const routes: Routes = [
           import('./pages/all/home/home.component').then(m => m.HomeComponent)
       },
       {
+        path: 'dashboard/admin',
+        canActivate: [authGuard, roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/backoffice/dashboard/dashboard-admin/dashboard-admin.component').then(m => m.DashboardAdminComponent)
+      },
+      {
+        path: 'dashboard/boutique',
+        canActivate: [authGuard, roleGuard(['BOUTIQUE'])],
+        loadComponent: () =>
+          import('./features/backoffice/dashboard/dashboard-boutique/dashboard-boutique.component').then(m => m.DashboardBoutiqueComponent)
+      },
+      {
         path: 'type-produits',
         canActivate: [authGuard, roleGuard(['ADMIN', 'BOUTIQUE'])],
         loadComponent: () =>
